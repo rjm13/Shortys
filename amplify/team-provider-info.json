@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-shortys-dev-151958-authRole",
+      "UnauthRoleArn": "arn:aws:iam::216786839363:role/amplify-shortys-dev-151958-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::216786839363:role/amplify-shortys-dev-151958-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-shortys-dev-151958-deployment",
+      "UnauthRoleName": "amplify-shortys-dev-151958-unauthRole",
+      "StackName": "amplify-shortys-dev-151958",
+      "StackId": "arn:aws:cloudformation:us-east-1:216786839363:stack/amplify-shortys-dev-151958/77509810-9715-11eb-9b56-0a996fcea8bf",
+      "AmplifyAppId": "drja6q2nl6f0o"
+    },
+    "categories": {
+      "auth": {
+        "Shortys": {}
+      }
+    }
+  }
+}
