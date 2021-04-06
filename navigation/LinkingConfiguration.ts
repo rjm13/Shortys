@@ -6,19 +6,34 @@ export default {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          Home: {
             screens: {
-              TabOneScreen: 'one',
+              HomeScreen: 'one',
+              ProfileScreen: 'Profile',
+              EditProfileScreen: 'EditProfile'
             },
           },
-          TabTwo: {
+          Stories: {
             screens: {
-              TabTwoScreen: 'two',
+              StoriesScreen: 'two',
+              BrowseAuthor: 'BrowseAuthor',
+              BrowseNarrator: 'BrowseNarrator'
+            },
+          },
+          Playlist: {
+            screens: {
+              PlaylistScreen: 'three',
             },
           },
         },
       },
-      NotFound: '*',
+      RecordAudio: '*',
+      AudioPlayer: '*',
+      UserScreen: '*',
+      SignUp: '*',
+      SignIn: '*',
+      ForgotPassword: '*',
+      ConfirmEmail: '*',
     },
   },
 };

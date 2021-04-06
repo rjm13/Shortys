@@ -1,17 +1,44 @@
 export type RootStackParamList = {
   Root: undefined;
-  NotFound: undefined;
+  RecordAudio: undefined;
+  AudioPlayer: undefined;
+  UserScreen: undefined;
+  SignUp: undefined;
+  SignIn: undefined;
+  ForgotPassword: undefined;
+  ConfirmEmail: undefined;
 };
 
 export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+  Home: undefined;
+  Stories: undefined;
+  Playlist: undefined;
 };
 
 export type TabOneParamList = {
-  TabOneScreen: undefined;
+  HomeScreen: undefined;
+  ProfileScreen: undefined;
+  EditProfileScreen: undefined;
+  NotificationSetting: undefined;
+  Narrations: undefined;
+  History: undefined;
+  Following: undefined;
 };
 
 export type TabTwoParamList = {
-  TabTwoScreen: undefined;
+  StoriesScreen: undefined;
+  BrowseAuthor: undefined;
+  BrowseNarrator: undefined;
 };
+
+export type TabThreeParamList = {
+  PlaylistScreen: undefined;
+};
+
+export type ItemParamList = {
+  //title: string;
+
+};
+
+declare const awsmobile: {};
+export default awsmobile;

@@ -5,8 +5,22 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import NotificationSetting from '../screens/NotificationSetting';
+import Narrations from '../screens/NarrationsScreen';
+import History from '../screens/HistoryScreen';
+import Following from '../screens/FollowingScreen';
+
+import StoriesScreen from '../screens/StoriesScreen';
+import PlaylistScreen from '../screens/Playlistscreen';
+
+import BrowseAuthor from '../screens/BrowseAuthor';
+import BrowseNarrator from '../screens/BrowseNarrator';
+
+
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
@@ -16,20 +30,34 @@ export default function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
+      initialRouteName="Home"
+      tabBarOptions={{ 
+          activeTintColor: Colors[colorScheme].tint,
+          style: {
+            //backgroundColor: '#000',
+            height: 55,
+            paddingBottom: 4
+        }
+          }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneNavigator}
+        name="Home"
+        component={HomeNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color}/>,
         }}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoNavigator}
+        name="Stories"
+        component={StoriesNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="library-outline" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Playlist"
+        component={PlaylistNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="disc" color={color} />,
         }}
       />
     </BottomTab.Navigator>
@@ -39,35 +67,89 @@ export default function BottomTabNavigator() {
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-  return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
+  return <Ionicons size={25} style={{ marginBottom: -8 }} {...props} />;
 }
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
+const HomeStack = createStackNavigator<TabOneParamList>();
 
-function TabOneNavigator() {
+function HomeNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'Tab One Title' }}
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ headerShown: false }}
       />
-    </TabOneStack.Navigator>
+      <HomeStack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="NotificationSetting"
+        component={NotificationSetting}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="Narrations"
+        component={Narrations}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="History"
+        component={History}
+        options={{ headerShown: false }}
+      />
+      <HomeStack.Screen
+        name="Following"
+        component={Following}
+        options={{ headerShown: false }}
+      />
+    </HomeStack.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const StoriesStack = createStackNavigator<TabTwoParamList>();
 
-function TabTwoNavigator() {
+function StoriesNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="TabTwoScreen"
-        component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+    <StoriesStack.Navigator>
+      <StoriesStack.Screen
+        name="StoriesScreen"
+        component={StoriesScreen}
+        options={{ headerShown: false }}
       />
-    </TabTwoStack.Navigator>
+      <StoriesStack.Screen
+        name="BrowseAuthor"
+        component={BrowseAuthor}
+        options={{ headerShown: false }}
+      />
+      <StoriesStack.Screen
+        name="BrowseNarrator"
+        component={BrowseNarrator}
+        options={{ headerShown: false }}
+      />
+    </StoriesStack.Navigator>
+  );
+}
+
+const PlaylistStack = createStackNavigator<TabTwoParamList>();
+
+function PlaylistNavigator() {
+  return (
+    <PlaylistStack.Navigator>
+      <PlaylistStack.Screen
+        name="StoriesScreen"
+        component={PlaylistScreen}
+        options={{ headerShown: false }}
+      />
+    </PlaylistStack.Navigator>
   );
 }
