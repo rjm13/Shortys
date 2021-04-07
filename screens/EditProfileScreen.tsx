@@ -10,8 +10,19 @@ import { StatusBar } from 'expo-status-bar';
 import { Modal, Portal, Button, Provider } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import { Auth } from 'aws-amplify';
+
 
 const EditProfile = ({navigation}) => {
+
+    async function signOut() {
+        try {
+            await Auth.signOut()
+            .then(() => navigation.navigate('SignIn'))
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
 
 //Modal
     const [visible, setVisible] = React.useState(false);
@@ -21,6 +32,18 @@ const EditProfile = ({navigation}) => {
     const containerStyle = {
         backgroundColor: '#fff', 
         padding: 20,
+    };
+
+    //SignOutModal
+    const [visible2, setVisible2] = React.useState(false);
+
+    const showSignOutModal = () => setVisible2(true);
+    const hideSignOutModal = () => setVisible2(false);
+    const containerSignOutStyle = {
+        backgroundColor: '#363636', 
+        padding: 20,
+        margin: 20,
+        borderRadius: 15,
     };
 
 //Fetch user information
@@ -114,6 +137,28 @@ const EditProfile = ({navigation}) => {
                         </View>
                     </View>
                 </Modal>
+
+                <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={containerSignOutStyle}>
+                    <View style={{ alignItems: 'center'}}>
+                        <Text style={{
+                            fontSize: 18,
+                            paddingVertical: 16,
+                            color: '#fff'
+                            }}>Are you sure you want to log out?
+                        </Text>
+                        
+                        <View style={styles.button}>
+                            <TouchableOpacity
+                                onPress={signOut}>
+                                <LinearGradient
+                                    colors={['cyan', 'cyan']}
+                                    style={styles.savebutton} >
+                                    <Text style={styles.savewords}>Log Out</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </Portal>
 
             <View>
@@ -161,6 +206,13 @@ const EditProfile = ({navigation}) => {
                     onPress={() => {navigation.navigate('ChangePassword')}}>
                     <View style={styles.smallcontainer }>
                         <Text style={ styles.words }>Reset Password</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={showSignOutModal}>
+                    <View style={styles.smallcontainer }>
+                        <Text style={ styles.words }>Log Out</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -279,10 +331,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         paddingVertical: 5,
         paddingHorizontal: 20,
-        color: 'white',
-        borderColor: 'white',
-        borderWidth: 0.5,
-        borderRadius: 40,
+        color: '#000000',
     },
     deletecontainer: {
         margin: 50,

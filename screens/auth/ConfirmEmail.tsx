@@ -1,10 +1,70 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import { Auth } from 'aws-amplify';
+import { useRoute } from '@react-navigation/native';
+
 const ConfirmEmail = ({navigation}) => {
+
+    const route = useRoute();
+
+    const {username, password} = route.params
+
+    const [data, setData] = useState({
+        username: username,
+        code: '',
+        password: password,
+    });
+
+    async function confirmSignUp() {
+
+        const {username, code, password} = data;
+        
+        try {
+        console.log(username, code, password);
+          let result = await Auth.confirmSignUp(username, code);
+
+          if (result) {
+              await Auth.signIn (username, password)
+              .then(() => navigation.navigate('Root', {screen: 'HomeScreen'}))
+              return;
+          }
+            // On failure, display error in console
+        }      
+        catch (error) {
+            console.log('error confirming sign up', error);
+            alert('Error confirming account. Please try again.')
+        }
+    }
+
+    async function resendConfirmationCode() {
+        const {username} = data;
+        try {
+            await Auth.resendSignUp(username);
+            console.log('code resent successfully');
+        } catch (err) {
+            console.log('error resending code: ', err);
+        }
+    }
+
+    const handleCode = (val) => {
+        setData({
+            ... data,
+            code: val
+        });
+    }
+
+    // useEffect(() => {
+    //     const UserName = route.params;
+    //     setData({
+    //         ...data,
+    //         username: UserName
+    //     })
+    // })
+
 
     return (
         <View style={styles.container}>
@@ -38,12 +98,14 @@ const ConfirmEmail = ({navigation}) => {
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                onChangeText={(val) => handleCode(val)}
+                                
                             />
                         </View>
                     </View>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={confirmSignUp}>
                     <View style={styles.button}>
                         <Text style={styles.buttontext}>
                             Confirm Account
@@ -51,7 +113,7 @@ const ConfirmEmail = ({navigation}) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={resendConfirmationCode}>
                     <Text style={{ color: '#fff', alignSelf: 'center', margin: 20}}>
                         Resend code
                     </Text>

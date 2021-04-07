@@ -8,12 +8,12 @@ import useColorScheme from './hooks/useColorScheme';
 //import Navigation from '/Users/rjm/ShortStories/navigation';
 import Navigation from './navigation'
 
-// import Amplify from '@aws-amplify/core';
-// import config from './src/aws-exports';
-// Amplify.configure(config);
-// import { Auth, API, graphqlOperation } from 'aws-amplify';
-// import { getUser } from './src/graphql/queries';
-// import { createUser } from './src/graphql/mutations';
+import Amplify from '@aws-amplify/core';
+import config from './src/aws-exports';
+Amplify.configure(config);
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getUser } from './src/graphql/queries';
+import { createUser } from './src/graphql/mutations';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

@@ -1,8 +1,41 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { Auth } from 'aws-amplify';
+
 const SignIn = ({navigation}) => {
+
+    const [data, setData] = useState({
+        username: '',
+        password: '',
+    });
+
+    const handlePassword = (val) => {
+        setData({
+            ... data,
+            password: val
+        });
+    }
+
+    const handleUsername = (val) => {
+        setData({
+            ... data,
+            username: val
+        });
+    }
+
+    async function signIn() {
+        const {username, password} = data;
+        try {
+            await Auth.signIn(username, password)
+            .then(navigation.navigate('Root', {screen: 'HomeScreen'}))
+            //console.log(user);
+        } 
+        catch (error) {
+            console.log('error signing in', error);
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -23,6 +56,7 @@ const SignIn = ({navigation}) => {
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                onChangeText={handleUsername}
                             />
                         </View>
                     </View>
@@ -37,6 +71,8 @@ const SignIn = ({navigation}) => {
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                secureTextEntry={true}
+                                onChangeText={handlePassword}
                             />
                         </View>
                     </View>
@@ -51,7 +87,7 @@ const SignIn = ({navigation}) => {
 
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={signIn}>
                     <View style={styles.button}>
                         <Text style={styles.buttontext}>
                             Sign In
