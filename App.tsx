@@ -19,54 +19,54 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     //get authenticated user from Auth
-  //     const userInfo = await Auth.currentAuthenticatedUser(
-  //       { bypassCache: true }
-  //     );
-  //     console.log(userInfo.attributes.sub);
+  useEffect(() => {
+    const fetchUser = async () => {
+      //get authenticated user from Auth
+      const userInfo = await Auth.currentAuthenticatedUser(
+        { bypassCache: true }
+      );
+      console.log(userInfo.attributes.sub);
 
-  //     if (!userInfo) {
-  //       return;
-  //     }
+      if (!userInfo) {
+        return;
+      }
 
-  //     if (userInfo) {
-  //     //get the user from Backend with the user SUB from Auth
-  //       const userData = await API.graphql(
-  //         graphqlOperation(
-  //           getUser, 
-  //           { id: userInfo.attributes.sub,
-  //           }
-  //         )
-  //       )
+      if (userInfo) {
+      //get the user from Backend with the user SUB from Auth
+        const userData = await API.graphql(
+          graphqlOperation(
+            getUser, 
+            { id: userInfo.attributes.sub,
+            }
+          )
+        )
 
 
-  //       if (userData.data.getUser) {
-  //         console.log("User is already registered in database");
-  //         return;
-  //       };
+        if (userData.data.getUser) {
+          console.log("User is already registered in database");
+          return;
+        };
 
-  //       const newUser = {
-  //         id: userInfo.attributes.sub,
-  //         name: userInfo.attributes.name,
-  //         imageUri: userInfo.attributes.imageUri,
-  //         email: userInfo.attributes.email,
-  //         bio: userInfo.attributes.bio,
-  //       }
+        const newUser = {
+          id: userInfo.attributes.sub,
+          name: userInfo.attributes.name,
+          imageUri: userInfo.attributes.imageUri,
+          email: userInfo.attributes.email,
+          bio: userInfo.attributes.bio,
+        }
 
-  //     //if there is no user in DB with the id, then create one
-  //       await API.graphql(
-  //         graphqlOperation(
-  //           createUser,
-  //           { input: newUser }
-  //         )
-  //       )
-  //     }
-  //   }
-  //   fetchUser();
+      //if there is no user in DB with the id, then create one
+        await API.graphql(
+          graphqlOperation(
+            createUser,
+            { input: newUser }
+          )
+        )
+      }
+    }
+    fetchUser();
 
-  // }, [])
+  }, [])
 
   if (!isLoadingComplete) {
     return null;

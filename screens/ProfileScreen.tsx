@@ -23,9 +23,8 @@ const ProfileScreen = ({navigation}) => {
             getUser, {id: userInfo.attributes.sub}))
             if (userData) {
               setUser(userData.data.getUser);
-              console.log(userInfo);
             }
-            
+            console.log(userData.data.getUser);
         } catch (e) {
           console.log(e);
         }
@@ -93,7 +92,7 @@ const ProfileScreen = ({navigation}) => {
 
                     <View>
                         <Text style={styles.header}>
-                            Randy Myers
+                        {!!user ? user.name : 'Cognito User'}
                         </Text>
                     </View>
 
