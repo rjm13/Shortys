@@ -28,7 +28,7 @@ const SignIn = ({navigation}) => {
     async function signIn() {
         const {username, password} = data;
         try {
-            await Auth.signIn(username, password)
+            const user = await Auth.signIn(username, password)
             .then(navigation.navigate('Root', {screen: 'HomeScreen'}))
             //console.log(user);
         } 

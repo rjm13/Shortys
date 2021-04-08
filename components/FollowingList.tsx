@@ -1,4 +1,4 @@
-//import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import React, {useEffect, useState} from 'react';
 import { FlatList, View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 //import { Chip, Title } from 'react-native-paper';
@@ -6,12 +6,11 @@ import { FlatList, View, Text, StyleSheet, Dimensions, Image } from 'react-nativ
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-
-//import { listUsers } from '../graphql/queries';
+import { listUsers } from '../src/graphql/queries';
 
 import people from '../data/dummypeople';
 
-const Item = ({ name, email, pseudonym, avatar, gender, dob, narrations, author}) => {
+const Item = ({ name, imageUri }) => {
 
     return (
         <View style={styles.tile}>
@@ -19,11 +18,12 @@ const Item = ({ name, email, pseudonym, avatar, gender, dob, narrations, author}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{ flexDirection: 'row'}}>
                     <Image 
-                        source={avatar}
+                        source={{ uri: imageUri}}
                         style={{
                             width: 50,
                             height: 50,
                             borderRadius: 25,
+                            backgroundColor: 'cyan'
                         }}
                     />
                 
@@ -31,10 +31,6 @@ const Item = ({ name, email, pseudonym, avatar, gender, dob, narrations, author}
                         <Text style={styles.name}>
                             {name}
                         </Text> 
-                        
-                        <Text style={styles.category}>
-                            {pseudonym}
-                        </Text>
                         
                         
                         <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
@@ -45,7 +41,7 @@ const Item = ({ name, email, pseudonym, avatar, gender, dob, narrations, author}
                                 style={{ marginRight: 5}}
                             />
                         <Text style={styles.userId}>
-                                {author}
+                                0
                             </Text>  
                             <FontAwesome5 
                                 name='book-reader'
@@ -54,7 +50,7 @@ const Item = ({ name, email, pseudonym, avatar, gender, dob, narrations, author}
                                 style={{ marginRight: 5}}
                             />
                         <Text style={styles.userId}>
-                                {narrations}
+                                0
                             </Text> 
                         </View> 
                     </View>
@@ -80,33 +76,31 @@ export default function FollowingList() {
 
     const [ users, setUsers ] = useState([]);
 
-    // useEffect( () => {
-    //     const fetchUsers = async () => {
-    //         try {
-    //             const usersData = await API.graphql(
-    //                 graphqlOperation(
-    //                     listUsers
-    //                 )
-    //             )
-    //             setUsers(usersData.data.listUsers.items);
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     }
-    //     fetchUsers();
-    // },[])
+    useEffect( () => {
+        const fetchUsers = async () => {
+            try {
+                const usersData = await API.graphql(
+                    graphqlOperation(
+                        listUsers
+                    )
+                )
+                setUsers(usersData.data.listUsers.items);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchUsers();
+    },[])
 
     const renderItem = ({ item }) => (
 
         <Item 
+            //user={item}
             name={item.name}
-            email={item.email}
-            pseudonym={item.pseudonym}
-            avatar={item.avatar}
-            gender={item.gender}
-            dob={item.dob}
-            narrations={item.narrations.length}
-            author={item.author.length}
+            // email={item.email}
+            imageUri={item.imageUri}
+            //narrations={item.narrations.length}
+            //author={item.author.length}
         />
       );
 
@@ -117,7 +111,7 @@ export default function FollowingList() {
 
             <FlatList
                 style={{ width: '100%' }}
-                data={people}
+                data={users}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 //extraData={true}

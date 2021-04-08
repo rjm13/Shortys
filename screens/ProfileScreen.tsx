@@ -8,7 +8,12 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { getUser } from '../src/graphql/queries';
 
+import { useNavigation } from '@react-navigation/native';
+
+
 const ProfileScreen = ({navigation}) => {
+
+    //const navigation = useNavigation();
 
     const [user, setUser] = useState();
 
@@ -57,7 +62,7 @@ const ProfileScreen = ({navigation}) => {
                 <ScrollView style={{ height: '86%'}}>
                     <View style={{ alignItems: 'center'}}>
                         <Image 
-                            source={{ uri: 'https://scontent.fhou1-2.fna.fbcdn.net/v/t1.6435-9/100657069_10222349946436703_2222904085466578944_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=LWvZcDEKGwcAX9em-6Y&_nc_ht=scontent.fhou1-2.fna&oh=927973b953b559de666741e10658d9bf&oe=608F40FF'}}
+                            source={{ uri: user?.imageUri}}
                             style={{
                                 width: 120,
                                 height: 120,
@@ -96,7 +101,7 @@ const ProfileScreen = ({navigation}) => {
                         </Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen', {user: user})}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40, marginVertical: 20}}>
                             <Text style={{ color: '#fff', fontSize: 16}}>
                                 Account

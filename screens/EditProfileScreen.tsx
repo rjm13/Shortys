@@ -12,8 +12,16 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import { Auth } from 'aws-amplify';
 
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 
 const EditProfile = ({navigation}) => {
+
+    //const navigation = useNavigation();
+
+    const route = useRoute();
+
+    const {user} = route.params
 
     async function signOut() {
         try {
@@ -24,60 +32,46 @@ const EditProfile = ({navigation}) => {
         }
     }
 
-//Modal
+//PhotoModal
     const [visible, setVisible] = React.useState(false);
-
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
-    const containerStyle = {
-        backgroundColor: '#fff', 
-        padding: 20,
-    };
 
-    //SignOutModal
+//SignOutModal
     const [visible2, setVisible2] = React.useState(false);
-
     const showSignOutModal = () => setVisible2(true);
     const hideSignOutModal = () => setVisible2(false);
-    const containerSignOutStyle = {
+    const containerStyle = {
         backgroundColor: '#363636', 
         padding: 20,
         margin: 20,
         borderRadius: 15,
     };
 
-//Fetch user information
-    const [user, setUser] = useState();
+//NameModal
+const [visible3, setVisible3] = useState(false);
+const showNameModal = () => setVisible3(true);
+const hideNameModal = () => setVisible3(false);
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //     const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true});
-    //         if (!userInfo) {
-    //         return;
-    //         }
-    //     try {
-    //         const userData = await API.graphql(graphqlOperation(
-    //         getUser, {id: userInfo.attributes.sub}))
-    //         if (userData) {
-    //             setUser(userData.data.getUser);
-    //         }
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    //     }
-    //     fetchUser();
-    // }, [])
+//EmailModal
+const [visible4, setVisible4] = useState(false);
+const showEmailModal = () => setVisible4(true);
+const hideEmailModal = () => setVisible4(false);
+
+//BioModal
+const [visible5, setVisible5] = useState(false);
+const showBioModal = () => setVisible5(true);
+const hideBioModal = () => setVisible5(false);
+
+
 
     //Attribute state
-    const [ displayName, setDisplayName ] = useState('');
-    const [ displayStatus, setDisplayStatus ] = useState('');
-    const [ displayEmail, setDisplayEmail ] = useState('');
+    const [ Bio, setBio ] = useState('');
 
 //handle change attribute using graphql operation
 // const handleUpdateAttributes = async () => {
 //       //get authenticated user from Auth
 //       const userInfo = await Auth.currentAuthenticatedUser(
-//         { bypassCache: true }
 //       );
 
 //       const updatedUser = {
@@ -109,36 +103,134 @@ const EditProfile = ({navigation}) => {
             <View style={styles.container } >
 
             <Portal>
+
+            <Modal visible={visible3} onDismiss={hideNameModal} contentContainerStyle={containerStyle}>
+                <View style={{ alignItems: 'center'}}>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Enter a new pseudonym
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>
+                        <TextInput
+                            placeholder={user?.name}
+                            placeholderTextColor='#00ffffa5'
+                            style={styles.nametext}
+                            maxLength={20}
+                            multiline={false}
+                            //onChangeText={displayName => setDisplayName(displayName)}
+                            //defaultValue={user?.name}
+                        />
+                    </View>
+                    
+                    <View style={styles.button}>
+                        <TouchableOpacity
+                            onPress={hideNameModal}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal visible={visible4} onDismiss={hideEmailModal} contentContainerStyle={containerStyle}>
+                <View style={{ alignItems: 'center'}}>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Enter a new email
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>
+                        <TextInput
+                            placeholder={user?.email}
+                            placeholderTextColor='#00ffffa5'
+                            style={styles.nametext}
+                            maxLength={20}
+                            multiline={false}
+                            //onChangeText={displayName => setDisplayName(displayName)}
+                            //defaultValue={user?.name}
+                        />
+                    </View>
+                    
+                    <View style={styles.button}>
+                        <TouchableOpacity
+                            onPress={hideEmailModal}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal visible={visible5} onDismiss={hideBioModal} contentContainerStyle={containerStyle}>
+                <View style={{ alignItems: 'center'}}>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Update Bio
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>
+                    <View style={styles.statuscontainer }> 
+                        <TextInput 
+                            placeholder={user?.bio || 'Say something about yourself'}
+                            placeholderTextColor='#00FFFFa5'
+                            style={styles.textInput}
+                            maxLength={250}
+                            multiline={true}
+                            numberOfLines={10}
+                            onChangeText={Bio => setBio(Bio)}
+                            //defaultValue={user?.status || ''}
+                        />
+                </View>
+                    </View>
+                    <View style={styles.button}>
+                        <TouchableOpacity
+                            onPress={hideBioModal}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
                 <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                     <View style={{ alignItems: 'center'}}>
-                        <Text style={{
-                            fontSize: 22,
-                            paddingVertical: 16,
-                            }}>Change Photo
-                        </Text>
                         <Image 
                             source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
                             style={styles.modalavatar} 
                         />
                         <Text style={{
-                            fontSize: 20,
+                            fontSize: 16,
                             paddingVertical: 16,
-                            }}>Upload new photo
+                            color: '#fff'
+                            }}>Upload new picture
                         </Text>
                         <View style={styles.button}>
                             <TouchableOpacity
                                 onPress={hideModal}>
                                 <LinearGradient
-                                    colors={['gray', 'gold']}
+                                    colors={['cyan', 'cyan']}
                                     style={styles.savebutton} >
-                                    <Text style={styles.savewords}>Submit</Text>
+                                    <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
 
-                <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={containerSignOutStyle}>
+                <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={containerStyle}>
                     <View style={{ alignItems: 'center'}}>
                         <Text style={{
                             fontSize: 18,
@@ -153,7 +245,7 @@ const EditProfile = ({navigation}) => {
                                 <LinearGradient
                                     colors={['cyan', 'cyan']}
                                     style={styles.savebutton} >
-                                    <Text style={styles.savewords}>Log Out</Text>
+                                    <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Log Out</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>
@@ -162,7 +254,7 @@ const EditProfile = ({navigation}) => {
             </Portal>
 
             <View>
-                <View style={{ marginTop: 50, marginHorizontal: 20,}}>
+                <View style={{ marginTop: 50, marginBottom: 20, marginHorizontal: 20,}}>
                     <FontAwesome5 
                         name='chevron-left'
                         color='#fff'
@@ -170,6 +262,23 @@ const EditProfile = ({navigation}) => {
                         onPress={() => navigation.goBack()}
                     />
                 </View>
+
+                <TouchableOpacity onPress={showNameModal}>
+                    <View style={styles.emailcontainer }> 
+                        <Text style={ styles.words }>Pseudonym</Text>
+                        <Text style={ styles.placeholdertext }>{user?.name || 'annonymous'}</Text>
+                    </View>
+                </TouchableOpacity>
+                
+
+        
+                <TouchableOpacity onPress={showBioModal}>
+                    <View style={styles.statuscontainer}> 
+                        <Text style={{fontSize: 14, color: '#00FFFFa5', padding: 10}}>{user?.bio || 'Say something about yourself'}</Text>
+                    </View>
+                </TouchableOpacity>
+                
+
                 <TouchableWithoutFeedback onPress={showModal}>
                     <View style={styles.photocontainer }>
                         <Text style={ styles.words }>Photo</Text>
@@ -180,28 +289,13 @@ const EditProfile = ({navigation}) => {
                     </View>
                 </TouchableWithoutFeedback> 
 
-                <View style={styles.namecontainer }>
-                    <Text style={ styles.words }>Pseudonym</Text>
-                    <TextInput
-                        placeholder={user?.name || 'Larry Flint'}
-                        placeholderTextColor='cyan'
-                        style={styles.nametext}
-                        maxLength={20}
-                        multiline={false}
-                        onChangeText={displayName => setDisplayName(displayName)}
-                        //defaultValue={user?.name}
-                    />
-                </View>
-
-                
-
-                <TouchableOpacity onPress={() => {navigation.navigate('UpdateEmail')}}>
+                <TouchableOpacity onPress={showEmailModal}>
                     <View style={styles.emailcontainer }> 
-                         <Text style={ styles.words }>Update Email</Text>
-                        {/* <Text style={ styles.nametext }>{user?.email}</Text> */}
+                        <Text style={ styles.words }>Email</Text>
+                        <Text style={ styles.placeholdertext }>{user?.email || 'email@gmail.com'}</Text>
                     </View>
                 </TouchableOpacity>
-               
+
                 <TouchableOpacity
                     onPress={() => {navigation.navigate('ChangePassword')}}>
                     <View style={styles.smallcontainer }>
@@ -217,14 +311,7 @@ const EditProfile = ({navigation}) => {
                 </TouchableOpacity>
             </View>
 
-                <View style={styles.button}>
-                    <TouchableOpacity 
-                        onPress={() => navigation.goBack()}
-                    >
-                            <Text style={styles.savewords}>Save</Text>
-                        
-                    </TouchableOpacity>
-                </View>
+                
                 <StatusBar style="light" />
             </View>
 
@@ -265,11 +352,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     statuscontainer: {
-        marginTop: 10,
-        flexDirection: 'row',
         backgroundColor: '#363636a5',
-        padding: 40,
-        width: '100%',
+        padding: 10,
+        width: '90%',
+        alignSelf: 'center',
+        borderRadius: 15,
+        marginVertical: 10,
     },
     emailcontainer: {
         flexDirection: 'row',
@@ -289,7 +377,12 @@ const styles = StyleSheet.create({
     },
     nametext: {
         fontSize: 16,
-        color: 'cyan',
+        color: '#00FFFF',
+        textAlign: 'right',
+    },
+    placeholdertext: {
+        fontSize: 16,
+        color: '#00FFFFa5',
         textAlign: 'right',
     },
     words: {
@@ -306,17 +399,15 @@ const styles = StyleSheet.create({
       modalavatar: {
         width: 120,
         height: 120,
-        borderRadius: 50,
+        borderRadius: 60,
         margin: 16,
-        borderWidth: 4,
-        borderColor: '#155843',
         
       },
       textInput: {
-        flex: 1,
+        //flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : -12,
         color: 'cyan',
-        fontSize: 18,
+        fontSize: 14,
     },
     button: {
         alignItems: 'center',
@@ -331,7 +422,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         paddingVertical: 5,
         paddingHorizontal: 20,
-        color: '#000000',
+        color: '#fff',
+        borderWidth: 0.5,
+        borderColor: '#fff',
+        borderRadius: 15,
+
     },
     deletecontainer: {
         margin: 50,

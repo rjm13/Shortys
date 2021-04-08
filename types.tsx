@@ -40,5 +40,13 @@ export type ItemParamList = {
 
 };
 
+export type User = {
+  id: String;
+  name: String;
+  imageUri: String;
+  bio: String;
+  email: String;
+}
+
 declare const awsmobile: {};
 export default awsmobile;
