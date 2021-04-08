@@ -10,7 +10,8 @@ import { StatusBar } from 'expo-status-bar';
 import { Modal, Portal, Button, Provider } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import { Auth } from 'aws-amplify';
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { updateUser } from '../src/graphql/mutations';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -63,38 +64,90 @@ const [visible5, setVisible5] = useState(false);
 const showBioModal = () => setVisible5(true);
 const hideBioModal = () => setVisible5(false);
 
+//PassModal
+const [visible6, setVisible6] = useState(false);
+const showPassModal = () => setVisible6(true);
+const hidePassModal = () => setVisible6(false);
 
 
-    //Attribute state
-    const [ Bio, setBio ] = useState('');
+
+//Attribute state
+const [ Name, setName ] = useState('');
+const [ Email, setEmail ] = useState('');
+const [ Bio, setBio ] = useState('');
+const [ confirmCode, setConfirmCode] = useState('');
+const [ Password, setPassword] = useState('');
+const [ oldPassword, setOldPassword] = useState('');
+
 
 //handle change attribute using graphql operation
-// const handleUpdateAttributes = async () => {
-//       //get authenticated user from Auth
-//       const userInfo = await Auth.currentAuthenticatedUser(
-//       );
+const handleUpdateName = async () => {
+      //get authenticated user from Auth
+    if ( Name.length !== 0 ) {
+        const userInfo = await Auth.currentAuthenticatedUser();
 
-//       const updatedUser = {
-//         id: userInfo.attributes.sub,
-//         name: displayName.length === 0 ? user?.name : displayName,
-//         //imageUri: 
-//         status: displayStatus.length === 0 ? user?.status : displayStatus,
-//         //email: displayEmail.length === 0 ? user?.email : displayEmail,
-//       }
-      
-//       if (userInfo) {
-//       //get the user from Backend with the user SUB from Auth
-//         let result = await API.graphql(
-//           graphqlOperation(
-//             updateUser, { input: updatedUser }
-//           )
-//         )
-        
-//         let action = navigation.navigate('Profile')
+        const updatedUser = { id: userInfo.attributes.sub, name: Name }
 
-//         console.log(result);
-//       }
-//   }
+        if (userInfo) {
+            let result = await API.graphql(
+            graphqlOperation(updateUser, { input: updatedUser }))
+        console.log(result);
+        hideNameModal();
+        }
+    }
+}
+
+const handleUpdateBio = async () => {
+    //get authenticated user from Auth
+  if ( Bio.length !== 0 ) {
+      const userInfo = await Auth.currentAuthenticatedUser();
+
+      const updatedUser = { id: userInfo.attributes.sub, bio: Bio }
+
+      if (userInfo) {
+          let result = await API.graphql(
+          graphqlOperation(updateUser, { input: updatedUser }))
+      console.log(result);
+      hideBioModal();
+      }
+  }
+}
+
+const handleUpdateEmail = async () => {
+    //get authenticated user from Auth
+  if ( Email.length !== 0 ) {
+      const userInfo = await Auth.currentAuthenticatedUser();
+
+      if (userInfo) {
+        let result = await Auth.updateUserAttributes(userInfo, {'email': Email})
+        console.log(result);
+      } else {
+          alert('Error: Please enter a different email or try again later.')
+      }
+  }
+}
+
+const handleConfirmCode = async () => {
+
+    const userInfo = await Auth.currentAuthenticatedUser();
+
+    let result = await Auth.verifyCurrentUserAttributeSubmit(
+        'email',
+        confirmCode,
+        );
+    console.log(result); // SUCCESS   
+    hideEmailModal();
+}
+
+
+const handleUpdatePassword = async () => {
+
+    const userInfo = await Auth.currentAuthenticatedUser();
+
+    let result = await Auth.changePassword(userInfo, oldPassword, Password);
+    console.log(result); // SUCCESS   
+    hidePassModal();
+}
 
 
     return (
@@ -119,14 +172,14 @@ const hideBioModal = () => setVisible5(false);
                             style={styles.nametext}
                             maxLength={20}
                             multiline={false}
-                            //onChangeText={displayName => setDisplayName(displayName)}
+                            onChangeText={val => setName(val)}
                             //defaultValue={user?.name}
                         />
                     </View>
                     
                     <View style={styles.button}>
                         <TouchableOpacity
-                            onPress={hideNameModal}>
+                            onPress={handleUpdateName}>
                             <LinearGradient
                                 colors={['cyan', 'cyan']}
                                 style={styles.savebutton} >
@@ -139,6 +192,7 @@ const hideBioModal = () => setVisible5(false);
 
             <Modal visible={visible4} onDismiss={hideEmailModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
+
                     <Text style={{
                         fontSize: 16,
                         paddingVertical: 16,
@@ -150,16 +204,41 @@ const hideBioModal = () => setVisible5(false);
                             placeholder={user?.email}
                             placeholderTextColor='#00ffffa5'
                             style={styles.nametext}
-                            maxLength={20}
+                            maxLength={40}
                             multiline={false}
-                            //onChangeText={displayName => setDisplayName(displayName)}
+                            onChangeText={val => setEmail(val)}
                             //defaultValue={user?.name}
                         />
                     </View>
                     
                     <View style={styles.button}>
-                        <TouchableOpacity
-                            onPress={hideEmailModal}>
+                        <TouchableOpacity onPress={handleUpdateEmail} >
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Send Code</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Enter confirmation code
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>
+                        <TextInput
+                            placeholder='- - - - - -'
+                            placeholderTextColor='#00ffffa5'
+                            style={styles.nametext}
+                            maxLength={6}
+                            onChangeText={val => setConfirmCode(val)}
+                            //defaultValue={user?.name}
+                        />
+                    </View>
+                    
+                    <View style={styles.button}>
+                        <TouchableOpacity onPress={handleConfirmCode} >
                             <LinearGradient
                                 colors={['cyan', 'cyan']}
                                 style={styles.savebutton} >
@@ -187,14 +266,14 @@ const hideBioModal = () => setVisible5(false);
                             maxLength={250}
                             multiline={true}
                             numberOfLines={10}
-                            onChangeText={Bio => setBio(Bio)}
+                            onChangeText={val => setBio(val)}
                             //defaultValue={user?.status || ''}
                         />
                 </View>
                     </View>
                     <View style={styles.button}>
                         <TouchableOpacity
-                            onPress={hideBioModal}>
+                            onPress={handleUpdateBio}>
                             <LinearGradient
                                 colors={['cyan', 'cyan']}
                                 style={styles.savebutton} >
@@ -251,6 +330,54 @@ const hideBioModal = () => setVisible5(false);
                         </View>
                     </View>
                 </Modal>
+
+                <Modal visible={visible6} onDismiss={hidePassModal} contentContainerStyle={containerStyle}>
+                <View style={{ alignItems: 'center'}}>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Enter New Password
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>  
+                    <TextInput
+                            placeholder='Minimum 8 of characters'
+                            placeholderTextColor='#00ffffa5'
+                            style={styles.nametext}
+                            maxLength={16}
+                            onChangeText={val => setPassword(val)}
+                            secureTextEntry={true}
+                            //defaultValue={user?.name}
+                        />
+                    </View>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Enter Old Password
+                    </Text>
+                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>  
+                    <TextInput
+                            placeholder=''
+                            placeholderTextColor='#00ffffa5'
+                            style={styles.nametext}
+                            maxLength={16}
+                            onChangeText={val => setOldPassword(val)}
+                            secureTextEntry={true}
+                            //defaultValue={user?.name}
+                        />
+                    </View>
+                    <View style={styles.button}>
+                        <TouchableOpacity onPress={handleUpdatePassword}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
             </Portal>
 
             <View>
@@ -292,12 +419,12 @@ const hideBioModal = () => setVisible5(false);
                 <TouchableOpacity onPress={showEmailModal}>
                     <View style={styles.emailcontainer }> 
                         <Text style={ styles.words }>Email</Text>
-                        <Text style={ styles.placeholdertext }>{user?.email || 'email@gmail.com'}</Text>
+                        <Text style={ styles.placeholdertext }>{user?.email}</Text>
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => {navigation.navigate('ChangePassword')}}>
+                    onPress={showPassModal}>
                     <View style={styles.smallcontainer }>
                         <Text style={ styles.words }>Reset Password</Text>
                     </View>
