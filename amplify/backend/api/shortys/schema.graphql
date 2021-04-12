@@ -4,6 +4,7 @@ type User @model {
   email: String!
   imageUri: String
   bio: String
+  following: [ID]
 }
 
 type Blog @model {

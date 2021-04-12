@@ -1,6 +1,6 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, {useEffect, useState} from 'react';
-import { FlatList, View, Text, StyleSheet, Dimensions, Image } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Dimensions, Image, TouchableWithoutFeedback } from 'react-native';
 //import { Chip, Title } from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -10,53 +10,59 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { listUsers } from '../src/graphql/queries';
 
 import people from '../data/dummypeople';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-const Item = ({ name, imageUri }) => {
+const Item = ({ name, imageUri, id }) => {
+
+    const navigation = useNavigation();
+
+
 
     return (
         <View style={styles.tile}>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
-                <View style={{ flexDirection: 'row'}}>
-                    <Image 
-                        source={{ uri: imageUri}}
-                        style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 25,
-                            backgroundColor: 'cyan'
-                        }}
-                    />
-                
-                    <View style={{ marginHorizontal: 10}}>
-                        <Text style={styles.name}>
-                            {name}
-                        </Text> 
-                        
-                        
-                        <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
-                            <FontAwesome5 
-                                name='book-open'
-                                size={12}
-                                color='#ffffffa5'
-                                style={{ marginRight: 5}}
-                            />
-                        <Text style={styles.userId}>
-                                0
-                            </Text>  
-                            <FontAwesome5 
-                                name='book-reader'
-                                size={12}
-                                color='#ffffffa5'
-                                style={{ marginRight: 5}}
-                            />
-                        <Text style={styles.userId}>
-                                0
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('UserScreen', {userID: id})}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style={{ flexDirection: 'row'}}>
+                        <Image 
+                            source={{ uri: imageUri}}
+                            style={{
+                                width: 50,
+                                height: 50,
+                                borderRadius: 25,
+                                backgroundColor: 'cyan'
+                            }}
+                        />
+                    
+                        <View style={{ marginHorizontal: 10}}>
+                            <Text style={styles.name}>
+                                {name}
                             </Text> 
-                        </View> 
+                            
+                            
+                            <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
+                                <FontAwesome5 
+                                    name='book-open'
+                                    size={12}
+                                    color='#ffffffa5'
+                                    style={{ marginRight: 5}}
+                                />
+                            <Text style={styles.userId}>
+                                    0
+                                </Text>  
+                                <FontAwesome5 
+                                    name='book-reader'
+                                    size={12}
+                                    color='#ffffffa5'
+                                    style={{ marginRight: 5}}
+                                />
+                            <Text style={styles.userId}>
+                                    0
+                                </Text> 
+                            </View> 
+                        </View>
                     </View>
-                </View>
                 
+
                 <View>
                     <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
                         <AntDesign
@@ -68,7 +74,7 @@ const Item = ({ name, imageUri }) => {
                     </View>
                 </View>
             </View> 
-
+            </TouchableWithoutFeedback>
         </View>
     );
 }
@@ -98,6 +104,7 @@ export default function FollowingList() {
         <Item 
             //user={item}
             name={item.name}
+            id={item.id}
             // email={item.email}
             imageUri={item.imageUri}
             //narrations={item.narrations.length}

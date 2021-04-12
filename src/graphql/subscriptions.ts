@@ -10,6 +10,7 @@ export const onCreateUser = /* GraphQL */ `
       email
       imageUri
       bio
+      following
       createdAt
       updatedAt
     }
@@ -23,6 +24,7 @@ export const onUpdateUser = /* GraphQL */ `
       email
       imageUri
       bio
+      following
       createdAt
       updatedAt
     }
@@ -36,6 +38,7 @@ export const onDeleteUser = /* GraphQL */ `
       email
       imageUri
       bio
+      following
       createdAt
       updatedAt
     }

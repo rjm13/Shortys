@@ -10,6 +10,7 @@ export const getUser = /* GraphQL */ `
       email
       imageUri
       bio
+      following
       createdAt
       updatedAt
     }
@@ -28,6 +29,7 @@ export const listUsers = /* GraphQL */ `
         email
         imageUri
         bio
+        following
         createdAt
         updatedAt
       }

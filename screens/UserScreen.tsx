@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+
+import {useRoute} from '@react-navigation/native'
+
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { getUser } from '../src/graphql/queries';
 
 const people = 
     {
@@ -28,9 +33,35 @@ const people =
 
 const UserScreen = ({navigation}) => {
 
+    const [User, setUser] = useState(null);
+
+    const route = useRoute();
+    const {userID} = route.params
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await API.graphql(graphqlOperation(
+                  getUser, {id: userID}))
+                  if (userData) {
+                    setUser(userData.data.getUser);
+                  }
+                  console.log(userData.data.getUser);
+            } catch (e) {
+                console.log(e);
+              }  
+        }
+        fetchUser();   
+      }, [])
+
+
     const [SelectedId, setSelectedId] = useState(1);
 
     const [Following, setFollowing] = useState(false);
+
+    const fetchUser = () => {
+
+    }
 
     function FollowButton () {
         if (Following === true) {
@@ -78,7 +109,7 @@ const UserScreen = ({navigation}) => {
 
                 <View style={{ alignItems: 'center'}}>
                     <Image 
-                        source={people.avatar}
+                        source={{ uri: User?.imageUri}}
                         style={{
                             width: 120,
                             height: 120,
@@ -91,13 +122,13 @@ const UserScreen = ({navigation}) => {
 
                 <View style={{ alignItems: 'center'}}>
                     <Text style={styles.header}>
-                        {people.name}
+                        {User?.name}
                     </Text>
                 </View>
 
                 <View style={{ alignItems: 'center', marginHorizontal: 20,}}>
                     <Text style={{ color: '#ffffffa5'}}>
-                        {people.bio}
+                        {User?.bio}
                     </Text>
                 </View>
 

@@ -8,6 +8,7 @@ export type CreateUserInput = {
   email: string,
   imageUri?: string | null,
   bio?: string | null,
+  following?: Array< string | null > | null,
 };
 
 export type ModelUserConditionInput = {
@@ -15,6 +16,7 @@ export type ModelUserConditionInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   bio?: ModelStringInput | null,
+  following?: ModelIDInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -60,6 +62,22 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
 export type User = {
   __typename: "User",
   id?: string,
@@ -67,6 +85,7 @@ export type User = {
   email?: string,
   imageUri?: string | null,
   bio?: string | null,
+  following?: Array< string | null > | null,
   createdAt?: string,
   updatedAt?: string,
 };
@@ -77,6 +96,7 @@ export type UpdateUserInput = {
   email?: string | null,
   imageUri?: string | null,
   bio?: string | null,
+  following?: Array< string | null > | null,
 };
 
 export type DeleteUserInput = {
@@ -160,22 +180,6 @@ export type ModelPostConditionInput = {
   not?: ModelPostConditionInput | null,
 };
 
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
 export type UpdatePostInput = {
   id: string,
   title?: string | null,
@@ -216,6 +220,7 @@ export type ModelUserFilterInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   bio?: ModelStringInput | null,
+  following?: ModelIDInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
@@ -272,6 +277,7 @@ export type CreateUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -290,6 +296,7 @@ export type UpdateUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -308,6 +315,7 @@ export type DeleteUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -628,6 +636,7 @@ export type GetUserQuery = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -649,6 +658,7 @@ export type ListUsersQuery = {
       email: string,
       imageUri?: string | null,
       bio?: string | null,
+      following?: Array< string | null > | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -847,6 +857,7 @@ export type OnCreateUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -860,6 +871,7 @@ export type OnUpdateUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -873,6 +885,7 @@ export type OnDeleteUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
+    following?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
