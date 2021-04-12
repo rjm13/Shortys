@@ -10,13 +10,43 @@ import { StatusBar } from 'expo-status-bar';
 import { Modal, Portal, Button, Provider } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import { API, graphqlOperation, Auth } from "aws-amplify";
+import { API, graphqlOperation, Auth, Storage } from "aws-amplify";
 import { updateUser } from '../src/graphql/mutations';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import uuid from 'react-native-uuid';
+
+//import uploadImageOnS3 from '../components/functions/imagepicker';
 
 
 const EditProfile = ({navigation}) => {
+
+    useEffect(() => {
+        (async () => {
+          if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to make this work!');
+            }
+          }
+        })();
+      }, []);
+
+      const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          setImage(result.uri);
+        }
+      };
 
     //const navigation = useNavigation();
 
@@ -78,9 +108,56 @@ const [ Bio, setBio ] = useState('');
 const [ confirmCode, setConfirmCode] = useState('');
 const [ Password, setPassword] = useState('');
 const [ oldPassword, setOldPassword] = useState('');
+const [image, setImage] = useState('');
+
+const [avatarKey, setAvatarKey] = useState(null);
 
 
 //handle change attribute using graphql operation
+
+
+const handleUpdateImage = async ()=> {
+
+    try {
+        const response = await fetch(image);
+
+        const blob = await response.blob();
+
+        const filename = '${uuid.v4()}.jpg';
+
+        const s3Response = await Storage.put(filename, blob);
+
+        setAvatarKey(s3Response.key);
+        
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const PublishAvatar = async () => {
+
+    await handleUpdateImage();
+
+    if ( avatarKey !== null ) {
+        const userInfo = await Auth.currentAuthenticatedUser();
+
+        const response = await Storage.get(avatarKey);
+  
+        const updatedUser = { id: userInfo.attributes.sub, imageUri: response }
+  
+        if (userInfo) {
+            let result = await API.graphql(
+            graphqlOperation(updateUser, { input: updatedUser }))
+        console.log(result);
+
+        hideModal();
+        }
+    }
+};
+
+
+
 const handleUpdateName = async () => {
       //get authenticated user from Auth
     if ( Name.length !== 0 ) {
@@ -253,21 +330,20 @@ const handleUpdatePassword = async () => {
                 <View style={{ alignItems: 'center'}}>
                     <Text style={{
                         fontSize: 16,
-                        paddingVertical: 16,
                         color: '#fff'
-                        }}>Update Bio
+                        }}>Update bio
                     </Text>
-                    <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>
-                    <View style={styles.statuscontainer }> 
+                    <View style={{ borderWidth: 0.2, borderColor: '#363636a5', width: '100%', alignItems: 'center', borderRadius: 8}}>
+                    <View style={styles.statuscontainermodal }> 
                         <TextInput 
                             placeholder={user?.bio || 'Say something about yourself'}
-                            placeholderTextColor='#00FFFFa5'
+                            placeholderTextColor='#ffFFFFa5'
                             style={styles.textInput}
                             maxLength={250}
                             multiline={true}
                             numberOfLines={10}
                             onChangeText={val => setBio(val)}
-                            //defaultValue={user?.status || ''}
+                            defaultValue={user?.bio || ''}
                         />
                 </View>
                     </View>
@@ -284,35 +360,37 @@ const handleUpdatePassword = async () => {
                 </View>
             </Modal>
 
-                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                    <View style={{ alignItems: 'center'}}>
-                        <Image 
-                            source={{ uri: user?.imageUri || 'https://hieumobile.com/wp-content/uploads/avatar-among-us-2.jpg'}} 
-                            style={styles.modalavatar} 
-                        />
-                        <Text style={{
-                            fontSize: 16,
-                            paddingVertical: 16,
-                            color: '#fff'
-                            }}>Upload new picture
-                        </Text>
-                        <View style={styles.button}>
-                            <TouchableOpacity
-                                onPress={hideModal}>
-                                <LinearGradient
-                                    colors={['cyan', 'cyan']}
-                                    style={styles.savebutton} >
-                                    <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
-                                </LinearGradient>
-                            </TouchableOpacity>
-                        </View>
+            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                <View style={{ alignItems: 'center'}}>
+                    <TouchableOpacity onPress={pickImage}>
+                    <Image 
+                        source={{ uri: image || user?.imageUri}} 
+                        style={styles.modalavatar} 
+                    />
+                    </TouchableOpacity>
+                    <Text style={{
+                        fontSize: 16,
+                        paddingVertical: 16,
+                        color: '#fff'
+                        }}>Upload new picture
+                    </Text>
+                    <View style={styles.button}>
+                        <TouchableOpacity
+                            onPress={PublishAvatar}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={styles.savebutton} >
+                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
+                </View>
+            </Modal>
 
                 <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={containerStyle}>
                     <View style={{ alignItems: 'center'}}>
                         <Text style={{
-                            fontSize: 18,
+                            fontSize: 16,
                             paddingVertical: 16,
                             color: '#fff'
                             }}>Are you sure you want to log out?
@@ -337,7 +415,7 @@ const handleUpdatePassword = async () => {
                         fontSize: 16,
                         paddingVertical: 16,
                         color: '#fff'
-                        }}>Enter New Password
+                        }}>Enter new password
                     </Text>
                     <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>  
                     <TextInput
@@ -354,7 +432,7 @@ const handleUpdatePassword = async () => {
                         fontSize: 16,
                         paddingVertical: 16,
                         color: '#fff'
-                        }}>Enter Old Password
+                        }}>Enter old password
                     </Text>
                     <View style={{ borderWidth: 0.3, borderColor: '#ffffffa5', width: '100%', alignItems: 'center', borderRadius: 8}}>  
                     <TextInput
@@ -486,6 +564,14 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 10,
     },
+    statuscontainermodal: {
+        backgroundColor: '#303030',
+        padding: 10,
+        width: '100%',
+        alignSelf: 'center',
+        borderRadius: 15,
+        marginVertical: 10,
+    },
     emailcontainer: {
         flexDirection: 'row',
         justifyContent: "space-between",
@@ -533,7 +619,7 @@ const styles = StyleSheet.create({
       textInput: {
         //flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : -12,
-        color: 'cyan',
+        color: '#ffffffa5',
         fontSize: 14,
     },
     button: {

@@ -23,5 +23,11 @@
         }
       }
     }
+  },
+  "storage": {
+    "Shortys": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

@@ -1,6 +1,6 @@
 {
     "identityPoolName": "Shortys",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "shorty12b2b57e",
     "userPoolName": "Shortyusers",
     "autoVerifiedAttributes": [
