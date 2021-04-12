@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TextInput, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Platform, ActivityIndicator } from 'react-native';
 //import { getUser } from '../graphql/queries';
 //import { API, graphqlOperation, Auth } from "aws-amplify";
 //import { updateUser } from '../graphql/mutations';
@@ -110,10 +110,8 @@ const [ Password, setPassword] = useState('');
 const [ oldPassword, setOldPassword] = useState('');
 const [image, setImage] = useState('');
 
-const [avatarKey, setAvatarKey] = useState(null);
-
-
-//handle change attribute using graphql operation
+const [avatarKey, setAvatarKey] = useState('');
+const [isUploading, setIsUploading ] = useState(false);
 
 
 const handleUpdateImage = async ()=> {
@@ -128,6 +126,8 @@ const handleUpdateImage = async ()=> {
         const s3Response = await Storage.put(filename, blob);
 
         setAvatarKey(s3Response.key);
+
+        //console.log(s3Response.key);
         
 
     } catch (e) {
@@ -137,9 +137,11 @@ const handleUpdateImage = async ()=> {
 
 const PublishAvatar = async () => {
 
+    setIsUploading(true);
+
     await handleUpdateImage();
 
-    if ( avatarKey !== null ) {
+    if ( avatarKey !== '' ) {
         const userInfo = await Auth.currentAuthenticatedUser();
 
         const response = await Storage.get(avatarKey);
@@ -151,9 +153,11 @@ const PublishAvatar = async () => {
             graphqlOperation(updateUser, { input: updatedUser }))
         console.log(result);
 
-        hideModal();
+        
         }
     }
+    setIsUploading(false);
+    hideModal();
 };
 
 
@@ -233,7 +237,7 @@ const handleUpdatePassword = async () => {
             <View style={styles.container } >
 
             <Portal>
-
+{/* //Update name  */}
             <Modal visible={visible3} onDismiss={hideNameModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
                     <Text style={{
@@ -253,7 +257,6 @@ const handleUpdatePassword = async () => {
                             //defaultValue={user?.name}
                         />
                     </View>
-                    
                     <View style={styles.button}>
                         <TouchableOpacity
                             onPress={handleUpdateName}>
@@ -266,7 +269,7 @@ const handleUpdatePassword = async () => {
                     </View>
                 </View>
             </Modal>
-
+{/* //Update Email Address */}
             <Modal visible={visible4} onDismiss={hideEmailModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
 
@@ -312,8 +315,7 @@ const handleUpdatePassword = async () => {
                             onChangeText={val => setConfirmCode(val)}
                             //defaultValue={user?.name}
                         />
-                    </View>
-                    
+                    </View>        
                     <View style={styles.button}>
                         <TouchableOpacity onPress={handleConfirmCode} >
                             <LinearGradient
@@ -325,7 +327,7 @@ const handleUpdatePassword = async () => {
                     </View>
                 </View>
             </Modal>
-
+{/* //Update about me blurb */}
             <Modal visible={visible5} onDismiss={hideBioModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
                     <Text style={{
@@ -359,7 +361,7 @@ const handleUpdatePassword = async () => {
                     </View>
                 </View>
             </Modal>
-
+{/* //Update Image modal */}
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
                     <TouchableOpacity onPress={pickImage}>
@@ -375,18 +377,22 @@ const handleUpdatePassword = async () => {
                         }}>Upload new picture
                     </Text>
                     <View style={styles.button}>
-                        <TouchableOpacity
-                            onPress={PublishAvatar}>
                             <LinearGradient
                                 colors={['cyan', 'cyan']}
                                 style={styles.savebutton} >
-                                <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                                {
+                                isUploading ? (
+                                    <ActivityIndicator size="small" color="#0000ff"/>
+                                ) : 
+                                    <TouchableOpacity onPress={PublishAvatar}>
+                                        <Text style={{color: '#000', paddingVertical: 5, paddingHorizontal: 20}}>Submit</Text>
+                                    </TouchableOpacity> 
+                                }   
                             </LinearGradient>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
-
+{/* //Sign Out modal */}
                 <Modal visible={visible2} onDismiss={hideSignOutModal} contentContainerStyle={containerStyle}>
                     <View style={{ alignItems: 'center'}}>
                         <Text style={{
@@ -408,7 +414,7 @@ const handleUpdatePassword = async () => {
                         </View>
                     </View>
                 </Modal>
-
+{/* //Reset password modal */}
                 <Modal visible={visible6} onDismiss={hidePassModal} contentContainerStyle={containerStyle}>
                 <View style={{ alignItems: 'center'}}>
                     <Text style={{
@@ -456,7 +462,7 @@ const handleUpdatePassword = async () => {
                     </View>
                 </View>
             </Modal>
-            </Portal>
+        </Portal>
 
             <View>
                 <View style={{ marginTop: 50, marginBottom: 20, marginHorizontal: 20,}}>

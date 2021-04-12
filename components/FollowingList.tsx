@@ -5,6 +5,7 @@ import { FlatList, View, Text, StyleSheet, Dimensions, Image } from 'react-nativ
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import { listUsers } from '../src/graphql/queries';
 
@@ -58,8 +59,8 @@ const Item = ({ name, imageUri }) => {
                 
                 <View>
                     <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
-                        <FontAwesome5
-                            name={'ellipsis-h'}
+                        <AntDesign
+                            name={'ellipsis1'}
                             size={20}
                             color='white'
                             //onPress={onLikePress}
