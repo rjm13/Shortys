@@ -34,6 +34,7 @@ export default {
       SignIn: '*',
       ForgotPassword: '*',
       ConfirmEmail: '*',
+      UploadAudio: '*',
     },
   },
 };

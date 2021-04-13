@@ -13,7 +13,31 @@ export const createUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
+        items {
+          id
+          title
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -30,7 +54,31 @@ export const updateUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
+        items {
+          id
+          title
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -47,25 +95,26 @@ export const deleteUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createBlog = /* GraphQL */ `
-  mutation CreateBlog(
-    $input: CreateBlogInput!
-    $condition: ModelBlogConditionInput
-  ) {
-    createBlog(input: $input, condition: $condition) {
-      id
-      name
-      posts {
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
         items {
           id
           title
-          blogID
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
           createdAt
           updatedAt
         }
@@ -76,74 +125,167 @@ export const createBlog = /* GraphQL */ `
     }
   }
 `;
-export const updateBlog = /* GraphQL */ `
-  mutation UpdateBlog(
-    $input: UpdateBlogInput!
-    $condition: ModelBlogConditionInput
+export const createFollowingConn = /* GraphQL */ `
+  mutation CreateFollowingConn(
+    $input: CreateFollowingConnInput!
+    $condition: ModelFollowingConnConditionInput
   ) {
-    updateBlog(input: $input, condition: $condition) {
+    createFollowingConn(input: $input, condition: $condition) {
       id
-      name
-      posts {
-        items {
-          id
-          title
-          blogID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteBlog = /* GraphQL */ `
-  mutation DeleteBlog(
-    $input: DeleteBlogInput!
-    $condition: ModelBlogConditionInput
-  ) {
-    deleteBlog(input: $input, condition: $condition) {
-      id
-      name
-      posts {
-        items {
-          id
-          title
-          blogID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createPost = /* GraphQL */ `
-  mutation CreatePost(
-    $input: CreatePostInput!
-    $condition: ModelPostConditionInput
-  ) {
-    createPost(input: $input, condition: $condition) {
-      id
-      title
-      blogID
-      blog {
+      user {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFollowingConn = /* GraphQL */ `
+  mutation UpdateFollowingConn(
+    $input: UpdateFollowingConnInput!
+    $condition: ModelFollowingConnConditionInput
+  ) {
+    updateFollowingConn(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFollowingConn = /* GraphQL */ `
+  mutation DeleteFollowingConn(
+    $input: DeleteFollowingConnInput!
+    $condition: ModelFollowingConnConditionInput
+  ) {
+    deleteFollowingConn(input: $input, condition: $condition) {
+      id
+      user {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createStory = /* GraphQL */ `
+  mutation CreateStory(
+    $input: CreateStoryInput!
+    $condition: ModelStoryConditionInput
+  ) {
+    createStory(input: $input, condition: $condition) {
+      id
+      title
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -155,28 +297,41 @@ export const createPost = /* GraphQL */ `
     }
   }
 `;
-export const updatePost = /* GraphQL */ `
-  mutation UpdatePost(
-    $input: UpdatePostInput!
-    $condition: ModelPostConditionInput
+export const updateStory = /* GraphQL */ `
+  mutation UpdateStory(
+    $input: UpdateStoryInput!
+    $condition: ModelStoryConditionInput
   ) {
-    updatePost(input: $input, condition: $condition) {
+    updateStory(input: $input, condition: $condition) {
       id
       title
-      blogID
-      blog {
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -188,28 +343,41 @@ export const updatePost = /* GraphQL */ `
     }
   }
 `;
-export const deletePost = /* GraphQL */ `
-  mutation DeletePost(
-    $input: DeletePostInput!
-    $condition: ModelPostConditionInput
+export const deleteStory = /* GraphQL */ `
+  mutation DeleteStory(
+    $input: DeleteStoryInput!
+    $condition: ModelStoryConditionInput
   ) {
-    deletePost(input: $input, condition: $condition) {
+    deleteStory(input: $input, condition: $condition) {
       id
       title
-      blogID
-      blog {
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -228,17 +396,27 @@ export const createComment = /* GraphQL */ `
   ) {
     createComment(input: $input, condition: $condition) {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -258,17 +436,27 @@ export const updateComment = /* GraphQL */ `
   ) {
     updateComment(input: $input, condition: $condition) {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -288,17 +476,27 @@ export const deleteComment = /* GraphQL */ `
   ) {
     deleteComment(input: $input, condition: $condition) {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }

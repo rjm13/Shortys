@@ -6,11 +6,13 @@ import { ColorSchemeName, Appearance } from 'react-native';
 import RecordAudioScreen from '../screens/RecordAudioScreen';
 import AudioPlayer from '../screens/AudioPlayer';
 import UserScreen from '../screens/UserScreen';
+import UploadAudio from '../screens/UploadAudio';
 
 import SignUpScreen from '../screens/auth/SignUp';
 import SignInScreen from '../screens/auth/SignIn';
 import ForgotPasswordScreen from '../screens/auth/ForgotPassword';
 import ConfirmEmailScreen from '../screens/auth/ConfirmEmail';
+
 
 import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
@@ -65,9 +67,9 @@ function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isLoggedIn === true ? 'Root' : 'SignIn'}>
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen name="RecordAudio" component={RecordAudioScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name="UploadAudio" component={UploadAudio} options={{ title: 'Oops!' }} />
       <Stack.Screen name="AudioPlayer" component={AudioPlayer} options={{ title: 'Oops!' }} />
       <Stack.Screen name="UserScreen" component={UserScreen} options={{ title: 'Oops!' }} />
-
       <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Oops!' }} />

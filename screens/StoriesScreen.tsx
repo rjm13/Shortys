@@ -60,6 +60,13 @@ const AudioStoryHome = ({navigation}) => {
             </View>
             <View style={{ flexDirection: 'row'}}>
             <FontAwesome5
+                    name='plus'
+                    size={20}
+                    color='#fff'
+                    style={{ marginHorizontal: 25 }}
+                    onPress={() => navigation.navigate('UploadAudio')}
+                />
+            <FontAwesome5
                     name='microphone-alt'
                     size={22}
                     color='#fff'

@@ -2,25 +2,23 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+
 
 import {useRoute} from '@react-navigation/native'
 
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { getUser } from '../src/graphql/queries';
+import { updateUser } from '../src/graphql/mutations';
+import { createFollowingID, deleteFollowingID } from '../src/graphql/mutations';
 
 const people = 
     {
-        id: '1',
-        name: 'Randy Myers',
-        email: '',
         pseudonym: 'AnnonymousTexan',
-        avatar: { uri: 'https://scontent.fhou1-2.fna.fbcdn.net/v/t1.6435-9/100657069_10222349946436703_2222904085466578944_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=LWvZcDEKGwcAX9em-6Y&_nc_ht=scontent.fhou1-2.fna&oh=927973b953b559de666741e10658d9bf&oe=608F40FF'},
         gender: 'male',
         dob: '',
-        bio: 'Houston based writer. I usually stick with science fiction and mystery, but also dabble in the occasional fan fiction.',
         following: [],
         followers: [],
         narrations: ['1', '2'],
@@ -59,8 +57,28 @@ const UserScreen = ({navigation}) => {
 
     const [Following, setFollowing] = useState(false);
 
-    const fetchUser = () => {
+    const FollowUser = async () => {
 
+        const userInfo = await Auth.currentAuthenticatedUser();
+
+        const followingId = await API.graphql(graphqlOperation(createFollowingID, { 
+            input: {followingIDUserId: userInfo.attributes.sub, followingIDFollowerId: User?.id}}))
+
+        console.log(followingId)
+    }
+
+    const UnfollowUser = async () => {
+
+        const userInfo = await Auth.currentAuthenticatedUser();
+
+        //get the post(id) to delete using the User state attributes (User?.id)
+
+        const toDelete = userInfo.attributes.following.items.id
+
+        const followingId = await API.graphql(graphqlOperation(deleteFollowingID, { 
+            input: { id: toDelete}}))
+
+        console.log(followingId)
     }
 
     function FollowButton () {
@@ -69,6 +87,7 @@ const UserScreen = ({navigation}) => {
         }
         else {
             setFollowing(true)
+            FollowUser();
         }
     }
 
@@ -125,6 +144,27 @@ const UserScreen = ({navigation}) => {
                         {User?.name}
                     </Text>
                 </View>
+
+                <View style={{ flexDirection: 'row', marginBottom: 20, alignSelf: 'center'}}>
+                                <FontAwesome5 
+                                    name='book-open'
+                                    size={12}
+                                    color='#ffffffa5'
+                                    style={{ marginRight: 5}}
+                                />
+                            <Text style={styles.userId}>
+                                    0
+                                </Text>  
+                                <FontAwesome5 
+                                    name='book-reader'
+                                    size={12}
+                                    color='#ffffffa5'
+                                    style={{ marginRight: 5}}
+                                />
+                            <Text style={styles.userId}>
+                                    0
+                                </Text> 
+                            </View> 
 
                 <View style={{ alignItems: 'center', marginHorizontal: 20,}}>
                     <Text style={{ color: '#ffffffa5'}}>
@@ -183,7 +223,14 @@ const styles = StyleSheet.create ({
         fontSize: 22,
         fontWeight: 'bold',
         marginHorizontal: 40,
-        marginVertical: 20,
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    userId: {
+        fontSize: 12,
+        color: '#ffffffa5',
+        marginRight: 15,
+        marginLeft: 5,
     },
 });
 

@@ -8,7 +8,6 @@ export type CreateUserInput = {
   email: string,
   imageUri?: string | null,
   bio?: string | null,
-  following?: Array< string | null > | null,
 };
 
 export type ModelUserConditionInput = {
@@ -16,7 +15,6 @@ export type ModelUserConditionInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   bio?: ModelStringInput | null,
-  following?: ModelIDInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -62,6 +60,136 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type User = {
+  __typename: "User",
+  id?: string,
+  name?: string | null,
+  email?: string,
+  imageUri?: string | null,
+  bio?: string | null,
+  following?: ModelFollowingConnConnection,
+  authored?: ModelStoryConnection,
+  createdAt?: string,
+  updatedAt?: string,
+};
+
+export type ModelFollowingConnConnection = {
+  __typename: "ModelFollowingConnConnection",
+  items?:  Array<FollowingConn | null > | null,
+  nextToken?: string | null,
+};
+
+export type FollowingConn = {
+  __typename: "FollowingConn",
+  id?: string,
+  user?: User,
+  follower?: User,
+  createdAt?: string,
+  updatedAt?: string,
+};
+
+export type ModelStoryConnection = {
+  __typename: "ModelStoryConnection",
+  items?:  Array<Story | null > | null,
+  nextToken?: string | null,
+};
+
+export type Story = {
+  __typename: "Story",
+  id?: string,
+  title?: string,
+  imageUri?: string | null,
+  audioUri?: string,
+  genre?: string,
+  userID?: string | null,
+  author?: User,
+  writer?: string,
+  narrator?: string | null,
+  time?: number | null,
+  description?: string,
+  comments?: ModelCommentConnection,
+  createdAt?: string,
+  updatedAt?: string,
+};
+
+export type ModelCommentConnection = {
+  __typename: "ModelCommentConnection",
+  items?:  Array<Comment | null > | null,
+  nextToken?: string | null,
+};
+
+export type Comment = {
+  __typename: "Comment",
+  id?: string,
+  storyID?: string,
+  story?: Story,
+  content?: string,
+  createdAt?: string,
+  updatedAt?: string,
+};
+
+export type UpdateUserInput = {
+  id: string,
+  name?: string | null,
+  email?: string | null,
+  imageUri?: string | null,
+  bio?: string | null,
+};
+
+export type DeleteUserInput = {
+  id?: string | null,
+};
+
+export type CreateFollowingConnInput = {
+  id?: string | null,
+  followingConnUserId?: string | null,
+  followingConnFollowerId?: string | null,
+};
+
+export type ModelFollowingConnConditionInput = {
+  and?: Array< ModelFollowingConnConditionInput | null > | null,
+  or?: Array< ModelFollowingConnConditionInput | null > | null,
+  not?: ModelFollowingConnConditionInput | null,
+};
+
+export type UpdateFollowingConnInput = {
+  id: string,
+  followingConnUserId?: string | null,
+  followingConnFollowerId?: string | null,
+};
+
+export type DeleteFollowingConnInput = {
+  id?: string | null,
+};
+
+export type CreateStoryInput = {
+  id?: string | null,
+  title: string,
+  imageUri?: string | null,
+  audioUri: string,
+  genre: string,
+  userID?: string | null,
+  writer: string,
+  narrator?: string | null,
+  time?: number | null,
+  description: string,
+};
+
+export type ModelStoryConditionInput = {
+  title?: ModelStringInput | null,
+  imageUri?: ModelStringInput | null,
+  audioUri?: ModelStringInput | null,
+  genre?: ModelStringInput | null,
+  userID?: ModelIDInput | null,
+  writer?: ModelStringInput | null,
+  narrator?: ModelStringInput | null,
+  time?: ModelIntInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelStoryConditionInput | null > | null,
+  or?: Array< ModelStoryConditionInput | null > | null,
+  not?: ModelStoryConditionInput | null,
+};
+
 export type ModelIDInput = {
   ne?: string | null,
   eq?: string | null,
@@ -78,126 +206,43 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
-export type User = {
-  __typename: "User",
-  id?: string,
-  name?: string | null,
-  email?: string,
-  imageUri?: string | null,
-  bio?: string | null,
-  following?: Array< string | null > | null,
-  createdAt?: string,
-  updatedAt?: string,
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
-export type UpdateUserInput = {
-  id: string,
-  name?: string | null,
-  email?: string | null,
-  imageUri?: string | null,
-  bio?: string | null,
-  following?: Array< string | null > | null,
-};
-
-export type DeleteUserInput = {
-  id?: string | null,
-};
-
-export type CreateBlogInput = {
-  id?: string | null,
-  name: string,
-};
-
-export type ModelBlogConditionInput = {
-  name?: ModelStringInput | null,
-  and?: Array< ModelBlogConditionInput | null > | null,
-  or?: Array< ModelBlogConditionInput | null > | null,
-  not?: ModelBlogConditionInput | null,
-};
-
-export type Blog = {
-  __typename: "Blog",
-  id?: string,
-  name?: string,
-  posts?: ModelPostConnection,
-  createdAt?: string,
-  updatedAt?: string,
-};
-
-export type ModelPostConnection = {
-  __typename: "ModelPostConnection",
-  items?:  Array<Post | null > | null,
-  nextToken?: string | null,
-};
-
-export type Post = {
-  __typename: "Post",
-  id?: string,
-  title?: string,
-  blogID?: string,
-  blog?: Blog,
-  comments?: ModelCommentConnection,
-  createdAt?: string,
-  updatedAt?: string,
-};
-
-export type ModelCommentConnection = {
-  __typename: "ModelCommentConnection",
-  items?:  Array<Comment | null > | null,
-  nextToken?: string | null,
-};
-
-export type Comment = {
-  __typename: "Comment",
-  id?: string,
-  postID?: string,
-  post?: Post,
-  content?: string,
-  createdAt?: string,
-  updatedAt?: string,
-};
-
-export type UpdateBlogInput = {
-  id: string,
-  name?: string | null,
-};
-
-export type DeleteBlogInput = {
-  id?: string | null,
-};
-
-export type CreatePostInput = {
-  id?: string | null,
-  title: string,
-  blogID: string,
-};
-
-export type ModelPostConditionInput = {
-  title?: ModelStringInput | null,
-  blogID?: ModelIDInput | null,
-  and?: Array< ModelPostConditionInput | null > | null,
-  or?: Array< ModelPostConditionInput | null > | null,
-  not?: ModelPostConditionInput | null,
-};
-
-export type UpdatePostInput = {
+export type UpdateStoryInput = {
   id: string,
   title?: string | null,
-  blogID?: string | null,
+  imageUri?: string | null,
+  audioUri?: string | null,
+  genre?: string | null,
+  userID?: string | null,
+  writer?: string | null,
+  narrator?: string | null,
+  time?: number | null,
+  description?: string | null,
 };
 
-export type DeletePostInput = {
+export type DeleteStoryInput = {
   id?: string | null,
 };
 
 export type CreateCommentInput = {
   id?: string | null,
-  postID: string,
+  storyID: string,
   content: string,
 };
 
 export type ModelCommentConditionInput = {
-  postID?: ModelIDInput | null,
+  storyID?: ModelIDInput | null,
   content?: ModelStringInput | null,
   and?: Array< ModelCommentConditionInput | null > | null,
   or?: Array< ModelCommentConditionInput | null > | null,
@@ -206,7 +251,7 @@ export type ModelCommentConditionInput = {
 
 export type UpdateCommentInput = {
   id: string,
-  postID?: string | null,
+  storyID?: string | null,
   content?: string | null,
 };
 
@@ -220,7 +265,6 @@ export type ModelUserFilterInput = {
   email?: ModelStringInput | null,
   imageUri?: ModelStringInput | null,
   bio?: ModelStringInput | null,
-  following?: ModelIDInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
@@ -232,32 +276,32 @@ export type ModelUserConnection = {
   nextToken?: string | null,
 };
 
-export type ModelBlogFilterInput = {
+export type ModelFollowingConnFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelBlogFilterInput | null > | null,
-  or?: Array< ModelBlogFilterInput | null > | null,
-  not?: ModelBlogFilterInput | null,
+  and?: Array< ModelFollowingConnFilterInput | null > | null,
+  or?: Array< ModelFollowingConnFilterInput | null > | null,
+  not?: ModelFollowingConnFilterInput | null,
 };
 
-export type ModelBlogConnection = {
-  __typename: "ModelBlogConnection",
-  items?:  Array<Blog | null > | null,
-  nextToken?: string | null,
-};
-
-export type ModelPostFilterInput = {
+export type ModelStoryFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
-  blogID?: ModelIDInput | null,
-  and?: Array< ModelPostFilterInput | null > | null,
-  or?: Array< ModelPostFilterInput | null > | null,
-  not?: ModelPostFilterInput | null,
+  imageUri?: ModelStringInput | null,
+  audioUri?: ModelStringInput | null,
+  genre?: ModelStringInput | null,
+  userID?: ModelIDInput | null,
+  writer?: ModelStringInput | null,
+  narrator?: ModelStringInput | null,
+  time?: ModelIntInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelStoryFilterInput | null > | null,
+  or?: Array< ModelStoryFilterInput | null > | null,
+  not?: ModelStoryFilterInput | null,
 };
 
 export type ModelCommentFilterInput = {
   id?: ModelIDInput | null,
-  postID?: ModelIDInput | null,
+  storyID?: ModelIDInput | null,
   content?: ModelStringInput | null,
   and?: Array< ModelCommentFilterInput | null > | null,
   or?: Array< ModelCommentFilterInput | null > | null,
@@ -277,7 +321,35 @@ export type CreateUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
+      items?:  Array< {
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
+        id: string,
+        title: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -296,7 +368,35 @@ export type UpdateUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
+      items?:  Array< {
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
+        id: string,
+        title: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -315,29 +415,30 @@ export type DeleteUserMutation = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type CreateBlogMutationVariables = {
-  input?: CreateBlogInput,
-  condition?: ModelBlogConditionInput | null,
-};
-
-export type CreateBlogMutation = {
-  createBlog?:  {
-    __typename: "Blog",
-    id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
       items?:  Array< {
-        __typename: "Post",
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
         id: string,
         title: string,
-        blogID: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -348,88 +449,198 @@ export type CreateBlogMutation = {
   } | null,
 };
 
-export type UpdateBlogMutationVariables = {
-  input?: UpdateBlogInput,
-  condition?: ModelBlogConditionInput | null,
+export type CreateFollowingConnMutationVariables = {
+  input?: CreateFollowingConnInput,
+  condition?: ModelFollowingConnConditionInput | null,
 };
 
-export type UpdateBlogMutation = {
-  updateBlog?:  {
-    __typename: "Blog",
+export type CreateFollowingConnMutation = {
+  createFollowingConn?:  {
+    __typename: "FollowingConn",
     id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
-      items?:  Array< {
-        __typename: "Post",
-        id: string,
-        title: string,
-        blogID: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null > | null,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type DeleteBlogMutationVariables = {
-  input?: DeleteBlogInput,
-  condition?: ModelBlogConditionInput | null,
-};
-
-export type DeleteBlogMutation = {
-  deleteBlog?:  {
-    __typename: "Blog",
-    id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
-      items?:  Array< {
-        __typename: "Post",
-        id: string,
-        title: string,
-        blogID: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null > | null,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type CreatePostMutationVariables = {
-  input?: CreatePostInput,
-  condition?: ModelPostConditionInput | null,
-};
-
-export type CreatePostMutation = {
-  createPost?:  {
-    __typename: "Post",
-    id: string,
-    title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    user?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateFollowingConnMutationVariables = {
+  input?: UpdateFollowingConnInput,
+  condition?: ModelFollowingConnConditionInput | null,
+};
+
+export type UpdateFollowingConnMutation = {
+  updateFollowingConn?:  {
+    __typename: "FollowingConn",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteFollowingConnMutationVariables = {
+  input?: DeleteFollowingConnInput,
+  condition?: ModelFollowingConnConditionInput | null,
+};
+
+export type DeleteFollowingConnMutation = {
+  deleteFollowingConn?:  {
+    __typename: "FollowingConn",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateStoryMutationVariables = {
+  input?: CreateStoryInput,
+  condition?: ModelStoryConditionInput | null,
+};
+
+export type CreateStoryMutation = {
+  createStory?:  {
+    __typename: "Story",
+    id: string,
+    title: string,
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -441,34 +652,48 @@ export type CreatePostMutation = {
   } | null,
 };
 
-export type UpdatePostMutationVariables = {
-  input?: UpdatePostInput,
-  condition?: ModelPostConditionInput | null,
+export type UpdateStoryMutationVariables = {
+  input?: UpdateStoryInput,
+  condition?: ModelStoryConditionInput | null,
 };
 
-export type UpdatePostMutation = {
-  updatePost?:  {
-    __typename: "Post",
+export type UpdateStoryMutation = {
+  updateStory?:  {
+    __typename: "Story",
     id: string,
     title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -480,34 +705,48 @@ export type UpdatePostMutation = {
   } | null,
 };
 
-export type DeletePostMutationVariables = {
-  input?: DeletePostInput,
-  condition?: ModelPostConditionInput | null,
+export type DeleteStoryMutationVariables = {
+  input?: DeleteStoryInput,
+  condition?: ModelStoryConditionInput | null,
 };
 
-export type DeletePostMutation = {
-  deletePost?:  {
-    __typename: "Post",
+export type DeleteStoryMutation = {
+  deleteStory?:  {
+    __typename: "Story",
     id: string,
     title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -528,19 +767,29 @@ export type CreateCommentMutation = {
   createComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -563,19 +812,29 @@ export type UpdateCommentMutation = {
   updateComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -598,19 +857,29 @@ export type DeleteCommentMutation = {
   deleteComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -636,7 +905,35 @@ export type GetUserQuery = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
+      items?:  Array< {
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
+        id: string,
+        title: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -658,7 +955,14 @@ export type ListUsersQuery = {
       email: string,
       imageUri?: string | null,
       bio?: string | null,
-      following?: Array< string | null > | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -666,48 +970,86 @@ export type ListUsersQuery = {
   } | null,
 };
 
-export type GetBlogQueryVariables = {
+export type GetFollowingConnQueryVariables = {
   id?: string,
 };
 
-export type GetBlogQuery = {
-  getBlog?:  {
-    __typename: "Blog",
+export type GetFollowingConnQuery = {
+  getFollowingConn?:  {
+    __typename: "FollowingConn",
     id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
-      items?:  Array< {
-        __typename: "Post",
-        id: string,
-        title: string,
-        blogID: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null > | null,
-      nextToken?: string | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
     } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
 };
 
-export type ListBlogsQueryVariables = {
-  filter?: ModelBlogFilterInput | null,
+export type ListFollowingConnsQueryVariables = {
+  filter?: ModelFollowingConnFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListBlogsQuery = {
-  listBlogs?:  {
-    __typename: "ModelBlogConnection",
+export type ListFollowingConnsQuery = {
+  listFollowingConns?:  {
+    __typename: "ModelFollowingConnConnection",
     items?:  Array< {
-      __typename: "Blog",
+      __typename: "FollowingConn",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
-        nextToken?: string | null,
+      user?:  {
+        __typename: "User",
+        id: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+      follower?:  {
+        __typename: "User",
+        id: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
+        createdAt: string,
+        updatedAt: string,
       } | null,
       createdAt: string,
       updatedAt: string,
@@ -716,33 +1058,47 @@ export type ListBlogsQuery = {
   } | null,
 };
 
-export type GetPostQueryVariables = {
+export type GetStoryQueryVariables = {
   id?: string,
 };
 
-export type GetPostQuery = {
-  getPost?:  {
-    __typename: "Post",
+export type GetStoryQuery = {
+  getStory?:  {
+    __typename: "Story",
     id: string,
     title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -754,27 +1110,37 @@ export type GetPostQuery = {
   } | null,
 };
 
-export type ListPostsQueryVariables = {
-  filter?: ModelPostFilterInput | null,
+export type ListStorysQueryVariables = {
+  filter?: ModelStoryFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListPostsQuery = {
-  listPosts?:  {
-    __typename: "ModelPostConnection",
+export type ListStorysQuery = {
+  listStorys?:  {
+    __typename: "ModelStoryConnection",
     items?:  Array< {
-      __typename: "Post",
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -794,19 +1160,29 @@ export type GetCommentQuery = {
   getComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -832,12 +1208,19 @@ export type ListCommentsQuery = {
     items?:  Array< {
       __typename: "Comment",
       id: string,
-      postID: string,
-      post?:  {
-        __typename: "Post",
+      storyID: string,
+      story?:  {
+        __typename: "Story",
         id: string,
         title: string,
-        blogID: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
         createdAt: string,
         updatedAt: string,
       } | null,
@@ -857,7 +1240,35 @@ export type OnCreateUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
+      items?:  Array< {
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
+        id: string,
+        title: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -871,7 +1282,35 @@ export type OnUpdateUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
+      items?:  Array< {
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
+        id: string,
+        title: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -885,24 +1324,30 @@ export type OnDeleteUserSubscription = {
     email: string,
     imageUri?: string | null,
     bio?: string | null,
-    following?: Array< string | null > | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnCreateBlogSubscription = {
-  onCreateBlog?:  {
-    __typename: "Blog",
-    id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
+    following?:  {
+      __typename: "ModelFollowingConnConnection",
       items?:  Array< {
-        __typename: "Post",
+        __typename: "FollowingConn",
+        id: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+    authored?:  {
+      __typename: "ModelStoryConnection",
+      items?:  Array< {
+        __typename: "Story",
         id: string,
         title: string,
-        blogID: string,
+        imageUri?: string | null,
+        audioUri: string,
+        genre: string,
+        userID?: string | null,
+        writer: string,
+        narrator?: string | null,
+        time?: number | null,
+        description: string,
         createdAt: string,
         updatedAt: string,
       } | null > | null,
@@ -913,73 +1358,178 @@ export type OnCreateBlogSubscription = {
   } | null,
 };
 
-export type OnUpdateBlogSubscription = {
-  onUpdateBlog?:  {
-    __typename: "Blog",
+export type OnCreateFollowingConnSubscription = {
+  onCreateFollowingConn?:  {
+    __typename: "FollowingConn",
     id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
-      items?:  Array< {
-        __typename: "Post",
-        id: string,
-        title: string,
-        blogID: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null > | null,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnDeleteBlogSubscription = {
-  onDeleteBlog?:  {
-    __typename: "Blog",
-    id: string,
-    name: string,
-    posts?:  {
-      __typename: "ModelPostConnection",
-      items?:  Array< {
-        __typename: "Post",
-        id: string,
-        title: string,
-        blogID: string,
-        createdAt: string,
-        updatedAt: string,
-      } | null > | null,
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type OnCreatePostSubscription = {
-  onCreatePost?:  {
-    __typename: "Post",
-    id: string,
-    title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    user?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateFollowingConnSubscription = {
+  onUpdateFollowingConn?:  {
+    __typename: "FollowingConn",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteFollowingConnSubscription = {
+  onDeleteFollowingConn?:  {
+    __typename: "FollowingConn",
+    id: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    follower?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateStorySubscription = {
+  onCreateStory?:  {
+    __typename: "Story",
+    id: string,
+    title: string,
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
+      id: string,
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
+        nextToken?: string | null,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -991,29 +1541,43 @@ export type OnCreatePostSubscription = {
   } | null,
 };
 
-export type OnUpdatePostSubscription = {
-  onUpdatePost?:  {
-    __typename: "Post",
+export type OnUpdateStorySubscription = {
+  onUpdateStory?:  {
+    __typename: "Story",
     id: string,
     title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -1025,29 +1589,43 @@ export type OnUpdatePostSubscription = {
   } | null,
 };
 
-export type OnDeletePostSubscription = {
-  onDeletePost?:  {
-    __typename: "Post",
+export type OnDeleteStorySubscription = {
+  onDeleteStory?:  {
+    __typename: "Story",
     id: string,
     title: string,
-    blogID: string,
-    blog?:  {
-      __typename: "Blog",
+    imageUri?: string | null,
+    audioUri: string,
+    genre: string,
+    userID?: string | null,
+    author?:  {
+      __typename: "User",
       id: string,
-      name: string,
-      posts?:  {
-        __typename: "ModelPostConnection",
+      name?: string | null,
+      email: string,
+      imageUri?: string | null,
+      bio?: string | null,
+      following?:  {
+        __typename: "ModelFollowingConnConnection",
+        nextToken?: string | null,
+      } | null,
+      authored?:  {
+        __typename: "ModelStoryConnection",
         nextToken?: string | null,
       } | null,
       createdAt: string,
       updatedAt: string,
     } | null,
+    writer: string,
+    narrator?: string | null,
+    time?: number | null,
+    description: string,
     comments?:  {
       __typename: "ModelCommentConnection",
       items?:  Array< {
         __typename: "Comment",
         id: string,
-        postID: string,
+        storyID: string,
         content: string,
         createdAt: string,
         updatedAt: string,
@@ -1063,19 +1641,29 @@ export type OnCreateCommentSubscription = {
   onCreateComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -1093,19 +1681,29 @@ export type OnUpdateCommentSubscription = {
   onUpdateComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -1123,19 +1721,29 @@ export type OnDeleteCommentSubscription = {
   onDeleteComment?:  {
     __typename: "Comment",
     id: string,
-    postID: string,
-    post?:  {
-      __typename: "Post",
+    storyID: string,
+    story?:  {
+      __typename: "Story",
       id: string,
       title: string,
-      blogID: string,
-      blog?:  {
-        __typename: "Blog",
+      imageUri?: string | null,
+      audioUri: string,
+      genre: string,
+      userID?: string | null,
+      author?:  {
+        __typename: "User",
         id: string,
-        name: string,
+        name?: string | null,
+        email: string,
+        imageUri?: string | null,
+        bio?: string | null,
         createdAt: string,
         updatedAt: string,
       } | null,
+      writer: string,
+      narrator?: string | null,
+      time?: number | null,
+      description: string,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,

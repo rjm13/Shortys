@@ -7,6 +7,7 @@ export type RootStackParamList = {
   SignIn: undefined;
   ForgotPassword: undefined;
   ConfirmEmail: undefined;
+  UploadAudio: undefined;
 };
 
 export type BottomTabParamList = {

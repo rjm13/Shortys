@@ -4,26 +4,40 @@ type User @model {
   email: String!
   imageUri: String
   bio: String
-  following: [ID]
+  following: [FollowingConn] @connection(name: "FollowIDs")
+  authored: [Story] @connection(keyName: "byAuthor", fields: ["id"])
 }
 
-type Blog @model {
-  id: ID!
-  name: String!
-  posts: [Post] @connection(keyName: "byBlog", fields: ["id"])
+type FollowingConn 
+  @model
+{
+    id: ID!
+    user: User @connection(name: "FollowIDs")
+    follower: User @connection
 }
 
-type Post @model @key(name: "byBlog", fields: ["blogID"]) {
+type Story @model 
+  @key(name: "byAuthor", fields: ["userID"])
+{
   id: ID!
   title: String!
-  blogID: ID!
-  blog: Blog @connection(fields: ["blogID"])
-  comments: [Comment] @connection(keyName: "byPost", fields: ["id"])
+  imageUri: String
+  audioUri: String!
+  genre: String!
+  userID: ID
+  author: User @connection(fields: ["userID"])
+  writer: String!
+  narrator: String
+  time: Int 
+  description: String!
+  comments: [Comment] @connection(keyName: "byStory", fields: ["id"])
+  }
+
+type Comment @model 
+  @key(name: "byStory", fields: ["storyID", "content"]) {
+    id: ID!
+    storyID: ID!
+    story: Story @connection(fields: ["storyID"])
+    content: String!
 }
 
-type Comment @model @key(name: "byPost", fields: ["postID", "content"]) {
-  id: ID!
-  postID: ID!
-  post: Post @connection(fields: ["postID"])
-  content: String!
-}

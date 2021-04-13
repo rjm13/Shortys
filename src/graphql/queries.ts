@@ -10,7 +10,31 @@ export const getUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
+        items {
+          id
+          title
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -29,7 +53,12 @@ export const listUsers = /* GraphQL */ `
         email
         imageUri
         bio
-        following
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -37,38 +66,71 @@ export const listUsers = /* GraphQL */ `
     }
   }
 `;
-export const getBlog = /* GraphQL */ `
-  query GetBlog($id: ID!) {
-    getBlog(id: $id) {
+export const getFollowingConn = /* GraphQL */ `
+  query GetFollowingConn($id: ID!) {
+    getFollowingConn(id: $id) {
       id
-      name
-      posts {
-        items {
-          id
-          title
-          blogID
-          createdAt
-          updatedAt
+      user {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
         }
-        nextToken
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
     }
   }
 `;
-export const listBlogs = /* GraphQL */ `
-  query ListBlogs(
-    $filter: ModelBlogFilterInput
+export const listFollowingConns = /* GraphQL */ `
+  query ListFollowingConns(
+    $filter: ModelFollowingConnFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listBlogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listFollowingConns(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        posts {
-          nextToken
+        user {
+          id
+          name
+          email
+          imageUri
+          bio
+          createdAt
+          updatedAt
+        }
+        follower {
+          id
+          name
+          email
+          imageUri
+          bio
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -77,25 +139,38 @@ export const listBlogs = /* GraphQL */ `
     }
   }
 `;
-export const getPost = /* GraphQL */ `
-  query GetPost($id: ID!) {
-    getPost(id: $id) {
+export const getStory = /* GraphQL */ `
+  query GetStory($id: ID!) {
+    getStory(id: $id) {
       id
       title
-      blogID
-      blog {
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -107,23 +182,33 @@ export const getPost = /* GraphQL */ `
     }
   }
 `;
-export const listPosts = /* GraphQL */ `
-  query ListPosts(
-    $filter: ModelPostFilterInput
+export const listStorys = /* GraphQL */ `
+  query ListStorys(
+    $filter: ModelStoryFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listStorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -138,17 +223,27 @@ export const getComment = /* GraphQL */ `
   query GetComment($id: ID!) {
     getComment(id: $id) {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -170,11 +265,18 @@ export const listComments = /* GraphQL */ `
     listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        postID
-        post {
+        storyID
+        story {
           id
           title
-          blogID
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
           createdAt
           updatedAt
         }

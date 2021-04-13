@@ -10,7 +10,31 @@ export const onCreateUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
+        items {
+          id
+          title
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -24,7 +48,31 @@ export const onUpdateUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
+        items {
+          id
+          title
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -38,22 +86,26 @@ export const onDeleteUser = /* GraphQL */ `
       email
       imageUri
       bio
-      following
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreateBlog = /* GraphQL */ `
-  subscription OnCreateBlog {
-    onCreateBlog {
-      id
-      name
-      posts {
+      following {
+        items {
+          id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      authored {
         items {
           id
           title
-          blogID
+          imageUri
+          audioUri
+          genre
+          userID
+          writer
+          narrator
+          time
+          description
           createdAt
           updatedAt
         }
@@ -64,65 +116,155 @@ export const onCreateBlog = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateBlog = /* GraphQL */ `
-  subscription OnUpdateBlog {
-    onUpdateBlog {
+export const onCreateFollowingConn = /* GraphQL */ `
+  subscription OnCreateFollowingConn {
+    onCreateFollowingConn {
       id
-      name
-      posts {
-        items {
-          id
-          title
-          blogID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteBlog = /* GraphQL */ `
-  subscription OnDeleteBlog {
-    onDeleteBlog {
-      id
-      name
-      posts {
-        items {
-          id
-          title
-          blogID
-          createdAt
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreatePost = /* GraphQL */ `
-  subscription OnCreatePost {
-    onCreatePost {
-      id
-      title
-      blogID
-      blog {
+      user {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFollowingConn = /* GraphQL */ `
+  subscription OnUpdateFollowingConn {
+    onUpdateFollowingConn {
+      id
+      user {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFollowingConn = /* GraphQL */ `
+  subscription OnDeleteFollowingConn {
+    onDeleteFollowingConn {
+      id
+      user {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      follower {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateStory = /* GraphQL */ `
+  subscription OnCreateStory {
+    onCreateStory {
+      id
+      title
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
+        id
+        name
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -134,25 +276,38 @@ export const onCreatePost = /* GraphQL */ `
     }
   }
 `;
-export const onUpdatePost = /* GraphQL */ `
-  subscription OnUpdatePost {
-    onUpdatePost {
+export const onUpdateStory = /* GraphQL */ `
+  subscription OnUpdateStory {
+    onUpdateStory {
       id
       title
-      blogID
-      blog {
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -164,25 +319,38 @@ export const onUpdatePost = /* GraphQL */ `
     }
   }
 `;
-export const onDeletePost = /* GraphQL */ `
-  subscription OnDeletePost {
-    onDeletePost {
+export const onDeleteStory = /* GraphQL */ `
+  subscription OnDeleteStory {
+    onDeleteStory {
       id
       title
-      blogID
-      blog {
+      imageUri
+      audioUri
+      genre
+      userID
+      author {
         id
         name
-        posts {
+        email
+        imageUri
+        bio
+        following {
+          nextToken
+        }
+        authored {
           nextToken
         }
         createdAt
         updatedAt
       }
+      writer
+      narrator
+      time
+      description
       comments {
         items {
           id
-          postID
+          storyID
           content
           createdAt
           updatedAt
@@ -198,17 +366,27 @@ export const onCreateComment = /* GraphQL */ `
   subscription OnCreateComment {
     onCreateComment {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -225,17 +403,27 @@ export const onUpdateComment = /* GraphQL */ `
   subscription OnUpdateComment {
     onUpdateComment {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }
@@ -252,17 +440,27 @@ export const onDeleteComment = /* GraphQL */ `
   subscription OnDeleteComment {
     onDeleteComment {
       id
-      postID
-      post {
+      storyID
+      story {
         id
         title
-        blogID
-        blog {
+        imageUri
+        audioUri
+        genre
+        userID
+        author {
           id
           name
+          email
+          imageUri
+          bio
           createdAt
           updatedAt
         }
+        writer
+        narrator
+        time
+        description
         comments {
           nextToken
         }

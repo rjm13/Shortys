@@ -8,6 +8,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import { listUsers } from '../src/graphql/queries';
+import { listFollowingIDs } from '../src/graphql/queries';
+import {Auth} from 'aws-amplify';
 
 import people from '../data/dummypeople';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -85,6 +87,10 @@ export default function FollowingList() {
 
     useEffect( () => {
         const fetchUsers = async () => {
+
+            const userInfo = await Auth.currentAuthenticatedUser();
+
+
             try {
                 const usersData = await API.graphql(
                     graphqlOperation(
