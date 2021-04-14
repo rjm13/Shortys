@@ -15,6 +15,8 @@ import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from './src/graphql/queries';
 import { createUser } from './src/graphql/mutations';
 
+import { MenuProvider } from 'react-native-popup-menu';
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -25,7 +27,7 @@ export default function App() {
       const userInfo = await Auth.currentAuthenticatedUser(
         { bypassCache: true }
       );
-      console.log(userInfo.attributes.sub);
+      //console.log(userInfo.attributes.sub);
 
       if (!userInfo) {
         return;
@@ -72,6 +74,7 @@ export default function App() {
     return null;
   } else {
     return (
+     
       <SafeAreaProvider>
         <Navigation 
           //colorScheme={colorScheme}
@@ -79,6 +82,7 @@ export default function App() {
         />
         <StatusBar />
       </SafeAreaProvider>
+
     );
   }
 }
