@@ -50,7 +50,7 @@ function RootNavigator() {
         const userInfo = await Auth.currentAuthenticatedUser(
           { bypassCache: true }
         );
-        console.log(userInfo.attributes.sub);
+        //console.log(userInfo.attributes.sub);
   
         if (!userInfo) {
           return;

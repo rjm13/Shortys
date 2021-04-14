@@ -121,7 +121,7 @@ const handleUpdateImage = async ()=> {
 
         const blob = await response.blob();
 
-        const filename = '${uuid.v4()}.jpg';
+        const filename =  uuid.v4();
 
         const s3Response = await Storage.put(filename, blob);
 

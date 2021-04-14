@@ -1,26 +1,28 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, Image, TouchableOpacity, View, TextInput, Dimensions, Platform, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, Text, Image, TouchableOpacity, View, TextInput, Dimensions, Platform, ActivityIndicator, TouchableWithoutFeedback, ScrollView } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import Slider from '@react-native-community/slider';
 import {LinearGradient} from 'expo-linear-gradient';
-import { Audio } from 'expo-av';
-import { List, Modal, Portal, Provider } from 'react-native-paper';
+import { Modal, Portal, Provider } from 'react-native-paper';
 import ToggleSwitch from 'toggle-switch-react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import uuid from 'react-native-uuid';
+import { API, graphqlOperation, Auth, Storage } from "aws-amplify";
+import { createStory } from '../src/graphql/mutations';
 
-import { RootStackParamList } from '../types';
 import genres  from '../data/dummygenre';
-
 
 export default function UploadAudio({navigation}) {   
 
 //audio object
+    const [pendingImageState, setPendingImageState] = useState('');
+    const [pendingAudioState, setPendingAudioState] = useState('');
+
     const [data, setData] = useState({
         title: '',
         description: '',
@@ -30,6 +32,83 @@ export default function UploadAudio({navigation}) {
         imageUri: '',
         audioUri: '',
     });
+
+    const [localImageUri, setLocalImageUri] = useState('');
+    const [localAudioUri, setLocalAudioUri] = useState('');
+
+//upload audio and image to s3
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const UploadToS3 = async () => {
+
+        setIsLoading(true);
+
+        if (localImageUri) {
+        
+                const response = await fetch(localImageUri);
+                const blob = await response.blob();
+                const filename = uuid.v4();
+                const s3ResponseImage = await Storage.put(filename, blob);
+                
+                const result = await Storage.get(s3ResponseImage.key);
+                setPendingImageState(result);          
+        }
+        
+        if (localAudioUri) {
+            try {
+                const response = await fetch(localAudioUri);
+                const blob = await response.blob();
+                const filename = uuid.v4();
+                const s3ResponseAudio = await Storage.put(filename, blob);
+
+                const response_a = await Storage.get(s3ResponseAudio.key);
+                setPendingAudioState(response_a);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        setIsLoading(false);
+        setIsLoaded(true);
+    }
+
+//upload audio object to graphql database
+    const [isPublishing, setIsPublishing] = useState(false);
+
+    const [isPublished, setIsPublished] = useState(false);
+
+    const PublishStory = async () => {
+
+        console.log(pendingAudioState);
+        console.log(pendingImageState);
+
+        setIsPublishing(true);
+        setData({...data, imageUri: pendingAudioState, audioUri: pendingImageState});
+        console.log(data);
+
+        try {
+            let result = await API.graphql(
+                    graphqlOperation(createStory, { input: 
+                        {
+                            title: data.title,
+                            description: data.description,
+                            genre: data.genre,
+                            writer: data.writer,
+                            narrator: data.narrator,
+                            imageUri: pendingImageState,
+                            audioUri:pendingAudioState,
+                        }
+                    }))
+                        console.log(result);
+                } catch (e) {
+                        console.error(e);
+        }
+        setIsPublishing(false);
+        setIsPublished(true);
+    }
+
 
 //request permission to access camera roll
     useEffect(() => {
@@ -44,7 +123,7 @@ export default function UploadAudio({navigation}) {
       }, []);
 
 //audio picker
-      const [audioName, setAudioName] = useState('');
+    const [audioName, setAudioName] = useState('');
 
     const pickAudio = async () => {
         let result = await DocumentPicker.getDocumentAsync({
@@ -55,7 +134,7 @@ export default function UploadAudio({navigation}) {
         console.log(result);
 
         if (result) {
-        setData({...data, audioUri: result.uri});
+        setLocalAudioUri(result.uri);
         setAudioName(result.name);
         }
     };
@@ -72,12 +151,39 @@ export default function UploadAudio({navigation}) {
         console.log(result);
 
         if (!result.cancelled) {
-        setData({...data, imageUri: result.uri});
+        setLocalImageUri(result.uri);
         }
     };
   
 //Modal dropdown
       const Genre = genres.map((item, index) => item.genre)
+
+      const ConvertToString = (val) => {
+          if (val === 0) {
+            setData({...data, genre: 'crime'})
+          }  
+          if (val === 1) {
+            setData({...data, genre: 'fantasy'})
+          }
+          if (val === 2) {
+            setData({...data, genre: 'mystery'})
+          }
+          if (val === 3) {
+            setData({...data, genre: 'comedy'})
+          }
+          if (val === 4) {
+            setData({...data, genre: 'heart warming'})
+          }
+          if (val === 5) {
+            setData({...data, genre: 'life'})
+          }  
+          if (val === 6) {
+            setData({...data, genre: 'after dark'})
+          }  
+          if (val === 7) {
+            setData({...data, genre: 'fan fiction'})
+          }    
+        }
 
 //Toggle Switch
       const [isSwitchOn, setIsSwitchOn] = useState(false);
@@ -128,7 +234,7 @@ export default function UploadAudio({navigation}) {
             </View>
 
             <View>
-                <Text style={{ color: '#00ffffa5', marginVertical: 5,}}>
+                <Text style={{ textTransform:'capitalize', color: '#00ffffa5', marginVertical: 5,}}>
                 {data.genre}
                 </Text>
             </View>
@@ -147,11 +253,12 @@ export default function UploadAudio({navigation}) {
 
             <View>
                 <Image 
-                    source={{ uri: data.imageUri}}
+                    source={{ uri: localImageUri}}
                     resizeMode='contain'
                     style={{ 
                         marginVertical: 10,
                         height: 120,
+                        borderRadius: 15,
                     }} 
                     />
             </View>
@@ -165,11 +272,11 @@ export default function UploadAudio({navigation}) {
                             backgroundColor: 'cyan'
                         }}
                         offColor="gray"
-                        size="medium"
+                        size="small"
                         onToggle={onToggleSwitch}
                     />
                     <Text style={{
-                        fontSize: 18,
+                        fontSize: 16,
                         paddingVertical: 20,
                         color: 'white',
                         margin: 20,
@@ -177,47 +284,83 @@ export default function UploadAudio({navigation}) {
                     </Text>  
                 </View>
                
-                <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around'}}>
+               
+                <View style={{ width: '100%', alignItems: 'center'}}>
+                    {!isLoading && !isLoaded? (
+                        <TouchableOpacity
+                                style={{ 
+                                    marginBottom: 20,
+                                }}
+                                onPress={UploadToS3}>
+                                <View
+                                    style={{ 
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 10,
+                                        borderRadius: 20,
+                                        //width: 100,
+                                        borderWidth: 1,
+                                        borderColor: 'cyan'
+                                        }} >
+                                    <Text style={{ color: 'cyan', fontSize: 16, textAlign: 'center'}}>Upload Media</Text>
+                                </View>
+                            </TouchableOpacity>
+                    ) : null }
 
-                <TouchableOpacity
-                        style={{ 
-                            marginBottom: 20,
-                        }}
-                        onPress={hideModal}>
-                        <View
+                    {isLoading ? (<ActivityIndicator size="large" color="#ffffff"/>) : null }
+
+                    {isLoaded && !isPublishing && !isPublished && !isLoading ? (
+                        <TouchableOpacity
                             style={{ 
-                                paddingHorizontal: 20,
-                                paddingVertical: 10,
-                                borderRadius: 20,
-                                width: 100,
-                                borderWidth: 1,
-                                borderColor: 'cyan'
-                                }} >
-                            <Text style={{ color: 'cyan', fontSize: 16, textAlign: 'center'}}>Edit</Text>
-                        </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
+                                marginBottom: 20,
+                            }}
+                            onPress={PublishStory}>
+                            <LinearGradient
+                                colors={['cyan', 'cyan']}
+                                style={{ 
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 10,
+                                    borderRadius: 20,
+                                    width: 100,
+                                    }} >
+                                <Text style={{ color: 'black', fontSize: 16, textAlign: 'center'}}>Publish</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    ) : null }
+                    
+                    {isLoaded && isPublishing ? (<ActivityIndicator size="large" color="#ffffff"/>) : null}
+                    
+                    {isPublished ? (
+                        <TouchableOpacity
                         style={{ 
                             marginBottom: 20,
                         }}
-                        onPress={hideModal}>
+                        onPress={() => navigation.navigate('Root', { screen: 'HomeScreen'})}
+                        >
                         <LinearGradient
                             colors={['cyan', 'cyan']}
                             style={{ 
                                 paddingHorizontal: 20,
                                 paddingVertical: 10,
                                 borderRadius: 20,
-                                width: 100,
+                                width: 120,
+                                alignItems: 'center'
                                 }} >
-                            <Text style={{ color: 'black', fontSize: 16, textAlign: 'center'}}>Upload</Text>
+                            <FontAwesome5 
+                                name='check'
+                                color='#363636'
+                                size={20}
+                            />
                         </LinearGradient>
                     </TouchableOpacity>
+                    ) : null}
 
                 </View>
+                
             </View>
         </Modal>
     </Portal>
+
+
 
         <View style={{ marginTop: 50, marginHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
            <AntDesign 
@@ -279,7 +422,7 @@ export default function UploadAudio({navigation}) {
                   options={Genre}
                   defaultValue='Select category...*'
                   defaultTextStyle={{ color: '#ffffffa5'}}
-                  onSelect={val => setData({...data, genre: val})}
+                  onSelect={(val) => ConvertToString(val)}
                   style={{ 
                   }}
                   textStyle={{ color: 'cyan', fontSize: 14, textTransform: 'capitalize',}}
@@ -350,7 +493,7 @@ export default function UploadAudio({navigation}) {
                 <TouchableOpacity onPress={pickImage}>
                     <View style={{ marginHorizontal: 20, padding: 10, borderRadius: 8, backgroundColor: '#363636'}}>
                         <Text style={{ color: '#ffffffa5'}}>
-                            {data.imageUri !== '' ? data.imageUri : 'Select artwork'}
+                            {localImageUri !== '' ? localImageUri : 'Select artwork'}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -419,6 +562,7 @@ textInputTitle: {
 },
 textInput: {
     color: '#fff',
+    width: '92%'
 },
 userId: {
     fontSize: 12,

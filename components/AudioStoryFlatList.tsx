@@ -1,22 +1,44 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Text, FlatList, Dimensions, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+    MenuProvider
+  } from 'react-native-popup-menu';
 
 import dummyaudio from '../data/dummyaudio';
+import { listStorys } from '../src/graphql/queries';
+import { deleteStory } from '../src/graphql/mutations';
+import {graphqlOperation, API, Auth} from 'aws-amplify';
 
 import { ItemParamList } from '../types';
 
 
-const Item = ({title, category, description, image, audioUri, author, narrator, time, liked, rating}) => {
 
-    const [isVisible, setIsVisible] = useState(false);
 
-    const [isLiked, setIsLiked] = useState(false);
-
+const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
+    
     const navigation = useNavigation();
+
+    const DeleteStory = async () => {
+        let result = await API.graphql(
+            graphqlOperation(deleteStory, { input: {id: id }}))
+        console.log(result);
+        setModalVisible(false);
+    }
+
+//expanding list component
+    const [isVisible, setIsVisible] = useState(false);
+//liking the item
+    const [isLiked, setIsLiked] = useState(false);
     
     const onLikePress = () => {
         if ( isLiked === false ) {
@@ -26,19 +48,89 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
             setIsLiked(false);
         }  
     };
+//confirm delete modal
+    const [modalVisible, setModalVisible] = useState(false);
 
     return (
+        <MenuProvider>
+        <View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                }}
+            >
+                    <View 
+                        style={{    
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 20}}>
+                                <View 
+                                    style={{
+                                        margin: 40,
+                                        backgroundColor: "#1c1c1c",
+                                        borderRadius: 20,
+                                        padding: 35,
+                                        alignItems: "center",
+                                        shadowColor: "#fff",
+                                        shadowOffset: {
+                                            width: 0,
+                                            height: 2
+                                            },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 4,
+                                        elevation: 5}}>
+                        <Text style={{ color: '#fff', fontSize: 16, width: '100%'}}>Are you sure you want to delete this story?</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '120%'}}>
+                            <TouchableOpacity
+                                style={{
+                                    marginTop: 20,
+                                    borderRadius: 20,
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    elevation: 2,
+                                    backgroundColor: 'transparent',
+                                    borderColor: 'cyan',
+                                    borderWidth: 0.5,
+                                    }}
+                                onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <Text style={{color: 'cyan'}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    marginTop: 20,
+                                    borderRadius: 20,
+                                    paddingVertical: 10,
+                                    paddingHorizontal: 20,
+                                    elevation: 2,
+                                    backgroundColor: "cyan",}}
+                                onPress={() => DeleteStory()}
+                            >
+                                <Text style={{}}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
+                        
+                    </View>
+                    </View>
+                </Modal>
+        
         <TouchableWithoutFeedback onPress={() => setIsVisible(!isVisible)}>
+          
         <View style={styles.tile}>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+            
                 <View>
                     <Text style={styles.name}>
                         {title}
                     </Text> 
                     
                     <Text style={styles.category}>
-                        {category}
+                        {genre}
                     </Text>
                     
                     
@@ -49,14 +141,14 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                             color='#ffffffa5'
                         />
                        <Text style={styles.userId}>
-                            {author}
+                            {writer}
                         </Text>  
                         <FontAwesome5 
                             name='book-reader'
                             size={12}
                             color='#ffffffa5'
                         />
-                       <Text style={styles.userId}>
+                        <Text style={styles.userId}>
                             {narrator}
                         </Text> 
                     </View>
@@ -64,73 +156,48 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                 </View>
                 <View>
                     <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
-                        <FontAwesome
-                            name={isLiked ? 'star' : 'star-o'}
-                            size={20}
-                            color={isLiked ? 'gold' : 'white'}
-                            onPress={onLikePress}
-                        />
+                    <Menu>
+                        <MenuTrigger children={<AntDesign name='ellipsis1' color='#fff' size={20}/>} />
+                        <MenuOptions customStyles={{
+                            optionsContainer: {
+                                backgroundColor: '#1c1c1c',
+                                padding: 10,
+                                width: '40%',
+                                marginTop: -20,
+                                borderRadius: 5,
+                            }
+                        }}>
+                            <MenuOption onSelect={() => setModalVisible(true)} >
+                                <Text style={{color: '#fff', fontSize: 16, }}>Delete Story</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                        </Menu>
                     </View>
                 </View>
+                
                 </View> 
+                
 
                 { isVisible ? (
                     <View style={styles.popupblock}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
                             
-                            <View style={{ flexDirection: 'row'}}>
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color={
-                                            rating === 1 ? 'green' : 
-                                            rating === 2 ? 'orange' : 
-                                            'red'
-                                        }
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    { rating === 2 ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color={
-                                            rating === 2 ? 'orange' : 
-                                            'red'}
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }
-                                    { rating === 3 ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color='red'
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }
-                                    { rating === 3 ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color='red'
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }       
-
+                        <View>
+                            <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
+                                <FontAwesome
+                                    name={isLiked ? 'star' : 'star-o'}
+                                    size={20}
+                                    color={isLiked ? 'gold' : 'white'}
+                                    onPress={onLikePress}
+                                />
                             </View>
+                        </View>
                             <Text style={styles.time}>
                                 {time}
                             </Text>
                         </View> 
                         <Image 
-                            source={image}
+                            source={{uri: imageUri}}
                             style={{
                                 height: 200,
                                 borderRadius: 15,
@@ -160,25 +227,70 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                     </View>
                 ) : false }  
         </View>
+       
         </TouchableWithoutFeedback>
+        </View>
+         </MenuProvider>
     );
   }
 
 const AudioStoryList = () => {
 
+    const fetchStorys = async () => {
+        try {
+            const response = await API.graphql(
+                graphqlOperation(
+                    listStorys
+                )
+            )
+            setStorys(response.data.listStorys.items);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const [isFetching, setIsFetching] = useState(false);
+
+    const onRefresh = () => {
+        setIsFetching(true);
+        fetchStorys();
+        setTimeout(() => {
+          setIsFetching(false);
+        }, 2000);
+      }
+
+    const [Storys, setStorys] = useState([]);
+
+    useEffect( () => {
+        const fetchStorys = async () => {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys
+                    )
+                )
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchStorys();
+    },[])
+
     const renderItem = ({ item }) => (
 
         <Item 
           title={item.title}
-          image={item.image}
-          category={item.category}
+          imageUri={item.imageUri}
+          genre={item.genre}
           audioUri={item.audioUri}
           description={item.description}
-          author={item.author}
+          writer={item.writer}
           narrator={item.narrator}
           time={item.time}
-          liked={item.liked}
-          rating={item.rating}
+          id={item.id}
+          //liked={item.liked}
+          //rating={item.rating}
         />
       );
 
@@ -187,9 +299,16 @@ const AudioStoryList = () => {
         <View style={styles.container}>
 
             <FlatList 
-                data={dummyaudio}
+                data={Storys}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
+                extraData={true}
+                refreshControl={
+                    <RefreshControl
+                     refreshing={isFetching}
+                     onRefresh={onRefresh}
+                    />
+                  }
                 showsVerticalScrollIndicator={false}    
                 ListFooterComponent={ () => {
                     return (
@@ -256,6 +375,7 @@ const styles = StyleSheet.create({
         color: 'cyan',
         //fontStyle: 'italic',
         marginVertical: 3,
+        textTransform: 'capitalize'
 
     },
 
