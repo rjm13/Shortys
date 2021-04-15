@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import {
     Menu,
@@ -46,6 +47,18 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
         }
         if ( isLiked === true ) {
             setIsLiked(false);
+        }  
+    };
+
+//queueing the item
+    const [isQ, setQd] = useState(false);
+    
+    const onQPress = () => {
+        if ( isQ === false ) {
+            setQd(true);
+        }
+        if ( isQ === true ) {
+            setQd(false);
         }  
     };
 //confirm delete modal
@@ -100,6 +113,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                             >
                                 <Text style={{color: 'cyan'}}>Cancel</Text>
                             </TouchableOpacity>
+                            
                             <TouchableOpacity
                                 style={{
                                     marginTop: 20,
@@ -124,14 +138,28 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             
-                <View>
+                <View style={{ width: '90%'}}>
                     <Text style={styles.name}>
                         {title}
                     </Text> 
                     
-                    <Text style={styles.category}>
-                        {genre}
-                    </Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.category}>
+                            {genre}
+                        </Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
+                            <FontAwesome5 
+                            name='play'
+                            color='#ffffffa5'
+                            size={10}
+                        />
+                        <Text style={styles.time}>
+                            12:53
+                        </Text>
+                    </View>
+                        
+                    </View>
+                    
                     
                     
                     <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
@@ -161,14 +189,17 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                         <MenuOptions customStyles={{
                             optionsContainer: {
                                 backgroundColor: '#1c1c1c',
-                                padding: 10,
+                                paddingHorizontal: 10,
                                 width: '40%',
-                                marginTop: -20,
+                                
+                                marginTop: 20,
                                 borderRadius: 5,
                             }
                         }}>
                             <MenuOption onSelect={() => setModalVisible(true)} >
-                                <Text style={{color: '#fff', fontSize: 16, }}>Delete Story</Text>
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15, }}>Delete</Text>
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Edit</Text>
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Flag</Text>
                             </MenuOption>
                         </MenuOptions>
                         </Menu>
@@ -182,19 +213,61 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     <View style={styles.popupblock}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
                             
-                        <View>
-                            <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
-                                <FontAwesome
-                                    name={isLiked ? 'star' : 'star-o'}
-                                    size={20}
-                                    color={isLiked ? 'gold' : 'white'}
-                                    onPress={onLikePress}
-                                />
+                        <View style={{alignItems: 'center', width: '100%',flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View style={{ marginVertical: 10, alignSelf: 'flex-start', flexDirection: 'row',  }}>
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <FontAwesome
+                                        name={isLiked ? 'star' : 'star-o'}
+                                        size={22}
+                                        color={isLiked ? 'gold' : 'white'}
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>1842</Text> */}
+                                </View>
+                                
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <AntDesign
+                                        name={isQ ? 'pushpin' : 'pushpino'}
+                                        size={22}
+                                        color={isQ ? 'cyan' : 'white'}
+                                        onPress={onQPress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
+
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <FontAwesome
+                                        name='commenting-o'
+                                        size={22}
+                                        color='white'
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
+
+                                <View style={{alignItems: 'center'}}>
+                                    <FontAwesome
+                                        name='share'
+                                        size={22}
+                                        color='white'
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
                             </View>
+
+                            <View>
+                            
+                                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer')}>
+                                    <Text style={styles.playbutton}>
+                                        Play
+                                    </Text>
+                                </TouchableOpacity>
+                            
+                            </View>
+
                         </View>
-                            <Text style={styles.time}>
-                                {time}
-                            </Text>
+                            
                         </View> 
                         <Image 
                             source={{uri: imageUri}}
@@ -207,23 +280,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                         <Text style={styles.paragraph}>
                             {description}
                         </Text>
-                        <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-between', alignItems: 'center'}}>
-                            <View>
-                                <TouchableOpacity>
-                                    <Text style={[styles.playbutton, {opacity: .7}]}>
-                                        Queue
-                                    </Text>
-                                </TouchableOpacity>   
-                            </View>
-
-                            <View>
-                                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer')}>
-                                <Text style={styles.playbutton}>
-                                    Play
-                                </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        
                     </View>
                 ) : false }  
         </View>
@@ -351,6 +408,11 @@ const styles = StyleSheet.create({
         marginRight: 15,
         marginLeft: 5,
     },
+    icontext: {
+        fontSize: 10,
+        color: '#ffffffa5',
+        marginTop: 5,
+    },
     popupblock: {
         marginTop: 10,
     },
@@ -358,17 +420,18 @@ const styles = StyleSheet.create({
         color: '#ffffffa5'
     },
     playbutton: {
-        borderWidth: 0.3,
+        borderWidth: 0.5,
         paddingHorizontal: 15,
         paddingVertical: 3,
         borderRadius: 15,
-        borderColor: '#fff',
-        color: '#fff',
+        borderColor: '#ffffffa5',
+        color: '#ffffffa5',
     },
     time: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'normal',
         color: '#ffffffa5',
+        marginHorizontal: 5,
     },
     category: {
         fontSize: 14,
