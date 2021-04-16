@@ -1,16 +1,20 @@
-import React, {useState} from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Dimensions, ImageBackground, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { SafeAreaView, View, Text, StyleSheet, Dimensions, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Carousel from 'react-native-snap-carousel';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import { useNavigation } from '@react-navigation/native';
+
+import { listStorys } from '../../src/graphql/queries';
+import {graphqlOperation, API, Auth} from 'aws-amplify';
 
 import data from '../../data/dummyaudio';
 
 
-const Item = ({title, category, description, image, audioUri, author, narrator, time, liked, rating}) => {
+const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
 
     const navigation = useNavigation();
 
@@ -25,13 +29,38 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
         }  
     };
 
+//liking the item
+    const [isLiked, setIsLiked] = useState(false);
+    
+    const onLikePress = () => {
+        if ( isLiked === false ) {
+            setIsLiked(true);
+        }
+        if ( isLiked === true ) {
+            setIsLiked(false);
+        }  
+    };
+
+//queueing the item
+    const [isQ, setQd] = useState(false);
+    
+    const onQPress = () => {
+        if ( isQ === false ) {
+            setQd(true);
+        }
+        if ( isQ === true ) {
+            setQd(false);
+        }  
+    };
+
     return (
         <View style={styles.container}>
             <ImageBackground
-                source={image}
-                style={{ width: '100%', height: 280, justifyContent: 'flex-end'}}
+                source={{uri: imageUri}}
+                style={{ width: '100%', height: 280, justifyContent: 'flex-end', backgroundColor: '#363636a5', borderRadius: 15}}
                 imageStyle={{
                     borderRadius: 15,
+                    
                 }}
             >
                 <View style={{ 
@@ -40,45 +69,60 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                     borderBottomRightRadius: 15,
                     borderTopRightRadius: isVisible === true ? 15 : 0,
                     borderTopLeftRadius: isVisible === true ? 15 : 0,
-                    height: isVisible === true ? 280 : 80,
-                    padding: 10,
+                    height: isVisible === true ? 280 : '35%',
+                    padding: 10, 
                 }}
                 >
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
                         <View>
-                            <Text style={styles.title}>
-                                {title}
-                            </Text> 
-                            
-                            <Text style={styles.category}>
-                                {category}
-                            </Text>
-                            
-                            
-                            <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
-                                <FontAwesome5 
-                                    name='book-open'
-                                    size={12}
-                                    color='#ffffffa5'
-                                />
-                                <Text style={styles.userId}>
-                                    {author}
-                                </Text>  
-                                <FontAwesome5 
-                                    name='book-reader'
-                                    size={12}
-                                    color='#ffffffa5'
-                                />
-                                <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
-                                    <Text style={styles.userId}>
-                                        {narrator}
-                                    </Text> 
-                                </TouchableOpacity>
+                            <View>
+                                <Text style={styles.title}>
+                                    {title}
+                                </Text> 
+
+                                <View style={{ flexDirection: 'row'}}>
+                                    <Text style={styles.category}>
+                                        {genre}
+                                    </Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
+                                       <FontAwesome5 
+                                            name='play'
+                                            color='#ffffffa5'
+                                            size={10}
+                                        />
+                                        <Text style={styles.time}>
+                                            12:53
+                                        </Text> 
+                                    </View>
+                                    
+                                </View>
                             </View>
                             
+                            <View>
+                                <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
+                                    <FontAwesome5 
+                                        name='book-open'
+                                        size={12}
+                                        color='#ffffffa5'
+                                    />
+                                    <Text style={styles.userId}>
+                                        {writer}
+                                    </Text>  
+                                    <FontAwesome5 
+                                        name='book-reader'
+                                        size={12}
+                                        color='#ffffffa5'
+                                    />
+                                    <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+                                        <Text style={styles.userId}>
+                                            {narrator}
+                                        </Text> 
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
 
-                            <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
+                            <View style={{ alignSelf: 'center', flexDirection: 'row', marginRight: 10, }}>
                                 <FontAwesome
                                     name={isVisible ? 'chevron-down' : 'chevron-up'}
                                     size={20}
@@ -93,54 +137,6 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                             <View style={styles.popupblock}>
                                 <View>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-                                        
-                                        <View style={{ flexDirection: 'row'}}>
-                                                <FontAwesome5 
-                                                    name='pepper-hot'
-                                                    color={
-                                                        rating === 1 ? 'green' : 
-                                                        rating === 2 ? 'orange' : 
-                                                        'red'
-                                                    }
-                                                    size={15}
-                                                    style={{ 
-                                                        marginHorizontal: 3
-                                                    }}
-                                                />
-                                                { rating === 2 ? (
-                                                <FontAwesome5 
-                                                    name='pepper-hot'
-                                                    color={
-                                                        rating === 2 ? 'orange' : 
-                                                        'red'}
-                                                    size={15}
-                                                    style={{ 
-                                                        marginHorizontal: 3
-                                                    }}
-                                                />
-                                                ) : null }
-                                                { rating === 3 ? (
-                                                <FontAwesome5 
-                                                    name='pepper-hot'
-                                                    color='red'
-                                                    size={15}
-                                                    style={{ 
-                                                        marginHorizontal: 3
-                                                    }}
-                                                />
-                                                ) : null }
-                                                { rating === 3 ? (
-                                                <FontAwesome5 
-                                                    name='pepper-hot'
-                                                    color='red'
-                                                    size={15}
-                                                    style={{ 
-                                                        marginHorizontal: 3
-                                                    }}
-                                                />
-                                                ) : null }       
-
-                                        </View>
                                         <Text style={styles.time}>
                                             {time}
                                         </Text>
@@ -153,23 +149,60 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                                     </View>
                                 </View>
                                 <View> 
-                                    <View style={{ flexDirection: 'row', marginTop: 20, justifyContent: 'space-between', alignItems: 'center'}}>
-                                        <View>
-                                            <TouchableOpacity>
-                                                <Text style={[styles.playbutton, {opacity: .7}]}>
-                                                    Queue
-                                                </Text>
-                                            </TouchableOpacity>   
-                                        </View>
+                                <View style={{alignItems: 'center', width: '100%',flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View style={{ marginVertical: 10, alignSelf: 'flex-start', flexDirection: 'row',  }}>
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <FontAwesome
+                                        name={isLiked ? 'star' : 'star-o'}
+                                        size={22}
+                                        color={isLiked ? 'gold' : 'white'}
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>1842</Text> */}
+                                </View>
+                                
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <AntDesign
+                                        name={isQ ? 'pushpin' : 'pushpino'}
+                                        size={22}
+                                        color={isQ ? 'cyan' : 'white'}
+                                        onPress={onQPress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
 
-                                        <View>
-                                            <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer')}>
-                                                <Text style={styles.playbutton}>
-                                                    Play
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+                                <View style={{alignItems: 'center', marginRight: 25,}}>
+                                    <FontAwesome
+                                        name='commenting-o'
+                                        size={22}
+                                        color='white'
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
+
+                                <View style={{alignItems: 'center'}}>
+                                    <FontAwesome
+                                        name='share'
+                                        size={22}
+                                        color='white'
+                                        onPress={onLikePress}
+                                    />
+                                    {/* <Text style={styles.icontext}>Share</Text> */}
+                                </View>
+                            </View>
+
+                            <View>
+                            
+                                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
+                                    <Text style={styles.playbutton}>
+                                        Play
+                                    </Text>
+                                </TouchableOpacity>
+                            
+                            </View>
+
+                        </View>
                                 </View>
                         </View>
 
@@ -185,18 +218,61 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
 
 const ForYouCarousel = () => {
 
+//load the list of stories from AWS
+    const fetchStorys = async () => {
+        try {
+            const response = await API.graphql(
+                graphqlOperation(
+                    listStorys
+                )
+            )
+            setStorys(response.data.listStorys.items);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const [isFetching, setIsFetching] = useState(false);
+
+    const [Storys, setStorys] = useState([]);
+
+    useEffect( () => {
+        const fetchStorys = async () => {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys
+                    )
+                )
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchStorys();
+    },[])
+
+    const onRefresh = () => {
+        setIsFetching(true);
+        fetchStorys();
+        setTimeout(() => {
+          setIsFetching(false);
+        }, 2000);
+      }
+
     const renderItem = ({ item }) => (
         <Item 
-            title={item.title}
-            image={item.image}
-            category={item.category}
-            audioUri={item.audioUri}
-            description={item.description}
-            author={item.author}
-            narrator={item.narrator}
-            time={item.time}
-            liked={item.liked}
-            rating={item.rating}
+          title={item.title}
+          imageUri={item.imageUri}
+          genre={item.genre}
+          audioUri={item.audioUri}
+          description={item.description}
+          writer={item.writer}
+          narrator={item.narrator}
+          time={item.time}
+          id={item.id}
+          //liked={item.liked}
+          //rating={item.rating}
         />
       );
 
@@ -204,8 +280,15 @@ const ForYouCarousel = () => {
         <SafeAreaView style={{}}>
 
             <Carousel
-              data={data}
+              data={Storys}
               renderItem={renderItem}
+              extraData={true}
+              refreshControl={
+                <RefreshControl
+                 refreshing={isFetching}
+                 onRefresh={onRefresh}
+                />
+              }
               sliderWidth={Dimensions.get('window').width}
               itemWidth={300}
               //layout={'tinder'} 
@@ -264,6 +347,7 @@ const styles = StyleSheet.create({
     category: {
         fontSize: 14,
         color: 'cyan',
+        textTransform: 'capitalize'
         //fontStyle: 'italic',
         //marginVertical: 3,
 
@@ -285,9 +369,10 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     time: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'normal',
         color: '#ffffffa5',
+        marginHorizontal: 5,
     },
   });
 

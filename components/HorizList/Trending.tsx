@@ -1,24 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, ImageBackground, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, FlatList, RefreshControl, ImageBackground, TouchableOpacity } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import DATA from '../../data/dummyaudio';
 import {useNavigation} from '@react-navigation/native';
+import { listStorys } from '../../src/graphql/queries';
+import {graphqlOperation, API, Auth} from 'aws-amplify';
 
-const Item = ({title, category, description, image, audioUri, author, narrator, time, liked, rating}) => {
+const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
 
     const navigation = useNavigation();
 
     return (
         <View style={styles.containernew}>
           <ImageBackground
-            source={image}
+            source={{uri: imageUri}}
             style={styles.image}
             imageStyle={{ borderRadius: 16}}
           >
                 <View style={{ alignItems: 'center'}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('AudioPlayer')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
                         <View style={{flexDirection: 'row', backgroundColor: '#000000a5', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
                             <FontAwesome5 
                                 name='play'
@@ -26,7 +28,7 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
                                 size={10}
                             />
                             <Text style={{ color: '#fff', fontSize: 13, paddingVertical: 0, marginLeft: 10}}>
-                                {time}
+                                21:48
                             </Text>
                         </View>
                     </TouchableOpacity>
@@ -39,8 +41,8 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
           </ImageBackground>
 
           <View >
-                <Text style={{ color: '#fff', fontSize: 14,}}>
-                    {category}
+                <Text style={{ color: '#fff', fontSize: 14, textTransform: 'capitalize'}}>
+                    {genre}
                 </Text>
           </View>
           
@@ -50,31 +52,89 @@ const Item = ({title, category, description, image, audioUri, author, narrator, 
 
 const TrendingList = () => {
 
+    //load the list of stories from AWS
+    const fetchStorys = async () => {
+        try {
+            const response = await API.graphql(
+                graphqlOperation(
+                    listStorys
+                )
+            )
+            setStorys(response.data.listStorys.items);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const [isFetching, setIsFetching] = useState(false);
+
+    const [Storys, setStorys] = useState([]);
+
+    useEffect( () => {
+        const fetchStorys = async () => {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys
+                    )
+                )
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchStorys();
+    },[])
+
+    const onRefresh = () => {
+        setIsFetching(true);
+        fetchStorys();
+        setTimeout(() => {
+          setIsFetching(false);
+        }, 2000);
+      }
+
     const renderItem = ({ item }) => (
 
         <Item 
-            title={item.title}
-            image={item.image}
-            category={item.category}
-            audioUri={item.audioUri}
-            description={item.description}
-            author={item.author}
-            narrator={item.narrator}
-            time={item.time}
-            liked={item.liked}
-            rating={item.rating}
+          title={item.title}
+          imageUri={item.imageUri}
+          genre={item.genre}
+          audioUri={item.audioUri}
+          description={item.description}
+          writer={item.writer}
+          narrator={item.narrator}
+          time={item.time}
+          id={item.id}
+          //liked={item.liked}
+          //rating={item.rating}
         />
       );
 
     return (
         <View>
             <FlatList
-                data={DATA}
+                data={Storys}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
-                
+                extraData={true}
+                refreshControl={
+                    <RefreshControl
+                    refreshing={isFetching}
+                    onRefresh={onRefresh}
+                    />
+                }
+                ListFooterComponent={
+                    <View style={{ width: 100, height: 160, justifyContent: 'center', alignItems: 'center'}}>
+                        <FontAwesome5 
+                            name='chevron-circle-right'
+                            color='#ffffffa5'
+                            size={25}
+                        />
+                    </View>
+                }
             />
         </View>
     );
@@ -95,6 +155,8 @@ const styles = StyleSheet.create ({
         height: 160,
         justifyContent: 'space-between',
         marginBottom: 6,
+        backgroundColor: '#363636',
+        borderRadius: 15
       },
       title: {
         fontSize: 16,
