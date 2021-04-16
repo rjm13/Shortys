@@ -10,23 +10,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import * as Animatable from 'react-native-animatable';
+import { useRoute } from '@react-navigation/native';
+import {graphqlOperation, API, Storage} from 'aws-amplify';
+import { getStory } from '../src/graphql/queries';
 
-const story = 
-    {
-        id: '1',
-        name: 'My Night Out',
-        category: 'Science Fiction',
-        highlight: 'Having fun in the car. This is a story about my first time doing it in public. Lets make this a little bit longer shall we just to see how it wraps on the page. We should even add some more. Obviously, a limit would be good, but still enough space.',
-        audioUri: '',
-        userId: 'annonymous',
-        narrator: 'Marge Simpson',
-        time: '5:30',
-        liked: '1128',
-        spiceRating: 'spicy',
-        image: {uri: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/60bf8d1d-edfc-42a6-ab03-f4fac6fe4fed/de8lo8c-eaab8809-6d66-4bf8-ad9e-6b05e565d40d.jpg/v1/fill/w_900,h_1350,q_75,strp/parallel_by_luccain_de8lo8c-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3siaGVpZ2h0IjoiPD0xMzUwIiwicGF0aCI6IlwvZlwvNjBiZjhkMWQtZWRmYy00MmE2LWFiMDMtZjRmYWM2ZmU0ZmVkXC9kZThsbzhjLWVhYWI4ODA5LTZkNjYtNGJmOC1hZDllLTZiMDVlNTY1ZDQwZC5qcGciLCJ3aWR0aCI6Ijw9OTAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.Iiw_5zt76oWTGuwWSVcnJZlRgnjDCPRqJVl5J0ex-zI'},
-
-
-    }
 
     function useInterval(callback, delay) {
         const savedCallback = useRef();
@@ -49,6 +36,39 @@ const story =
 
 const AudioPlayer  = ({navigation}) => {
 
+//recieve story ID as props
+
+const route = useRoute();
+const {storyID} = route.params;
+
+//use storyID to retrieve Story from AWS
+const [Story, setStory] = useState();
+const [AudioUri, setAudioUri] = useState('');
+
+useEffect(() => {
+
+    const fetchStory = async () => {
+      
+      try {
+        const storyData = await API.graphql(graphqlOperation(
+          getStory, {id: storyID}))
+          if (storyData) {
+            setStory(storyData.data.getStory);
+            const response = await Storage.get(storyData.data.getStory.audioUri, {download: false, expiration: 604800});
+            setAudioUri(response);
+            console.log(AudioUri);
+          }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    fetchStory();
+
+  }, [storyID])
+
+
+//audio player
     const [sound, setSound] = useState();
 
     const [isPlaying, setIsPlaying] = useState(false);
@@ -57,6 +77,7 @@ const AudioPlayer  = ({navigation}) => {
 
     const [slideLength, setSlideLength] = useState(0);
 
+//like state
     const [isLiked, setIsLiked] = useState(false);
     
     const onLikePress = () => {
@@ -67,6 +88,17 @@ const AudioPlayer  = ({navigation}) => {
             setIsLiked(false);
         }  
     };
+//queueing the story
+    const [isQ, setQd] = useState(false);
+    
+    const onQPress = () => {
+        if ( isQ === false ) {
+            setQd(true);
+        }
+        if ( isQ === true ) {
+            setQd(false);
+        }  
+    };
 
     function SetPosition(value) {
         setPosition(value)
@@ -75,7 +107,6 @@ const AudioPlayer  = ({navigation}) => {
     async function StoryPosition (value) { 
         await sound.setPositionAsync(value);
         setPosition(value);
-
     }
 
     function millisToMinutesAndSeconds () {
@@ -93,11 +124,14 @@ const AudioPlayer  = ({navigation}) => {
 
     async function PlayPause() {
 
+
         console.log('Loading Sound');
+        console.log(Story);
         const { sound } = await Audio.Sound.createAsync(
-            require('../assets/zelda.mp3'),
+            {uri: AudioUri},
             {shouldPlay: true}
         );
+        
         setSound(sound);
 
         let time = await sound.getStatusAsync();
@@ -115,9 +149,9 @@ const AudioPlayer  = ({navigation}) => {
         }    
     }
 
-    useEffect(() => {
-        PlayPause();
-    }, []);
+    // useEffect(() => {
+    //     PlayPause();
+    // }, []);
 
     useInterval(() => {
         if (isPlaying === true && position < slideLength) {
@@ -136,29 +170,47 @@ const AudioPlayer  = ({navigation}) => {
 
 
 
+
     return (
         <View style={styles.container}>
             <ImageBackground 
-                source={story.image}
+                source={{uri: Story?.imageUri}}
                 style={{ width: '100%', height: '110%', flex: 3,  }}
             >
                 <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-between', marginHorizontal: 20}}>
-                    <AntDesign 
-                        name='close'
-                        size={25}
-                        color='#fff'
-                        style={{
-                            margin: 20
-                        }}
-                        onPress={() => navigation.goBack() }
-                    />
-                    <FontAwesome 
-                        name={isLiked ? 'star' : 'star-o'}
-                        size={25}
-                        color={isLiked ? 'gold' : 'white'}
-                        onPress={onLikePress}
-                        style={{ margin: 20}}
-                    />
+                    <View style={ styles.button}>
+                        <AntDesign 
+                            name='close'
+                            size={22}
+                            color='#fff'
+                            style={{
+                                
+                            }}
+                            onPress={() => navigation.goBack() }
+                        />
+                    </View>
+                    
+                    <View style={{ }}>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name={isLiked ? 'star' : 'star-o'}
+                                size={22}
+                                color={isLiked ? 'gold' : 'white'}
+                                onPress={onLikePress}
+                                style={{ }}
+                            />
+                        </View>
+                        <View style={ styles.button}>
+                            <AntDesign 
+                                name={isQ ? 'pushpin' : 'pushpino'}
+                                size={22}
+                                color={isQ ? 'cyan' : 'white'}
+                                onPress={onQPress}
+                                style={{ }}
+                            />
+                        </View>
+                    </View>
+                    
                 </View>
             </ImageBackground>
             <Animatable.View 
@@ -173,11 +225,9 @@ const AudioPlayer  = ({navigation}) => {
             >
 
             <View style={{ justifyContent: 'space-between', height: '100%'}}>
-               
-
                 <View style={{ margin: 20, alignItems: 'center'}}>
                     <Text style={styles.name}>
-                        {story.name}
+                        {Story?.title}
                     </Text>
 
                     <View style={{ width: '100%', flexDirection: 'row', marginVertical: 10, justifyContent: 'space-between'}}>
@@ -189,7 +239,7 @@ const AudioPlayer  = ({navigation}) => {
                                 style={{ marginRight: 10}}
                             />
                             <Text style={styles.username}>
-                                {story.userId}
+                                {Story?.writer}
                             </Text>
                         </View>
 
@@ -201,89 +251,39 @@ const AudioPlayer  = ({navigation}) => {
                                 style={{ marginRight: 10}}
                             />
                             <Text style={styles.username}>
-                                {story.narrator}
+                                {Story?.narrator}
                             </Text>
                         </View>
                     </View>
-                    
-                    <Text style={styles.highlight}>
-                        {story.highlight}
-                    </Text>
 
-                    <View style={{margin: 20,}}>
-                        <LinearGradient 
-                            colors={['#14bee0','#15c7ca']}
-                            style={{borderRadius: 15,paddingVertical: 5, paddingHorizontal: 20}}
-                            // start={{ x: 0, y: 0 }}
-                            // end={{ x: 1, y: 1 }}
-                        >
-                        <Text style={{ fontSize: 16   }}>
-                            {story.category}
-                        </Text>
-                        </LinearGradient>
-                    </View>
-                    
                     <View>
-                                <View style={{ flexDirection: 'row'}}>
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color={
-                                            story.spiceRating === 'mild' ? 'green' : 
-                                            story.spiceRating === 'moderate' ? 'orange' : 
-                                            'red'
-                                        }
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    { story.spiceRating === 'moderate' ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color={
-                                            story.spiceRating === 'moderate' ? 'orange' : 
-                                            'red'}
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }
-                                    { story.spiceRating === 'spicy' ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color='red'
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }
-                                    { story.spiceRating === 'spicy' ? (
-                                    <FontAwesome5 
-                                        name='pepper-hot'
-                                        color='red'
-                                        size={15}
-                                        style={{ 
-                                            marginHorizontal: 3
-                                        }}
-                                    />
-                                    ) : null }       
-
-                                </View>
-                            </View>
+                        <View style={{marginTop: 5, marginBottom: 20,}}>
+                            <LinearGradient 
+                                colors={['#14bee0','#15c7ca']}
+                                style={{borderRadius: 15,paddingVertical: 5, paddingHorizontal: 20}}
+                                // start={{ x: 0, y: 0 }}
+                                // end={{ x: 1, y: 1 }}
+                            >
+                                <Text style={{ fontSize: 16, textTransform: 'capitalize'   }}>
+                                    {Story?.genre}
+                                </Text>
+                            </LinearGradient>
+                        </View>
                     </View>
-                    <View style={{ marginTop: 0, alignSelf: 'center' }}>
-                        <FontAwesome5 
-                            name={isPlaying === true ? 'pause' : 'play'}
-                            color='#ffffffa5'
-                            size={50}
-                            onPress={PlayPause}
-                        />
-                    </View>
-                 
+                
+                    <Text style={styles.highlight}>
+                        {Story?.description}
+                    </Text>
+                </View>
 
-            
+                <View style={{ marginTop: 0, alignSelf: 'center' }}>
+                    <FontAwesome5 
+                        name={isPlaying === true ? 'pause' : 'play'}
+                        color='#ffffffa5'
+                        size={50}
+                        onPress={PlayPause}
+                    />
+                </View>
 
             <View style={styles.footer}>
                 <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between',}}>
@@ -346,6 +346,15 @@ const styles = StyleSheet.create ({
         padding: 12,
         borderRadius: 15,
         backgroundColor: '#rgba(69,69,69,0.2)',
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#363636a5',
+        borderRadius: 50,
+        width: 36,
+        height: 36,
+        margin: 10,
     },
 });
 

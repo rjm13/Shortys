@@ -63,8 +63,8 @@ export default function UploadAudio({navigation}) {
                 const filename = uuid.v4();
                 const s3ResponseAudio = await Storage.put(filename, blob);
 
-                const response_a = await Storage.get(s3ResponseAudio.key);
-                setPendingAudioState(response_a);
+                //const response_a = await Storage.get(s3ResponseAudio.key);
+                setPendingAudioState(s3ResponseAudio.key);
             } catch (e) {
                 console.error(e);
             }
