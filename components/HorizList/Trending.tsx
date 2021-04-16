@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, ImageBackground, Touc
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import DATA from '../../data/dummyaudio';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import { listStorys } from '../../src/graphql/queries';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
 
@@ -50,7 +50,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
     );
 }
 
-const TrendingList = () => {
+const TrendingList = ({genre}) => {
 
     //load the list of stories from AWS
     const fetchStorys = async () => {
@@ -75,7 +75,13 @@ const TrendingList = () => {
             try {
                 const response = await API.graphql(
                     graphqlOperation(
-                        listStorys
+                        listStorys, {
+                            filter: {
+                                genre: {
+                                    eq: genre
+                                }
+                            }
+                        } 
                     )
                 )
                 setStorys(response.data.listStorys.items);

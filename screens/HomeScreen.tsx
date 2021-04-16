@@ -53,28 +53,28 @@ const AudioStoryHome = ({navigation}) => {
               <Text style={styles.header}>
                   Trending
               </Text>
-              <Trending />
+              <Trending genre='all'/>
           </View>
 
           <View>
               <Text style={styles.header}>
                   Under 10 Minutes
               </Text>
-              <Trending />
+              <Trending genre='fantasy'/>
           </View>
 
           <View>
               <Text style={styles.header}>
-                  Science Fiction
+                  Fan Fiction
               </Text>
-              <Trending />
+              <Trending genre='fan fiction'/>
           </View>
 
           <View>
               <Text style={styles.header}>
                   Mystery
               </Text>
-              <Trending />
+              <Trending genre='mystery'/>
           </View>
 
             
