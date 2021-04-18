@@ -2,15 +2,68 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl, ImageBackground, TouchableOpacity } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+import genres from '../../data/dummygenre';
 
 import DATA from '../../data/dummyaudio';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import { listStorys } from '../../src/graphql/queries';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
 
-const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
+import GenreColors from '../../constants/GenreColors';
+
+const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {   
+
+
+    const Colors = {
+        color: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+        borderColor: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+      }
 
     const navigation = useNavigation();
+
+    //like state
+    const [isLiked, setIsLiked] = useState(false);
+    
+    const onLikePress = () => {
+        if ( isLiked === false ) {
+            setIsLiked(true);
+        }
+        if ( isLiked === true ) {
+            setIsLiked(false);
+        }  
+    };
+//queueing the story
+    const [isQ, setQd] = useState(false);
+    
+    const onQPress = () => {
+        if ( isQ === false ) {
+            setQd(true);
+        }
+        if ( isQ === true ) {
+            setQd(false);
+        }  
+    };
 
     return (
         <View style={styles.containernew}>
@@ -34,18 +87,39 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     </TouchableOpacity>
                 </View>
                 <View style={{ backgroundColor: '#000000a5', borderBottomLeftRadius: 15, borderBottomRightRadius: 15}}>   
-                    <Text style={{ color: '#fff', paddingVertical: 5, paddingHorizontal: 10, fontSize: 12,}}>
+                    <Text style={{ color: '#fff', paddingVertical: 5, paddingHorizontal: 10, fontSize: 14,}}>
                         {title}
                     </Text> 
                 </View>  
           </ImageBackground>
 
-          <View >
-                <Text style={{ color: '#fff', fontSize: 14, textTransform: 'capitalize'}}>
-                    {genre}
-                </Text>
-          </View>
-          
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: 170}}>
+                    <View>
+                        <Text style={[Colors, { 
+                            fontWeight: 'normal', fontSize: 12, textTransform: 'capitalize',
+                            paddingHorizontal: 8, paddingVertical: 2, borderWidth: 0.3, borderRadius: 15
+                    }]}>
+                            {genre}
+                        </Text>
+                    </View> 
+                    <View style={{ flexDirection: 'row'}}>
+                        <FontAwesome
+                            name={isLiked ? 'star' : 'star-o'}
+                            size={18}
+                            color={isLiked ? 'gold' : '#ffffffa5'}
+                            onPress={onLikePress}
+                            style={{ marginRight: 10 }}
+                        />
+                        <AntDesign 
+                                    name={isQ ? 'pushpin' : 'pushpino'}
+                                    size={18}
+                                    color={isQ ? 'cyan' : '#ffffffa5'}
+                                    onPress={onQPress}
+                                    style={{ marginRight: 10}}
+                                />
+                    </View>
+                    
+            </View>  
       </View>
     );
 }
@@ -53,18 +127,18 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 const TrendingList = ({genre}) => {
 
     //load the list of stories from AWS
-    const fetchStorys = async () => {
-        try {
-            const response = await API.graphql(
-                graphqlOperation(
-                    listStorys
-                )
-            )
-            setStorys(response.data.listStorys.items);
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    // const fetchStorys = async () => {
+    //     try {
+    //         const response = await API.graphql(
+    //             graphqlOperation(
+    //                 listStorys
+    //             )
+    //         )
+    //         setStorys(response.data.listStorys.items);
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
 
     const [isFetching, setIsFetching] = useState(false);
 
@@ -72,21 +146,33 @@ const TrendingList = ({genre}) => {
 
     useEffect( () => {
         const fetchStorys = async () => {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys, {
-                            filter: {
-                                genre: {
-                                    eq: genre
+            if (genre!=='all') {
+                try {
+                    const response = await API.graphql(
+                        graphqlOperation(
+                            listStorys, {
+                                filter: {
+                                    genre: {
+                                        eq: genre
+                                    }
                                 }
-                            }
-                        } 
+                            } 
+                        )
                     )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);
+                    setStorys(response.data.listStorys.items);
+                } catch (e) {
+                    console.log(e);}
+            }
+            else {
+                try {
+                    const response = await API.graphql(
+                        graphqlOperation(
+                            listStorys
+                        )
+                    )
+                    setStorys(response.data.listStorys.items);
+                } catch (e) {
+                    console.log(e);}
             }
         }
         fetchStorys();
@@ -94,7 +180,7 @@ const TrendingList = ({genre}) => {
 
     const onRefresh = () => {
         setIsFetching(true);
-        fetchStorys();
+        //fetchStorys();
         setTimeout(() => {
           setIsFetching(false);
         }, 2000);

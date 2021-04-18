@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Dimensions, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Carousel from 'react-native-snap-carousel';
@@ -69,68 +69,74 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     borderBottomRightRadius: 15,
                     borderTopRightRadius: isVisible === true ? 15 : 0,
                     borderTopLeftRadius: isVisible === true ? 15 : 0,
-                    height: isVisible === true ? 280 : '35%',
+                    //height: isVisible === true ? '100%' : '35%',
+                    //height: '35%',
+                    width: '100%',
                     padding: 10, 
                 }}
                 >
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <TouchableWithoutFeedback onPress={onShow}>
                         <View>
                             <View>
-                                <Text style={styles.title}>
-                                    {title}
-                                </Text> 
-
-                                <View style={{ flexDirection: 'row'}}>
-                                    <Text style={styles.category}>
-                                        {genre}
-                                    </Text>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
-                                       <FontAwesome5 
-                                            name='play'
-                                            color='#ffffffa5'
-                                            size={10}
-                                        />
-                                        <Text style={styles.time}>
-                                            12:53
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                    <View>
+                                        <Text style={styles.title}>
+                                            {title}
                                         </Text> 
+                                        <Text style={styles.category}>
+                                            {genre}
+                                        </Text>
                                     </View>
-                                    
-                                </View>
-                            </View>
-                            
-                            <View>
-                                <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
-                                    <FontAwesome5 
-                                        name='book-open'
-                                        size={12}
-                                        color='#ffffffa5'
-                                    />
-                                    <Text style={styles.userId}>
-                                        {writer}
-                                    </Text>  
-                                    <FontAwesome5 
-                                        name='book-reader'
-                                        size={12}
-                                        color='#ffffffa5'
-                                    />
-                                    <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
-                                        <Text style={styles.userId}>
-                                            {narrator}
-                                        </Text> 
+                                    <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
+                                        <View style={{ 
+                                            flexDirection: 'row', 
+                                            alignItems: 'center', 
+                                            borderRadius: 30,
+                                            paddingVertical: 3,
+                                            paddingHorizontal: 10,
+                                            backgroundColor: '#000000a5',
+                                            height: 26 }}>
+                                                <FontAwesome5 
+                                                    name='play'
+                                                    color='#ffffff'
+                                                    size={10}
+                                                />
+                                                <Text style={styles.time}>
+                                                    12:53
+                                                </Text> 
+                                        </View>
                                     </TouchableOpacity>
                                 </View>
+                                
+                                
+                                <View>
+                                    <View style={{ flexDirection: 'row', marginTop: 4, alignItems: 'center'}}>
+                                        <FontAwesome5 
+                                            name='book-open'
+                                            size={12}
+                                            color='#ffffffa5'
+                                        />
+                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+                                            <Text style={styles.userId}>
+                                                {writer}
+                                            </Text>  
+                                        </TouchableOpacity>
+                                        <FontAwesome5 
+                                            name='book-reader'
+                                            size={12}
+                                            color='#ffffffa5'
+                                        />
+                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+                                            <Text style={styles.userId}>
+                                                {narrator}
+                                            </Text> 
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                             </View>
                         </View>
+                    </TouchableWithoutFeedback>
 
-                            <View style={{ alignSelf: 'center', flexDirection: 'row', marginRight: 10, }}>
-                                <FontAwesome
-                                    name={isVisible ? 'chevron-down' : 'chevron-up'}
-                                    size={20}
-                                    color='#ffffffa5'
-                                    onPress={onShow}
-                                />
-                            </View>
-                        </View>
 
                     <View>
                         { isVisible ? (
@@ -142,14 +148,14 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                         </Text>
                                     </View> 
                                                   
-                                    <View style={{ marginTop: 10,}}>
+                                    <View style={{ marginTop: 0,}}>
                                         <Text style={styles.paragraph}>
                                             {description}
                                         </Text>
                                     </View>
                                 </View>
-                                <View> 
-                                <View style={{alignItems: 'center', width: '100%',flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View> 
+                        <View style={{alignItems: 'center', width: '100%',flexDirection: 'row', justifyContent: 'space-between'}}>
                             <View style={{ marginVertical: 10, alignSelf: 'flex-start', flexDirection: 'row',  }}>
                                 <View style={{alignItems: 'center', marginRight: 25,}}>
                                     <FontAwesome
@@ -193,12 +199,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                             </View>
 
                             <View>
-                            
-                                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
-                                    <Text style={styles.playbutton}>
-                                        Play
-                                    </Text>
-                                </TouchableOpacity>
+
                             
                             </View>
 
@@ -353,9 +354,9 @@ const styles = StyleSheet.create({
 
     },
     popupblock: {
-        marginTop: 20,
+        marginTop: 0,
         justifyContent: 'space-between',
-        height: 180,
+        //height: 180,
     },
     paragraph: {
         color: '#ffffffa5'
@@ -371,7 +372,7 @@ const styles = StyleSheet.create({
     time: {
         fontSize: 14,
         fontWeight: 'normal',
-        color: '#ffffffa5',
+        color: '#ffffff',
         marginHorizontal: 5,
     },
   });

@@ -53,7 +53,7 @@ const AudioStoryHome = ({navigation}) => {
     return (
         <View >
         <LinearGradient
-        colors={['#a52bb0', 'black', 'black']}
+        colors={['#18c9c9a5','#2f2179a5', '#000']}
         //style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -65,8 +65,9 @@ const AudioStoryHome = ({navigation}) => {
                 justifyContent: 'flex-start', 
                 width: '100%', 
                 alignItems: 'flex-end',
-                marginHorizontal: 20,
+                marginHorizontal: 10,
                 height: 80,
+                marginTop: 10,
                 }}>
         
                 <TouchableWithoutFeedback onPress={() => setSelectedId(1)}>

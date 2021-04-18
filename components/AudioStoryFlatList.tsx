@@ -27,6 +27,29 @@ import { ItemParamList } from '../types';
 
 const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
     
+
+    const Colors = {
+        color: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+        borderColor: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+      }
     const navigation = useNavigation();
 
     const DeleteStory = async () => {
@@ -138,25 +161,16 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             
-                <View style={{ width: '90%'}}>
+                <View style={{ width: '78%'}}>
                     <Text style={styles.name}>
                         {title}
                     </Text> 
                     
                     <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.category}>
+                        <Text style={[styles.category, Colors]}>
                             {genre}
                         </Text>
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 15}}>
-                            <FontAwesome5 
-                            name='play'
-                            color='#ffffffa5'
-                            size={10}
-                        />
-                        <Text style={styles.time}>
-                            12:53
-                        </Text>
-                    </View>
+                        
                         
                     </View>
                     
@@ -182,29 +196,26 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     </View>
                     
                 </View>
-                <View>
-                    <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
-                    <Menu>
-                        <MenuTrigger children={<AntDesign name='ellipsis1' color='#fff' size={20}/>} />
-                        <MenuOptions customStyles={{
-                            optionsContainer: {
-                                backgroundColor: '#1c1c1c',
-                                paddingHorizontal: 10,
-                                width: '40%',
-                                
-                                marginTop: 20,
-                                borderRadius: 5,
-                            }
-                        }}>
-                            <MenuOption onSelect={() => setModalVisible(true)} >
-                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15, }}>Delete</Text>
-                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Edit</Text>
-                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Flag</Text>
-                            </MenuOption>
-                        </MenuOptions>
-                        </Menu>
+                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
+                    <View style={{ 
+                        flexDirection: 'row', 
+                        alignItems: 'center', 
+                        borderRadius: 30,
+                        paddingVertical: 3,
+                        paddingHorizontal: 10,
+                        backgroundColor: '#00000033',
+                        height: 26 }}>
+                            <FontAwesome5 
+                                name='play'
+                                color='#ffffff'
+                                size={10}
+                            />
+                            <Text style={styles.time}>
+                                12:53
+                            </Text> 
                     </View>
-                </View>
+                </TouchableOpacity>
+                
                 
                 </View> 
                 
@@ -258,11 +269,29 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
                             <View>
                             
-                                <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
-                                    <Text style={styles.playbutton}>
-                                        Play
-                                    </Text>
-                                </TouchableOpacity>
+                            <View>
+                    <View style={{ alignSelf: 'center', flexDirection: 'row', }}>
+                    <Menu>
+                        <MenuTrigger children={<AntDesign name='ellipsis1' color='#fff' size={20}/>} />
+                        <MenuOptions customStyles={{
+                            optionsContainer: {
+                                backgroundColor: '#1c1c1c',
+                                paddingHorizontal: 10,
+                                width: '40%',
+                                
+                                marginTop: 20,
+                                borderRadius: 5,
+                            }
+                        }}>
+                            <MenuOption onSelect={() => setModalVisible(true)} >
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15, }}>Delete</Text>
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Edit</Text>
+                                <Text style={{color: '#fff', fontSize: 16, paddingVertical: 15,}}>Flag</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                        </Menu>
+                    </View>
+                </View>
                             
                             </View>
 

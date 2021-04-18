@@ -20,14 +20,14 @@ const AudioStoryHome = ({navigation}) => {
     return (
         
         <LinearGradient
-            colors={['#a52bb0', '#2f2179', 'black']}
+            colors={['#18c9c9a5','#2f2179', '#000']}
             //style={styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
         >
           <ScrollView style={styles.container}>
           <View style={{    flexDirection: 'row', justifyContent: 'space-between', 
-                            marginTop: 40, marginBottom: 20, marginHorizontal: 20}}>
+                            marginTop: 60, marginBottom: 10, marginHorizontal: 20}}>
             <View style={{ flexDirection: 'row'}}>
 
                 <Text style={styles.pageheader}>
@@ -39,7 +39,7 @@ const AudioStoryHome = ({navigation}) => {
                     name='user'
                     size={20}
                     color='#fff'
-                    style={{ paddingLeft: 30 }}
+                    style={{ paddingLeft: 30, marginRight: 0, }}
                     onPress={() => navigation.navigate('ProfileScreen')}
                 />
             </View>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
       color: '#fff',
       fontSize: 22,
       fontWeight: 'bold',
-      marginHorizontal: 20,
+      marginHorizontal: 0,
   },
 });
 

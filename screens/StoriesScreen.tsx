@@ -32,7 +32,7 @@ const AudioStoryHome = ({navigation}) => {
                 height: 35,
                 marginHorizontal: 20,
                 borderRadius: 8,
-                backgroundColor: '#e0e0e0a5',
+                backgroundColor: '#e0e0e0',
               }}
               inputStyle={{fontSize: 16,}}
             />
@@ -44,14 +44,14 @@ const AudioStoryHome = ({navigation}) => {
     return (
         <View >
         <LinearGradient
-        colors={['#a52bb0', 'black', 'black']}
+        colors={['#18c9c9a5','#2f2179a5', '#000']}
         //style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
           
           <View style={{    flexDirection: 'row', justifyContent: 'space-between', 
-                            marginTop: 40, marginBottom: 20, marginHorizontal: 20}}>
+                            marginTop: 60, marginBottom: 20, marginHorizontal: 20}}>
             <View style={{ flexDirection: 'row'}}>
         
                 <Text style={{ color: 'white', marginHorizontal: 0, fontSize: 22, fontWeight: 'bold'}}>
