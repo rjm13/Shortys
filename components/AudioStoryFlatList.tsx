@@ -201,9 +201,11 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                         flexDirection: 'row', 
                         alignItems: 'center', 
                         borderRadius: 30,
+                        borderColor: '#ffffffa5',
+                        borderWidth: 0.5,
                         paddingVertical: 3,
                         paddingHorizontal: 10,
-                        backgroundColor: '#00000033',
+                        backgroundColor: 'transparent',
                         height: 26 }}>
                             <FontAwesome5 
                                 name='play'
@@ -304,6 +306,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                 height: 200,
                                 borderRadius: 15,
                                 marginVertical: 15,
+                                marginHorizontal: -10
                             }}
                         />
                         <Text style={styles.paragraph}>
@@ -421,8 +424,8 @@ const styles = StyleSheet.create({
     },
     tile: {
         backgroundColor: '#383838a5',
-        marginHorizontal: 20,
-        marginVertical: 10,
+        marginHorizontal: 10,
+        marginVertical: 5,
         padding: 20,
         borderRadius: 15,
     },
@@ -446,7 +449,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     paragraph: {
-        color: '#ffffffa5'
+        color: '#ffffffB3'
     },
     playbutton: {
         borderWidth: 0.5,

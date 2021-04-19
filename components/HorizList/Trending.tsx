@@ -40,6 +40,19 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
             'cyan',
       }
 
+      const BackgroundColors = {
+        backgroundColor: 
+              genre === 'crime' ? '#cac71566' : 
+              genre === 'fantasy' ? '#15ca5466' :
+              genre === 'suspense' ? '#1579ca66' :
+              genre === 'comedy' ? '#ff9ce666' :
+              genre === 'science fiction' ? '#c97f8b66' :
+              genre === 'life & adventure' ? '#15b8ca66' :
+              genre === 'fan fiction' ? '#a05ebf66' :
+              genre === 'after dark' ? '#5b6ade66' : 
+              '#36363666'
+        }
+
     const navigation = useNavigation();
 
     //like state
@@ -67,9 +80,25 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
     return (
         <View style={styles.containernew}>
+            <View style={{ position: 'absolute', alignSelf: 'center', top: 60, backgroundColor: 'transparent'}}>
+                <FontAwesome5 
+                    name={
+                        genre === 'crime' ? 'shoe-prints' : 
+                        genre === 'fantasy' ? 'hat-wizard' :
+                        genre === 'suspense' ? 'user-secret' :
+                        genre === 'comedy' ? 'poo' :
+                        genre === 'science fiction' ? 'user-astronaut' :
+                        genre === 'life & adventure' ? 'leaf' :
+                        genre === 'fan fiction' ? 'quidditch' :
+                        genre === 'after dark' ? 'moon' : 
+                        'dumpster-fire'}
+                    color='#ffffff'
+                    size={30}
+                />
+            </View>
           <ImageBackground
             source={{uri: imageUri}}
-            style={styles.image}
+            style={[BackgroundColors, styles.image]}
             imageStyle={{ borderRadius: 16}}
           >
                 <View style={{ alignItems: 'center'}}>
@@ -247,7 +276,7 @@ const styles = StyleSheet.create ({
         height: 160,
         justifyContent: 'space-between',
         marginBottom: 6,
-        backgroundColor: '#363636',
+        //backgroundColor: '#363636',
         borderRadius: 15
       },
       title: {

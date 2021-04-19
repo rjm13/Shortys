@@ -5,6 +5,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Carousel from 'react-native-snap-carousel';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {LinearGradient} from 'expo-linear-gradient';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,6 +16,42 @@ import data from '../../data/dummyaudio';
 
 
 const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
+
+    const Colors = {
+        color: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+        borderColor: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
+    }
+    const BackgroundColors = {
+      backgroundColor: 
+            genre === 'crime' ? '#cac71573' : 
+            genre === 'fantasy' ? '#15ca5473' :
+            genre === 'suspense' ? '#1579ca73' :
+            genre === 'comedy' ? '#ff9ce673' :
+            genre === 'science fiction' ? '#c97f8b73' :
+            genre === 'life & adventure' ? '#15b8ca73' :
+            genre === 'fan fiction' ? '#a05ebf73' :
+            genre === 'after dark' ? '#5b6ade73' : 
+            '#36363666'
+      }
+
 
     const navigation = useNavigation();
 
@@ -55,9 +92,32 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
     return (
         <View style={styles.container}>
+            {/* <LinearGradient
+                colors={['#18c9c9a5','#2f2179', '#000']}
+                style={{ }}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+            > */}
+            <View style={{ position: 'absolute', alignSelf: 'center', top: 80, backgroundColor: 'transparent'}}>
+                <FontAwesome5 
+                    name={
+                        genre === 'crime' ? 'shoe-prints' : 
+                        genre === 'fantasy' ? 'hat-wizard' :
+                        genre === 'suspense' ? 'user-secret' :
+                        genre === 'comedy' ? 'poo' :
+                        genre === 'science fiction' ? 'user-astronaut' :
+                        genre === 'life & adventure' ? 'leaf' :
+                        genre === 'fan fiction' ? 'quidditch' :
+                        genre === 'after dark' ? 'moon' : 
+                        'dumpster-fire'}
+                    color='#ffffff'
+                    size={50}
+                />
+            </View>
+            {/* </LinearGradient> */}
             <ImageBackground
                 source={{uri: imageUri}}
-                style={{ width: '100%', height: 280, justifyContent: 'flex-end', backgroundColor: '#363636a5', borderRadius: 15}}
+                style={[Colors, BackgroundColors, { width: '100%', height: 280, justifyContent: 'flex-end', borderRadius: 15}]}
                 imageStyle={{
                     borderRadius: 15,
                     
@@ -83,7 +143,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                         <Text style={styles.title}>
                                             {title}
                                         </Text> 
-                                        <Text style={styles.category}>
+                                        <Text style={[styles.category, Colors]}>
                                             {genre}
                                         </Text>
                                     </View>
@@ -92,13 +152,15 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                             flexDirection: 'row', 
                                             alignItems: 'center', 
                                             borderRadius: 30,
-                                            paddingVertical: 3,
-                                            paddingHorizontal: 10,
-                                            backgroundColor: '#000000a5',
+                                            paddingVertical: 0,
+                                            paddingHorizontal: 8,
+                                            backgroundColor: 'transparent',
+                                            borderColor: '#ffffffa5',
+                                            borderWidth: 0.5,
                                             height: 26 }}>
                                                 <FontAwesome5 
                                                     name='play'
-                                                    color='#ffffff'
+                                                    color='#ffffffa5'
                                                     size={10}
                                                 />
                                                 <Text style={styles.time}>
@@ -364,7 +426,7 @@ const styles = StyleSheet.create({
     playbutton: {
         borderWidth: 0.3,
         paddingHorizontal: 15,
-        paddingVertical: 3,
+        paddingVertical: 0,
         borderRadius: 15,
         borderColor: '#fff',
         color: '#fff',
@@ -372,8 +434,8 @@ const styles = StyleSheet.create({
     time: {
         fontSize: 14,
         fontWeight: 'normal',
-        color: '#ffffff',
-        marginHorizontal: 5,
+        color: '#ffffffa5',
+        marginHorizontal: 3,
     },
   });
 
