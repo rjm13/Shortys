@@ -14,6 +14,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import uuid from 'react-native-uuid';
 import { API, graphqlOperation, Auth, Storage } from "aws-amplify";
 import { createStory } from '../src/graphql/mutations';
+import { Audio } from 'expo-av';
 
 import genres  from '../data/dummygenre';
 
@@ -29,6 +30,7 @@ export default function UploadAudio({navigation}) {
         genre: '',
         writer: '',
         narrator: '',
+        time:'',
         imageUri: '',
         audioUri: '',
     });
@@ -136,8 +138,20 @@ export default function UploadAudio({navigation}) {
         if (result) {
         setLocalAudioUri(result.uri);
         setAudioName(result.name);
+
         }
     };
+
+//convert time for upload
+    const Convert = async () => {
+        let { sound } = await Audio.Sound.createAsync(
+            {uri: localAudioUri},
+            {shouldPlay: false}
+        );
+
+        let duration = await sound.getStatusAsync();
+        setData({...data, time: duration.durationMillis});
+    }
 
 //image picker
     const pickImage = async () => {

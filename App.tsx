@@ -80,7 +80,7 @@ export default function App() {
           //colorScheme={colorScheme}
           colorScheme='dark'
         />
-        <StatusBar />
+        <StatusBar style='light' backgroundColor='#0000004D'/>
       </SafeAreaProvider>
 
     );
