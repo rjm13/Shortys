@@ -2,14 +2,17 @@ import React from 'react'
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Image} from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useNavigation } from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
 
 import genres  from '../data/dummygenre';
+import {useNavigation} from '@react-navigation/native';
 
 const Item = ({genre, icon, iconcolor, boxcolor, source}) => {
 
+    const navigation = useNavigation();
+
     return (
+        <TouchableOpacity onPress = {() => navigation.navigate('GenreHome', {genre: genre})}>
         <View style={[styles.genrebox, {flexDirection: 'row', }]}>
             
             <Image
@@ -51,6 +54,7 @@ const Item = ({genre, icon, iconcolor, boxcolor, source}) => {
                     </Text>
                 </LinearGradient>
         </View>
+        </TouchableOpacity>
     );
 }
 

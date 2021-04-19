@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
@@ -10,25 +10,35 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import {LinearGradient} from 'expo-linear-gradient';
 
 import AudioStoryFlatList from '../components/AudioStoryFlatList';
-import GenreFlatList from '../components/GenreFlatList';
 
-const AudioStoryHome = ({navigation}) => {
+import {useRoute} from '@react-navigation/native';
+
+const SearchScreen = ({navigation}) => {
+
+    const route = useRoute();
+
+    const {searchQ} = route.params;
+
+    const [newSearch, setNewSearch] = useState(searchQ);
+
 
     function SearchBar () {
 
+        
         const [searchQuery, setSearchQuery] = useState('');
-      
+
         const onChangeSearch = query => setSearchQuery(query);
-      
+
         return (
           <View>
             <Searchbar
               placeholder="Search"
               placeholderTextColor='#000000a5'
               onChangeText={onChangeSearch}
+              onIconPress={() => setNewSearch(searchQuery)}
               value={searchQuery}
               iconColor='#000000a5'
-              onIconPress={() => navigation.navigate('SearchScreen', {searchQ: searchQuery})}
+              defaultValue={newSearch}
               style={{
                 height: 35,
                 marginHorizontal: 20,
@@ -54,26 +64,16 @@ const AudioStoryHome = ({navigation}) => {
           <View style={{    flexDirection: 'row', justifyContent: 'space-between', 
                             marginTop: 60, marginBottom: 20, marginHorizontal: 20}}>
             <View style={{ flexDirection: 'row'}}>
-        
-                <Text style={{ color: 'white', marginHorizontal: 0, fontSize: 22, fontWeight: 'bold'}}>
-                    Discover Stories
-                </Text>
+                <FontAwesome5 
+                    name='chevron-left'
+                    color='#fff'
+                    size={20}
+                    onPress={() => navigation.goBack()}
+                />
+                
             </View>
             <View style={{ flexDirection: 'row'}}>
-            <FontAwesome5
-                    name='plus'
-                    size={20}
-                    color='#fff'
-                    style={{ marginHorizontal: 25 }}
-                    onPress={() => navigation.navigate('UploadAudio')}
-                />
-            <FontAwesome5
-                    name='microphone-alt'
-                    size={22}
-                    color='#fff'
-                    style={{ marginHorizontal: 5 }}
-                    onPress={() => navigation.navigate('RecordAudio')}
-                />
+            
             </View>
           </View>
         
@@ -83,8 +83,8 @@ const AudioStoryHome = ({navigation}) => {
 
             
 
-            <View style={{ marginHorizontal: 20, height: '80%'}}>
-                <GenreFlatList/>
+            <View style={{ alignSelf: 'center',marginHorizontal: 0, height: '80%'}}>
+                    <AudioStoryFlatList search={newSearch} genre={null}/>
             </View>
 
         </LinearGradient>
@@ -124,4 +124,4 @@ const styles = StyleSheet.create ({
   },
 });
 
-export default AudioStoryHome;
+export default SearchScreen;

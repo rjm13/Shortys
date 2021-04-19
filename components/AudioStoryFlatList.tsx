@@ -323,19 +323,54 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
     );
   }
 
-const AudioStoryList = () => {
+const AudioStoryList = ({genre, search}) => {
 
     const fetchStorys = async () => {
-        try {
-            const response = await API.graphql(
-                graphqlOperation(
-                    listStorys
+        if (search) {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys, {
+                            filter: {
+                                title: {
+                                    contains: search
+                                }
+                            }
+                        } 
+                    )
                 )
-            )
-            setStorys(response.data.listStorys.items);
-        } catch (e) {
-            console.log(e);
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);}
         }
+        if (genre) {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys, {
+                            filter: {
+                                genre: {
+                                    eq: genre
+                                }
+                            }
+                        } 
+                    )
+                )
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);}
+        }
+        // else {
+        //     try {
+        //         const response = await API.graphql(
+        //             graphqlOperation(
+        //                 listStorys
+        //             )
+        //         )
+        //         setStorys(response.data.listStorys.items);
+        //     } catch (e) {
+        //         console.log(e);}
+        // }
     }
 
     const [isFetching, setIsFetching] = useState(false);
@@ -352,16 +387,51 @@ const AudioStoryList = () => {
 
     useEffect( () => {
         const fetchStorys = async () => {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys
+            if (search) {
+                try {
+                    const response = await API.graphql(
+                        graphqlOperation(
+                            listStorys, {
+                                filter: {
+                                    title: {
+                                        contains: search
+                                    }
+                                }
+                            } 
+                        )
                     )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);
+                    setStorys(response.data.listStorys.items);
+                } catch (e) {
+                    console.log(e);}
             }
+            if (genre) {
+                try {
+                    const response = await API.graphql(
+                        graphqlOperation(
+                            listStorys, {
+                                filter: {
+                                    genre: {
+                                        eq: genre
+                                    }
+                                }
+                            } 
+                        )
+                    )
+                    setStorys(response.data.listStorys.items);
+                } catch (e) {
+                    console.log(e);}
+            }
+            // else {
+            //     try {
+            //         const response = await API.graphql(
+            //             graphqlOperation(
+            //                 listStorys
+            //             )
+            //         )
+            //         setStorys(response.data.listStorys.items);
+            //     } catch (e) {
+            //         console.log(e);}
+            // }
         }
         fetchStorys();
     },[])

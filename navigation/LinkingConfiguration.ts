@@ -17,7 +17,9 @@ export default {
             screens: {
               StoriesScreen: 'two',
               BrowseAuthor: 'BrowseAuthor',
-              BrowseNarrator: 'BrowseNarrator'
+              BrowseNarrator: 'BrowseNarrator',
+              GenreHome: 'GenreHome',
+              SearchScreen: 'SearchScreen',
             },
           },
           Playlist: {

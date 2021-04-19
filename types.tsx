@@ -30,6 +30,8 @@ export type TabTwoParamList = {
   StoriesScreen: undefined;
   BrowseAuthor: undefined;
   BrowseNarrator: undefined;
+  GenreHome: undefined;
+  SearchScreen: undefined;
 };
 
 export type TabThreeParamList = {
