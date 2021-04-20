@@ -30,7 +30,7 @@ export default function UploadAudio({navigation}) {
         genre: '',
         writer: '',
         narrator: '',
-        time:'',
+        time: null,
         imageUri: '',
         audioUri: '',
     });
@@ -99,6 +99,7 @@ export default function UploadAudio({navigation}) {
                             genre: data.genre,
                             writer: data.writer,
                             narrator: data.narrator,
+                            time: data.time,
                             imageUri: pendingImageState,
                             audioUri:pendingAudioState,
                         }
@@ -138,7 +139,13 @@ export default function UploadAudio({navigation}) {
         if (result) {
         setLocalAudioUri(result.uri);
         setAudioName(result.name);
-
+        let { sound } = await Audio.Sound.createAsync(
+            {uri: result.uri},
+            {shouldPlay: false}
+        );
+        let duration = await sound.getStatusAsync();
+        setData({...data, time: duration.durationMillis});
+        console.log(duration);
         }
     };
 
