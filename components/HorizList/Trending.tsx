@@ -16,6 +16,11 @@ import GenreColors from '../../constants/GenreColors';
 
 const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {   
 
+    function millisToMinutesAndSeconds () {
+        let minutes = Math.floor(time / 60000);
+        let seconds = Math.floor((time % 60000) / 1000);
+        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+    } 
 
     const Colors = {
         color: 
@@ -110,7 +115,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                 size={10}
                             />
                             <Text style={{ color: '#fff', fontSize: 13, paddingVertical: 0, marginLeft: 10}}>
-                                21:48
+                                {millisToMinutesAndSeconds()}
                             </Text>
                         </View>
                     </TouchableOpacity>
