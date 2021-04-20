@@ -25,7 +25,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
             genre === 'comedy' ? '#ff9ce6' :
             genre === 'science fiction' ? '#c97f8b' :
             genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'fan fiction' ? '#c92ad1' :
             genre === 'after dark' ? '#5b6ade' : 
             'cyan',
         borderColor: 
@@ -152,18 +152,24 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                             flexDirection: 'row', 
                                             alignItems: 'center', 
                                             borderRadius: 30,
-                                            paddingVertical: 0,
+                                            paddingVertical: 2,
                                             paddingHorizontal: 8,
-                                            backgroundColor: 'transparent',
-                                            borderColor: '#ffffffa5',
-                                            borderWidth: 0.5,
-                                            height: 26 }}>
+                                            backgroundColor: '#ffffff33',
+                                            borderColor: '#ffffffCC',
+                                            //borderWidth: 0.5,
+                                            //height: 26 
+                                            }}>
                                                 <FontAwesome5 
                                                     name='play'
-                                                    color='#ffffffa5'
+                                                    color='#ffffffCC'
                                                     size={10}
                                                 />
-                                                <Text style={styles.time}>
+                                                <Text style={{
+                                                    fontSize: 14,
+                                                    fontWeight: 'normal',
+                                                    color: '#ffffffCC',
+                                                    marginLeft: 3,
+                                                }}>
                                                     12:53
                                                 </Text> 
                                         </View>
@@ -203,13 +209,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     <View>
                         { isVisible ? (
                             <View style={styles.popupblock}>
-                                <View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-                                        <Text style={styles.time}>
-                                            {time}
-                                        </Text>
-                                    </View> 
-                                                  
+                                <View style={{ marginVertical: 10 }}>            
                                     <View style={{ marginTop: 0,}}>
                                         <Text style={styles.paragraph}>
                                             {description}
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
         //height: 180,
     },
     paragraph: {
-        color: '#ffffffa5'
+        color: '#ffffffE6'
     },
     playbutton: {
         borderWidth: 0.3,
@@ -434,8 +434,8 @@ const styles = StyleSheet.create({
     time: {
         fontSize: 14,
         fontWeight: 'normal',
-        color: '#ffffffa5',
-        marginHorizontal: 3,
+        color: '#ffffffCC',
+        marginLeft: 3,
     },
   });
 

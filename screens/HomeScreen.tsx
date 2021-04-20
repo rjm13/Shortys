@@ -18,14 +18,16 @@ const AudioStoryHome = ({navigation}) => {
 
 
     return (
-        
+        <ScrollView style={{backgroundColor: '#3b4b80a5' }}> 
         <LinearGradient
-            colors={['#18c9c9a5','#2f2179', '#000']}
-            //style={styles.container}
+            colors={['#18c9c9a5','#3b4b80', 'transparent', 'transparent', 'transparent', 'transparent']}
+            style={styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
         >
-          <ScrollView style={styles.container}>
+              
+        
+          
           <View style={{    flexDirection: 'row', justifyContent: 'space-between', 
                             marginTop: 60, marginBottom: 10, marginHorizontal: 20}}>
             <View style={{ flexDirection: 'row'}}>
@@ -75,20 +77,16 @@ const AudioStoryHome = ({navigation}) => {
                   Mystery
               </Text>
               <Trending genre='mystery'/>
-          </View>
-
-            
-           
-            
-        </ScrollView>
-        </LinearGradient>
+          </View>   
         
+        </LinearGradient>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-      
+       
     },
     header: {
         color: '#fff',

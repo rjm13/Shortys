@@ -25,7 +25,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
             genre === 'comedy' ? '#ff9ce6' :
             genre === 'science fiction' ? '#c97f8b' :
             genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'fan fiction' ? '#c92ad1' :
             genre === 'after dark' ? '#5b6ade' : 
             'cyan',
         borderColor: 
@@ -35,7 +35,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
             genre === 'comedy' ? '#ff9ce6' :
             genre === 'science fiction' ? '#c97f8b' :
             genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
+            genre === 'fan fiction' ? '#c92ad1' :
             genre === 'after dark' ? '#5b6ade' : 
             'cyan',
       }
@@ -103,7 +103,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
           >
                 <View style={{ alignItems: 'center'}}>
                     <TouchableOpacity onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
-                        <View style={{flexDirection: 'row', backgroundColor: '#000000a5', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
+                        <View style={{flexDirection: 'row', backgroundColor: '#0000004D', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
                             <FontAwesome5 
                                 name='play'
                                 color='#fff'
