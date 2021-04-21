@@ -240,17 +240,6 @@ const SignUp = ({navigation}) => {
                         I already have an account.
                     </Text>
                 </TouchableOpacity>
-                
-
-                
-
-
-                
-                <TouchableOpacity onPress={() => navigation.navigate('Root', { screen: 'HomeScreen' }) }>
-                    <Text style={{ color: '#fff', alignSelf: 'center'}}>
-                        Go Home
-                    </Text>
-                </TouchableOpacity>
             </LinearGradient>
         </View>
     );

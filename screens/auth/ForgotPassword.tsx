@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const ForgotPassword = ({navigation}) => {
+
+    const [email, setEmail] = useState('');
 
     return (
         <View style={styles.container}>
@@ -23,55 +25,16 @@ const ForgotPassword = ({navigation}) => {
                                 placeholderTextColor='#ffffffa5'
                                 style={styles.textInputTitle}
                                 maxLength={30}
+                                onChangeText={val => setEmail(val)}
                             />
                         </View>
                     </View>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordCon', {email: email})}>
                     <View style={styles.button}>
                         <Text style={styles.buttontext}>
                             Send Reset Code
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <View style={{ margin: 20}}>
-                    <View>
-                        <Text style={styles.header}>
-                            Confirmation Code
-                        </Text>
-                        <View style={styles.inputfield}>
-                            <TextInput 
-                                placeholder='Check email for code'
-                                placeholderTextColor='#ffffffa5'
-                                style={styles.textInputTitle}
-                                maxLength={30}
-                            />
-                        </View>
-                    </View>
-                </View>
-
-                <View style={{ marginBottom: 20, marginHorizontal: 20}}>
-                    <View>
-                        <Text style={styles.header}>
-                            New Password
-                        </Text>
-                        <View style={styles.inputfield}>
-                            <TextInput 
-                                placeholder='Create a new password'
-                                placeholderTextColor='#ffffffa5'
-                                style={styles.textInputTitle}
-                                maxLength={30}
-                            />
-                        </View>
-                    </View>
-                </View>
-
-                <TouchableOpacity>
-                    <View style={styles.button}>
-                        <Text style={styles.buttontext}>
-                            Reset Password
                         </Text>
                     </View>
                 </TouchableOpacity>

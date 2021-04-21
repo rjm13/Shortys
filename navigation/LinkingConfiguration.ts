@@ -35,6 +35,7 @@ export default {
       SignUp: '*',
       SignIn: '*',
       ForgotPassword: '*',
+      ForgotPasswordCon: '*',
       ConfirmEmail: '*',
       UploadAudio: '*',
     },
