@@ -15,26 +15,28 @@ import {graphqlOperation, API, Storage} from 'aws-amplify';
 import { getStory } from '../src/graphql/queries';
 
 
-    function useInterval(callback, delay) {
-        const savedCallback = useRef();
-      
-        // Remember the latest callback.
-        useEffect(() => {
-          savedCallback.current = callback;
-        }, [callback]);
-      
-        // Set up the interval.
-        useEffect(() => {
-          let id = setInterval(() => {
-            savedCallback.current();
-          }, delay);
-          return () => clearInterval(id);
-        }, [delay]);
-      }
+function useInterval(callback, delay) {
+    const savedCallback = useRef();
+    
+    // Remember the latest callback.
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+    
+    // Set up the interval.
+    useEffect(() => {
+        let id = setInterval(() => {
+        savedCallback.current();
+        }, delay);
+        return () => clearInterval(id);
+    }, [delay]);
+    }
 
 
 
 const AudioPlayer  = ({navigation}) => {
+
+
 
 //recieve story ID as props
 
@@ -66,6 +68,19 @@ useEffect(() => {
     fetchStory();
 
   }, [storyID])
+
+  const BackgroundColors = {
+    backgroundColor: 
+            Story?.genre === 'crime' ? '#cac715' : 
+            Story?.genre === 'fantasy' ? '#15ca54' :
+            Story?.genre === 'suspense' ? '#1579ca' :
+            Story?.genre === 'comedy' ? '#ff9ce6' :
+            Story?.genre === 'science fiction' ? '#c97f8b' :
+            Story?.genre === 'life & adventure' ? '#15b8ca' :
+            Story?.genre === 'fan fiction' ? '#a05ebf' :
+            Story?.genre === 'after dark' ? '#5b6ade' : 
+            '#363636'
+    }
 
 
 //audio player
@@ -209,6 +224,24 @@ useEffect(() => {
                                 style={{ }}
                             />
                         </View>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name='commenting-o'
+                                size={22}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
+                        </View>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name='share'
+                                size={22}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
+                        </View>
                     </View>
                     
                 </View>
@@ -218,10 +251,10 @@ useEffect(() => {
                 style={{flex: 5}}
                 >
             <LinearGradient 
-                            colors={['#2f2179','black', '#000']}
-                            style={{ borderRadius: 20, paddingVertical: 5, paddingHorizontal: 20, flex: 5}}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
+                colors={['#2f2179','black', '#000']}
+                style={{ borderRadius: 20, paddingVertical: 5, paddingHorizontal: 20, flex: 5}}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
             >
 
             <View style={{ justifyContent: 'space-between', height: '100%'}}>
@@ -234,7 +267,7 @@ useEffect(() => {
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                             <FontAwesome5 
                                 name='book-open'
-                                color='#ffffffa5'
+                                color='#ffffffCC'
                                 size={15}
                                 style={{ marginRight: 10}}
                             />
@@ -246,7 +279,7 @@ useEffect(() => {
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                             <FontAwesome5 
                                 name='book-reader'
-                                color='#ffffffa5'
+                                color='#ffffffCC'
                                 size={15}
                                 style={{ marginRight: 10}}
                             />
@@ -258,16 +291,11 @@ useEffect(() => {
 
                     <View>
                         <View style={{marginTop: 5, marginBottom: 20,}}>
-                            <LinearGradient 
-                                colors={['#14bee0','#15c7ca']}
-                                style={{borderRadius: 15,paddingVertical: 5, paddingHorizontal: 20}}
-                                // start={{ x: 0, y: 0 }}
-                                // end={{ x: 1, y: 1 }}
-                            >
-                                <Text style={{ fontSize: 16, textTransform: 'capitalize'   }}>
+                            <View style={[BackgroundColors, {borderRadius: 15,paddingVertical: 5, paddingHorizontal: 20}]}>
+                                <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>
                                     {Story?.genre}
                                 </Text>
-                            </LinearGradient>
+                            </View>
                         </View>
                     </View>
                 
@@ -279,7 +307,7 @@ useEffect(() => {
                 <View style={{ marginTop: 0, alignSelf: 'center' }}>
                     <FontAwesome5 
                         name={isPlaying === true ? 'pause' : 'play'}
-                        color='#ffffffa5'
+                        color='#ffffffCC'
                         size={50}
                         onPress={PlayPause}
                     />
@@ -314,7 +342,7 @@ useEffect(() => {
             </View>
         </LinearGradient> 
         </Animatable.View>
-        <StatusBar style='dark' />
+        <StatusBar style='light' backgroundColor='#0000004D' />
         </View>
     );
 }
@@ -331,7 +359,7 @@ const styles = StyleSheet.create ({
         fontWeight: 'bold',
     },
     username: {
-        color: '#ffffffa5',
+        color: '#ffffffCC',
         fontSize: 16,
         marginVertical: 5,
         textTransform: 'capitalize'
@@ -341,7 +369,7 @@ const styles = StyleSheet.create ({
     },
     highlight: { 
         marginHorizontal: -20,
-        color: '#ffffffa5',
+        color: '#ffffffCC',
         fontSize: 14,
         padding: 12,
         borderRadius: 15,
