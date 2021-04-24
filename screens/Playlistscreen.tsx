@@ -124,7 +124,7 @@ const AudioStoryHome = ({navigation}) => {
             </View> */}
 
             <View style={{ alignItems: 'center', marginTop: 20, height: '86%'}}>
-                <AudioStoryFlatList />
+                <AudioStoryFlatList genre={null} search={null} all={'all'}/>
             </View>
            
             

@@ -323,9 +323,22 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
     );
   }
 
-const AudioStoryList = ({genre, search}) => {
+const AudioStoryList = ({genre, search, all}) => {
 
     const fetchStorys = async () => {
+        if (all==='all') {
+            try {
+                const response = await API.graphql(
+                    graphqlOperation(
+                        listStorys, {
+                            
+                        } 
+                    )
+                )
+                setStorys(response.data.listStorys.items);
+            } catch (e) {
+                console.log(e);}
+        }
         if (search) {
             try {
                 const response = await API.graphql(

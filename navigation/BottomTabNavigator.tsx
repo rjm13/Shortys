@@ -22,8 +22,10 @@ import BrowseNarrator from '../screens/BrowseNarrator';
 import GenreHome from '../screens/GenreHome';
 import SearchScreen from '../screens/SearchScreen';
 
+import AudioPlayerTest from '../screens/AudioPlayerTest';
 
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
+
+import { BottomTabParamList, TabOneParamList, TabTwoParamList, TabThreeParamList } from '../types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -62,6 +64,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <TabBarIcon name="disc" color={color} />,
         }}
       />
+      
     </BottomTab.Navigator>
   );
 }
@@ -152,7 +155,7 @@ function StoriesNavigator() {
   );
 }
 
-const PlaylistStack = createStackNavigator<TabTwoParamList>();
+const PlaylistStack = createStackNavigator<TabThreeParamList>();
 
 function PlaylistNavigator() {
   return (
@@ -165,3 +168,5 @@ function PlaylistNavigator() {
     </PlaylistStack.Navigator>
   );
 }
+
+

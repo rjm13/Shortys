@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Root: undefined;
   RecordAudio: undefined;
   AudioPlayer: undefined;
+  AudioPlayerTest: undefined;
   UserScreen: undefined;
   SignUp: undefined;
   SignIn: undefined;
@@ -9,6 +10,7 @@ export type RootStackParamList = {
   ForgotPasswordCon: undefined;
   ConfirmEmail: undefined;
   UploadAudio: undefined;
+  ModalNavigator: undefined;
 };
 
 export type BottomTabParamList = {
@@ -37,7 +39,9 @@ export type TabTwoParamList = {
 
 export type TabThreeParamList = {
   PlaylistScreen: undefined;
+  StoriesScreen: undefined;
 };
+
 
 export type ItemParamList = {
   //title: string;

@@ -58,7 +58,7 @@ const GenreHome = ({navigation}) => {
                 </LinearGradient>
             </View>
             <View style={{ marginTop: 0}}>
-                <AudioStoryFlatList genre={genre} search={null}/>
+                <AudioStoryFlatList genre={genre} search={null} all={null}/>
             </View>
         </View>
     );

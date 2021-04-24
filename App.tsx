@@ -15,7 +15,9 @@ import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from './src/graphql/queries';
 import { createUser } from './src/graphql/mutations';
 
-import { MenuProvider } from 'react-native-popup-menu';
+import AudioPlayerWidget from './components/AudioPlayerWidget';
+import AudioPlayerWidgetStatic from './components/AudioPlayerWidgetStatic';
+import AudioPlayerAnimate from './components/AudioPlayerAnimate';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -78,9 +80,9 @@ export default function App() {
       <SafeAreaProvider>
         <Navigation 
           //colorScheme={colorScheme}
-          colorScheme='dark'
-        />
+          colorScheme='dark'/>
         <StatusBar style='light' backgroundColor='#0000004D'/>
+        <AudioPlayerWidgetStatic />
       </SafeAreaProvider>
 
     );

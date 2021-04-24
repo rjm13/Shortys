@@ -5,6 +5,7 @@ import { ColorSchemeName, Appearance } from 'react-native';
 
 import RecordAudioScreen from '../screens/RecordAudioScreen';
 import AudioPlayer from '../screens/AudioPlayer';
+import AudioPlayerTest from '../screens/AudioPlayerTest';
 import UserScreen from '../screens/UserScreen';
 import UploadAudio from '../screens/UploadAudio';
 
@@ -13,6 +14,8 @@ import SignInScreen from '../screens/auth/SignIn';
 import ForgotPasswordScreen from '../screens/auth/ForgotPassword';
 import ForgotPasswordConScreen from '../screens/auth/ForgotPasswordCon';
 import ConfirmEmailScreen from '../screens/auth/ConfirmEmail';
+
+import ModalNavigator from '../navigation/ModalNavigator';
 
 
 import { RootStackParamList } from '../types';
@@ -31,7 +34,8 @@ export default function Navigation(
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+      >
       <RootNavigator />
     </NavigationContainer>
   );
@@ -65,18 +69,20 @@ function RootNavigator() {
     }, [])
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isLoggedIn === true ? 'Root' : 'SignIn'}>
+    <Stack.Navigator screenOptions={{ headerShown: false, 
+    //cardStyle: {opacity: 1, backgroundColor: 'transparent'} , cardOverlayEnabled: false,
+    }} initialRouteName={isLoggedIn === true ? 'Root' : 'SignIn'}>
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen name="RecordAudio" component={RecordAudioScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="UploadAudio" component={UploadAudio} options={{ title: 'Oops!' }} />
-      <Stack.Screen name="AudioPlayer" component={AudioPlayer} options={{ title: 'Oops!' }} />
       <Stack.Screen name="UserScreen" component={UserScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="ForgotPasswordCon" component={ForgotPasswordConScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} options={{ title: 'Oops!' }} />
-
+     
+      <Stack.Screen name="AudioPlayer" component={AudioPlayer} options={{ title: 'Oops!' }} />
 
 
     </Stack.Navigator>

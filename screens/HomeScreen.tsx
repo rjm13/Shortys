@@ -12,6 +12,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import AudioStoryFlatList from '../components/AudioStoryFlatList';
 import Trending from '../components/HorizList/Trending';
 import ForYouCarousel from '../components/HorizList/ForYouCarousel';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const AudioStoryHome = ({navigation}) => {
 
@@ -32,9 +33,10 @@ const AudioStoryHome = ({navigation}) => {
                             marginTop: 60, marginBottom: 10, marginHorizontal: 20}}>
             <View style={{ flexDirection: 'row'}}>
 
-                <Text style={styles.pageheader}>
-                    For you
-                </Text>
+                    <Text style={styles.pageheader}>
+                        For you
+                    </Text>
+                
             </View>
             <View style={{ flexDirection: 'row'}}>
                 <FontAwesome

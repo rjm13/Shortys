@@ -20,6 +20,23 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
+function useInterval(callback, delay) {
+    const savedCallback = useRef();
+    
+    // Remember the latest callback.
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
+    
+    // Set up the interval.
+    useEffect(() => {
+        let id = setInterval(() => {
+        savedCallback.current();
+        }, delay);
+        return () => clearInterval(id);
+    }, [delay]);
+    }
+
 const AudioPlayer  = () => {
 
 //minimize the player with animations
@@ -111,7 +128,154 @@ const AudioPlayer  = () => {
         extrapolate: 'clamp',
     });
 
-//
+//recieve story ID as props
+
+//const route = useRoute();
+//const {storyID} = route.params;
+
+const storyID  = 'a367684b-9d1f-49aa-b767-457773446309'
+
+//use storyID to retrieve Story from AWS
+const [Story, setStory] = useState();
+const [AudioUri, setAudioUri] = useState('');
+
+useEffect(() => {
+
+    const fetchStory = async () => {
+      
+      try {
+        const storyData = await API.graphql(graphqlOperation(
+          getStory, {id: storyID}))
+          if (storyData) {
+            setStory(storyData.data.getStory);
+            const response = await Storage.get(storyData.data.getStory.audioUri, {download: false, expiration: 604800});
+            setAudioUri(response);
+            console.log(AudioUri);
+          }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    fetchStory();
+
+  }, [storyID])
+
+//background colors for the genre indicator
+    const BackgroundColors = {
+        backgroundColor: 
+                Story?.genre === 'crime' ? '#cac715' : 
+                Story?.genre === 'fantasy' ? '#15ca54' :
+                Story?.genre === 'suspense' ? '#1579ca' :
+                Story?.genre === 'comedy' ? '#ff9ce6' :
+                Story?.genre === 'science fiction' ? '#c97f8b' :
+                Story?.genre === 'life & adventure' ? '#15b8ca' :
+                Story?.genre === 'fan fiction' ? '#a05ebf' :
+                Story?.genre === 'after dark' ? '#5b6ade' : 
+                '#363636'
+        }
+
+//audio player
+    const [sound, setSound] = useState();
+
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const [position, setPosition] = useState(0); //position in milliseconds
+
+    const [slideLength, setSlideLength] = useState(0);
+
+//like state
+    const [isLiked, setIsLiked] = useState(false);
+
+    const onLikePress = () => {
+        if ( isLiked === false ) {
+            setIsLiked(true);
+        }
+        if ( isLiked === true ) {
+            setIsLiked(false);
+        }  
+    };
+
+//queueing the story
+    const [isQ, setQd] = useState(false);
+
+    const onQPress = () => {
+        if ( isQ === false ) {
+            setQd(true);
+        }
+        if ( isQ === true ) {
+            setQd(false);
+        }  
+    };
+
+//slider functions
+    function SetPosition(value) {
+        setPosition(value)
+    }
+
+    async function StoryPosition (value) { 
+        await sound.setPositionAsync(value);
+        setPosition(value);
+    }
+
+    function millisToMinutesAndSeconds () {
+        let minutes = Math.floor(position / 60000);
+        let seconds = ((position % 60000) / 1000);
+        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+    } 
+
+    function convertToTime () {
+        let minutes = Math.floor(slideLength / 60000);
+        let seconds = Math.floor((slideLength % 60000) / 1000);
+        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+    }  
+
+//audio play and pause control
+    async function PlayPause() {
+
+        console.log('Loading Sound');
+        console.log(Story);
+        const { sound } = await Audio.Sound.createAsync(
+            {uri: AudioUri},
+            {shouldPlay: true}
+        );
+        
+        setSound(sound);
+
+        let time = await sound.getStatusAsync();
+        setSlideLength(time.durationMillis);
+
+        if (isPlaying === false) {
+            console.log('Playing Sound');
+            await sound.playAsync(); 
+            setIsPlaying(true);
+            await sound.setPositionAsync(position);
+        } 
+        if (isPlaying === true) {
+            await sound.pauseAsync();
+            setIsPlaying (false);     
+        }    
+    }
+
+    // useEffect(() => {
+    //     PlayPause();
+    // }, []);
+
+    useInterval(() => {
+        if (isPlaying === true && position < slideLength) {
+        setPosition(position + 1000);
+        }
+      }, 1000);
+    
+
+    useEffect(() => {
+        return sound
+        ? () => {
+            console.log('Unloading Sound');
+            sound.unloadAsync(); }
+        : undefined;
+    }, [sound]);
+
 
     return (
 
