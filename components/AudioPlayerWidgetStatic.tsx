@@ -98,6 +98,18 @@ const AudioPlayer  = () => {
         extrapolate: 'clamp',
     });
 
+    const animatedButtonLeft = animation.y.interpolate({
+        inputRange: [0, SCREEN_HEIGHT - 90],
+        outputRange: [0, -80],
+        extrapolate: 'clamp',
+    });
+
+    const animatedButtonRight = animation.y.interpolate({
+        inputRange: [0, SCREEN_HEIGHT - 90],
+        outputRange: [0, -300],
+        extrapolate: 'clamp',
+    });
+
     const animatedHeaderHeightSmall = animation.y.interpolate({
         inputRange: [0, SCREEN_HEIGHT - 90],
         outputRange: [0, 60],
@@ -294,8 +306,62 @@ useEffect(() => {
                     width: null,
                     height: null,
                 }}
-                source={{ uri: 'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg'}}
-            />
+                source={{uri: Story?.imageUri}}
+            >
+                <Animated.View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-between', marginHorizontal: 20}}>
+                <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
+                        <AntDesign 
+                            name='close'
+                            size={22}
+                            color='#fff'
+                            style={{
+                                
+                            }}
+                            //onPress={() => navigation.goBack() }
+                        />
+                    </Animated.View>
+                    
+                    <View style={{ }}>
+                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                            <FontAwesome 
+                                name={isLiked ? 'star' : 'star-o'}
+                                size={22}
+                                color={isLiked ? 'gold' : 'white'}
+                                onPress={onLikePress}
+                                style={{ }}
+                            />
+                        </Animated.View>
+                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                            <AntDesign 
+                                name={isQ ? 'pushpin' : 'pushpino'}
+                                size={22}
+                                color={isQ ? 'cyan' : 'white'}
+                                onPress={onQPress}
+                                style={{ }}
+                            />
+                        </Animated.View>
+                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                            <FontAwesome 
+                                name='commenting-o'
+                                size={22}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
+                        </Animated.View>
+                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                            <FontAwesome 
+                                name='share'
+                                size={22}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
+                        </Animated.View>
+                    </View>
+                    
+                </Animated.View>
+            </ImageBackground>
         </Animated.View>
 
         <Animated.View
@@ -330,31 +396,34 @@ useEffect(() => {
                     alignItems: 'center', 
             }}>
 
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
                 
+                    
                     <Animated.Text
                         style={{
                             opacity: animatedSongTitleOpacity,
                             fontSize: 18,
-                            paddingLeft: 10,
-                            color: '#fff'
+                            paddingLeft: 20,
+                            color: '#fff',
+                            
                     }}>
-                        Hotel California(Live)
+                        {Story?.title}
                     </Animated.Text>
 
+                    <Animated.View
+                        style={{
+                            opacity: animatedSongTitleOpacity,
+                            //flex: 1,
+                            marginRight: 40,
+                    }}>
+                        <FontAwesome5 
+                                name={isPlaying === true ? 'pause' : 'play'}
+                                color='#ffffffCC'
+                                size={20}
+                                onPress={PlayPause}
+                        />
+                    </Animated.View>
                 </View>
-
-                <Animated.View
-                    style={{
-                        opacity: animatedSongTitleOpacity,
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                }}>
-                    <FontAwesome5 name="pause" size={22} color={'#fff'} />
-                    <FontAwesome5 name="play" size={22} color={'#fff'}/>
-                </Animated.View>
-
             </Animated.View>
 
 {/* Expanded View elements */}
@@ -434,6 +503,15 @@ useEffect(() => {
 const styles = StyleSheet.create ({
     container: {
         
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#363636a5',
+        borderRadius: 50,
+        width: 36,
+        height: 36,
+        margin: 10,
     },
    
 });
