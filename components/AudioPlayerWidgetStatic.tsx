@@ -308,8 +308,9 @@ useEffect(() => {
                 }}
                 source={{uri: Story?.imageUri}}
             >
-                <Animated.View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-between', marginHorizontal: 20}}>
-                <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
+            { !isExpanded ? (
+                <Animated.View style={{ flexDirection: 'row', marginTop: 40, justifyContent: 'space-between', marginHorizontal: 20}}>
+                    <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
                         <AntDesign 
                             name='close'
                             size={22}
@@ -358,9 +359,9 @@ useEffect(() => {
                                 style={{ }}
                             />
                         </Animated.View>
-                    </View>
-                    
+                    </View>  
                 </Animated.View>
+            ) : null } 
             </ImageBackground>
         </Animated.View>
 
@@ -372,128 +373,149 @@ useEffect(() => {
               left: 0,
               right: 0,
               bottom: animatedBottom,
-              //flex: 1,
               //zIndex: 10,
-              //backgroundColor: '#ffffffa5',
-              //height: SCREEN_HEIGHT,
               height: animatedBoxHeight,
               borderTopRightRadius: 15,
               borderTopLeftRadius: 15,
             },
           ]}>
-              <LinearGradient 
-                colors={['#2f2179','black', '#000']}
-                style={{ borderTopRightRadius: 15, borderTopLeftRadius: 15, flex: 1}}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-            >
-          <TouchableWithoutFeedback onPress={onChangeHandler}>
+                <LinearGradient 
+                    colors={[isExpanded ? '#202229' : '#3b4b80', isExpanded ? '#202229' : '#000', isExpanded ? '#202229' : '#000']}
+                    style={{ borderTopRightRadius: 15, borderTopLeftRadius: 15, flex: 1}}
+                    start={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0 }}
+                >
 
-            <Animated.View
-                style={{
-                    height: animatedHeaderHeightSmall,
-                    flexDirection: 'row',
-                    alignItems: 'center', 
-            }}>
-
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
-                
                     
-                    <Animated.Text
-                        style={{
-                            opacity: animatedSongTitleOpacity,
-                            fontSize: 18,
-                            paddingLeft: 20,
-                            color: '#fff',
-                            
-                    }}>
-                        {Story?.title}
-                    </Animated.Text>
-
-                    <Animated.View
-                        style={{
-                            opacity: animatedSongTitleOpacity,
-                            //flex: 1,
-                            marginRight: 40,
-                    }}>
-                        <FontAwesome5 
-                                name={isPlaying === true ? 'pause' : 'play'}
-                                color='#ffffffCC'
-                                size={20}
-                                onPress={PlayPause}
-                        />
-                    </Animated.View>
-                </View>
-            </Animated.View>
-
+                        <Animated.View style={{ height: animatedHeaderHeightSmall, flexDirection: 'row', alignItems: 'center', }}>
+                            { isExpanded ? (
+                                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                    <TouchableWithoutFeedback onPress={onChangeHandler}>
+                                        <Animated.Text
+                                            style={{
+                                                opacity: animatedSongTitleOpacity,
+                                                fontSize: 18,
+                                                paddingLeft: 20,
+                                                color: '#fff',
+                                        }}>
+                                            {Story?.title}
+                                        </Animated.Text>
+                                    </TouchableWithoutFeedback>
+                                        <Animated.View
+                                            style={{
+                                                opacity: animatedSongTitleOpacity,
+                                        }}>
+                                            <FontAwesome5 
+                                                    name={isPlaying === true ? 'pause' : 'play'}
+                                                    color='#ffffffCC'
+                                                    size={20}
+                                                    style={{ paddingHorizontal: 40,}}
+                                                    onPress={PlayPause}
+                                            />
+                                        </Animated.View>
+                                    </View> 
+                            ) : null } 
+                        </Animated.View>
+                    
 {/* Expanded View elements */}
             <Animated.View
                 style={{
                     height: animatedHeaderHeightMinimized,
                     opacity: animatedSongDetailsOpacity,
             }}>
+                { !isExpanded ? (
+                    <View style={{ justifyContent: 'space-between', height: '60%'}}>
+                        <View>
+                            <TouchableWithoutFeedback onPress={onChangeHandler}>
+                                <View style={{ alignItems: 'center',  marginHorizontal: 40, marginVertical: 20, }}>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 22, color: '#fff' }}>
+                                        {Story?.title}
+                                    </Text>
 
-                <View
-                    style={{
-                        //flex: 1,
-                        alignItems: 'center',
-                        //justifyContent: 'flex-end',
-                }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 22, color: '#fff' }}>
-                        Hotel California (Live)
-                    </Text>
+                                    <View style={{ width: '100%', flexDirection: 'row', marginTop: 10,justifyContent: 'space-between'}}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                            <FontAwesome5 
+                                                name='book-open'
+                                                color='#ffffffCC'
+                                                size={15}
+                                                style={{ marginRight: 10}}
+                                            />
+                                            <Text style={styles.username}>
+                                                {Story?.writer}
+                                            </Text>
+                                        </View>
 
-                    <Text style={{ fontSize: 18, color: '#fa95ed' }}>
-                        Eagles - Hell Freezes Over
-                    </Text>
-                </View>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                            <FontAwesome5 
+                                                name='book-reader'
+                                                color='#ffffffCC'
+                                                size={15}
+                                                style={{ marginRight: 10}}
+                                            />
+                                            <Text style={styles.username}>
+                                                {Story?.narrator}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>  
+                            </TouchableWithoutFeedback>
 
-                <View
-                    style={{
-                        height: 40,
-                        width: SCREEN_WIDTH,
-                        alignItems: 'center',
-                }}>
+                            <View style={{ alignItems: 'center', marginHorizontal: 20}}>
+                                <View style={{marginBottom: 20,}}>
+                                    <View style={[BackgroundColors, {borderRadius: 15, paddingVertical: 5, paddingHorizontal: 20}]}>
+                                        <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>
+                                            {Story?.genre}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <ScrollView style={{ height: 140, marginTop: 10 }}>
+                                    <Text style={styles.highlight}>
+                                        {Story?.description}
+                                    </Text>
+                                </ScrollView>
+                                
+                            </View>
+                        </View>
+                        
+                        <View>
+                            <View style={{alignSelf: 'center' }}>
+                                <FontAwesome5 
+                                    name={isPlaying === true ? 'pause' : 'play'}
+                                    color='#ffffffCC'
+                                    size={50}
+                                    onPress={PlayPause}
+                                />
+                            </View>
 
-                    <Slider
-                        style={{ width: 300 }}
-                        step={1}
-                        minimumValue={18}
-                        maximumValue={71}
-                        value={18}
-                    />
-                </View>
+                            <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between',}}>
+                                <Text style={{ fontSize: 18, marginBottom: 5, textAlign: 'center', color: 'white'}}>
+                                    {millisToMinutesAndSeconds()}
+                                </Text>
+                                <Text style={{ fontSize: 18, marginBottom: 5, textAlign: 'center', color: 'white'}}>
+                                    {convertToTime()}
+                                </Text>
+                            </View>
 
-                <View
-                    style={{
-                        flex: 2,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-around',
-                    }}>
-                    <View style={{ marginTop: 0, alignSelf: 'center' }}>
-                        <FontAwesome5 
-                            name={isPlaying === true ? 'pause' : 'play'}
-                            color='#ffffffCC'
-                            size={50}
-                            onPress={PlayPause}
-                        />
-                </View>
-                </View>
+                            <View>
+                                <Slider
+                                    style={{width: 320, height: 10}}
+                                    minimumTrackTintColor="cyan"
+                                    maximumTrackTintColor="#ffffffa5"
+                                    thumbTintColor='#fff'
+                                    //tapToSeek={true}
+                                    value={position}
+                                    step={1000}
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: 20,
-                        paddingBottom: 20,
-                }}>
-                    <Ionicons name="add" size={32} style={{ color: '#fa95ed' }}/>
-                    <Ionicons name="disc" size={32} style={{ color: '#fa95ed' }}/>
-              </View>
+                                    minimumValue={0}
+                                    maximumValue={slideLength} //function set to the length of the audio file
+                                    onValueChange={SetPosition} //function: when slider changes, slider value = SetPosition
+                                    onSlidingComplete={StoryPosition}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                ) : null } 
             </Animated.View>
-            
-            </TouchableWithoutFeedback>
           </LinearGradient>
         </Animated.View>
       </View>
@@ -512,6 +534,19 @@ const styles = StyleSheet.create ({
         width: 36,
         height: 36,
         margin: 10,
+    },
+    username: {
+        color: '#ffffffCC',
+        fontSize: 16,
+        marginVertical: 5,
+        textTransform: 'capitalize'
+    },
+    highlight: { 
+        color: '#ffffffCC',
+        fontSize: 14,
+        borderRadius: 15,
+        padding: 10,
+        backgroundColor: '#363636CC',
     },
    
 });
