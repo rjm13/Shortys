@@ -84,7 +84,7 @@ const SearchScreen = ({navigation}) => {
             
 
             <View style={{ alignSelf: 'center',marginHorizontal: 0, height: '80%'}}>
-                    <AudioStoryFlatList search={newSearch} genre={null}/>
+                    <AudioStoryFlatList search={newSearch} genre={null} all={null}/>
             </View>
 
         </LinearGradient>

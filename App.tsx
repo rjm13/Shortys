@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 //import AppLoading from 'expo-app-loading';
 
@@ -15,13 +15,19 @@ import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { getUser } from './src/graphql/queries';
 import { createUser } from './src/graphql/mutations';
 
+import { AppContext } from './AppContext';
+
 import AudioPlayerWidget from './components/AudioPlayerWidget';
 import AudioPlayerWidgetStatic from './components/AudioPlayerWidgetStatic';
 import AudioPlayerAnimate from './components/AudioPlayerAnimate';
+import { IdentityStore } from 'aws-sdk';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  const [storyID, setStoryID] = useState<string|null>(null);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -78,11 +84,16 @@ export default function App() {
     return (
      
       <SafeAreaProvider>
-        <Navigation 
-          //colorScheme={colorScheme}
-          colorScheme='dark'/>
-        <StatusBar style='light' backgroundColor='#0000004D'/>
-        <AudioPlayerWidgetStatic />
+        <AppContext.Provider value={{
+          storyID,
+          setStoryID: (id: string) => setStoryID(id),
+        }}>
+          <Navigation 
+            //colorScheme={colorScheme}
+            colorScheme='dark'/>
+          <StatusBar style='light' backgroundColor='#0000004D'/>
+          <AudioPlayerWidgetStatic />
+          </AppContext.Provider>
       </SafeAreaProvider>
 
     );

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {Text, View, StyleSheet, Dimensions, ImageBackground, Animated, PanResponder, Image, ScrollView } from 'react-native';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
@@ -16,6 +16,7 @@ import {graphqlOperation, API, Storage} from 'aws-amplify';
 import { getStory } from '../src/graphql/queries';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
+import { AppContext } from '../AppContext';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -39,8 +40,11 @@ function useInterval(callback, delay) {
 
 const AudioPlayer  = () => {
 
+//get context for storyID
+const { storyID } = useContext(AppContext);
+
 //minimize the player with animations
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
 
     const animation = useRef(new Animated.ValueXY({ x: 0, y: SCREEN_HEIGHT - 90 })).current;
 
@@ -142,10 +146,8 @@ const AudioPlayer  = () => {
 
 //recieve story ID as props
 
-//const route = useRoute();
-//const {storyID} = route.params;
-
-const storyID  = 'a367684b-9d1f-49aa-b767-457773446309'
+// const route = useRoute();
+// const {storyID} = route.params;
 
 //use storyID to retrieve Story from AWS
 const [Story, setStory] = useState();
@@ -270,8 +272,9 @@ useEffect(() => {
     }
 
     // useEffect(() => {
-    //     PlayPause();
-    // }, []);
+    //     if (Story) {
+    //     PlayPause(); }
+    // }, [Story]);
 
     useInterval(() => {
         if (isPlaying === true && position < slideLength) {
@@ -287,6 +290,10 @@ useEffect(() => {
             sound.unloadAsync(); }
         : undefined;
     }, [sound]);
+
+    if (!Story) {
+        return null;
+    }
 
 
     return (
@@ -308,7 +315,7 @@ useEffect(() => {
                 }}
                 source={{uri: Story?.imageUri}}
             >
-            { !isExpanded ? (
+            { isExpanded === false ? (
                 <Animated.View style={{ flexDirection: 'row', marginTop: 40, justifyContent: 'space-between', marginHorizontal: 20}}>
                     <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
                         <AntDesign 
@@ -380,7 +387,7 @@ useEffect(() => {
             },
           ]}>
                 <LinearGradient 
-                    colors={[isExpanded ? '#202229' : '#3b4b80', isExpanded ? '#202229' : '#000', isExpanded ? '#202229' : '#000']}
+                    colors={[isExpanded ? '#1f4d4d' : '#3b4b80', isExpanded ? '#1f4d4d' : '#000', isExpanded ? '#1f4d4d' : '#000']}
                     style={{ borderTopRightRadius: 15, borderTopLeftRadius: 15, flex: 1}}
                     start={{ x: 0, y: 1 }}
                     end={{ x: 0, y: 0 }}
@@ -388,7 +395,7 @@ useEffect(() => {
 
                     
                         <Animated.View style={{ height: animatedHeaderHeightSmall, flexDirection: 'row', alignItems: 'center', }}>
-                            { isExpanded ? (
+                            { isExpanded === true ? (
                                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
                                     <TouchableWithoutFeedback onPress={onChangeHandler}>
                                         <Animated.Text
@@ -423,7 +430,7 @@ useEffect(() => {
                     height: animatedHeaderHeightMinimized,
                     opacity: animatedSongDetailsOpacity,
             }}>
-                { !isExpanded ? (
+                { isExpanded === false ? (
                     <View style={{ justifyContent: 'space-between', height: '60%'}}>
                         <View>
                             <TouchableWithoutFeedback onPress={onChangeHandler}>
@@ -487,7 +494,7 @@ useEffect(() => {
                                 />
                             </View>
 
-                            <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between',}}>
+                            <View style={{ marginTop: 20, width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between',}}>
                                 <Text style={{ fontSize: 18, marginBottom: 5, textAlign: 'center', color: 'white'}}>
                                     {millisToMinutesAndSeconds()}
                                 </Text>
@@ -496,7 +503,7 @@ useEffect(() => {
                                 </Text>
                             </View>
 
-                            <View>
+                            <View style={{ alignItems: 'center'}}>
                                 <Slider
                                     style={{width: 320, height: 10}}
                                     minimumTrackTintColor="cyan"

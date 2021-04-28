@@ -9,7 +9,7 @@ import Slider from '@react-native-community/slider';
 import {LinearGradient} from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import { List, Modal, Portal, Provider } from 'react-native-paper';
-import ToggleSwitch from 'toggle-switch-react-native';
+//import ToggleSwitch from 'toggle-switch-react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 
 import { RootStackParamList } from '../types';
@@ -207,7 +207,7 @@ export default function RecordAudio({
                 </View>
                 
                 <View style={{ flexDirection: 'row'}}>
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#524d11"
                         thumbOnStyle={{
@@ -216,7 +216,7 @@ export default function RecordAudio({
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                     <Text style={{
                         fontSize: 18,
                         paddingVertical: 20,

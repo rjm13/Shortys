@@ -7,7 +7,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import {LinearGradient} from 'expo-linear-gradient';
 import { Modal, Portal, Provider } from 'react-native-paper';
-import ToggleSwitch from 'toggle-switch-react-native';
+//import ToggleSwitch from 'toggle-switch-react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
@@ -286,7 +286,7 @@ export default function UploadAudio({navigation}) {
             
                 
                 <View style={{ flexDirection: 'row'}}>
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#008282a5"
                         thumbOnStyle={{
@@ -295,7 +295,7 @@ export default function UploadAudio({navigation}) {
                         offColor="gray"
                         size="small"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                     <Text style={{
                         fontSize: 16,
                         paddingVertical: 20,

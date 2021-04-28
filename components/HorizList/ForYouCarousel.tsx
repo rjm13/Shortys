@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableWithoutFeedback, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,14 +8,26 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {LinearGradient} from 'expo-linear-gradient';
 
 import { useNavigation } from '@react-navigation/native';
+import * as RootNavigation from '../../navigation/RootNavigation';
 
 import { listStorys } from '../../src/graphql/queries';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
+
+import { AppContext } from '../../AppContext';
 
 import data from '../../data/dummyaudio';
 
 
 const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {
+
+//set context globally for storyID
+//const {story} = props;
+
+const { setStoryID } = useContext(AppContext);
+
+const onPlay = () => {
+    setStoryID(id);
+}
 
     function millisToMinutesAndSeconds () {
         let minutes = Math.floor(time / 60000);
@@ -24,16 +36,16 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
     } 
 
     const Colors = {
-        color: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
-            genre === 'comedy' ? '#ff9ce6' :
-            genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#c92ad1' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+        // color: 
+        //     genre === 'crime' ? '#cac715' : 
+        //     genre === 'fantasy' ? '#15ca54' :
+        //     genre === 'suspense' ? '#1579ca' :
+        //     genre === 'comedy' ? '#ff9ce6' :
+        //     genre === 'science fiction' ? '#c97f8b' :
+        //     genre === 'life & adventure' ? '#15b8ca' :
+        //     genre === 'fan fiction' ? '#c92ad1' :
+        //     genre === 'after dark' ? '#5b6ade' : 
+        //     'cyan',
         borderColor: 
             genre === 'crime' ? '#cac715' : 
             genre === 'fantasy' ? '#15ca54' :
@@ -153,7 +165,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                                             {genre}
                                         </Text>
                                     </View>
-                                    <TouchableOpacity onPress={() => navigation.navigate ('AudioPlayer', {storyID: id})}>
+                                    <TouchableOpacity onPress={onPlay}>
                                         <View style={{ 
                                             flexDirection: 'row', 
                                             alignItems: 'center', 

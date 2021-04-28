@@ -11,6 +11,7 @@ export type RootStackParamList = {
   ConfirmEmail: undefined;
   UploadAudio: undefined;
   ModalNavigator: undefined;
+  Drawer: undefined;
 };
 
 export type BottomTabParamList = {

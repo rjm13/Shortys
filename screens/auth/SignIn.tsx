@@ -78,7 +78,7 @@ const SignIn = ({navigation}) => {
         try {
             const user = await Auth.signIn(username, password)
             .then (CreateUser)
-            .then(navigation.navigate('Root', {screen: 'HomeScreen'}))
+            .then(navigation.navigate('Root'))
             console.log(user);
         } 
         catch (error) {

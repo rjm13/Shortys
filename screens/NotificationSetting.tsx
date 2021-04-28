@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-nati
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Switch } from 'react-native-paper';
-import ToggleSwitch from 'toggle-switch-react-native'
+//import ToggleSwitch from 'toggle-switch-react-native'
 
 const Settings = ({navigation}) => {
 
@@ -34,7 +34,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -43,7 +43,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.optionsitem}>
@@ -51,7 +51,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -60,7 +60,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.optionsitem}>
@@ -68,7 +68,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -77,7 +77,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
             </View>
 
@@ -93,7 +93,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -102,7 +102,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.optionsitem}>
@@ -110,7 +110,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -119,7 +119,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.optionsitem}>
@@ -127,7 +127,7 @@ const Settings = ({navigation}) => {
                         Notifications
                     </Text>
 
-                    <ToggleSwitch
+                    {/* <ToggleSwitch
                         isOn={isSwitchOn}
                         onColor="#219a9ca5"
                         thumbOnStyle={{
@@ -136,7 +136,7 @@ const Settings = ({navigation}) => {
                         offColor="gray"
                         size="medium"
                         onToggle={onToggleSwitch}
-                    />
+                    /> */}
                 </View>
 
             </View>
