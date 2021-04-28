@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {Text, View, StyleSheet, Dimensions, ImageBackground, Animated, PanResponder, Image, ScrollView } from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ImageBackground, Animated, TouchableOpacity, PanResponder, Image, ScrollView } from 'react-native';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -42,6 +42,11 @@ const AudioPlayer  = () => {
 
 //get context for storyID
 const { storyID } = useContext(AppContext);
+const { setStoryID } = useContext(AppContext);
+
+
+
+
 
 //minimize the player with animations
     const [isExpanded, setIsExpanded] = useState(true);
@@ -150,7 +155,7 @@ const { storyID } = useContext(AppContext);
 // const {storyID} = route.params;
 
 //use storyID to retrieve Story from AWS
-const [Story, setStory] = useState();
+const [Story, setStory] = useState(null);
 const [AudioUri, setAudioUri] = useState('');
 
 useEffect(() => {
@@ -165,6 +170,7 @@ useEffect(() => {
             const response = await Storage.get(storyData.data.getStory.audioUri, {download: false, expiration: 604800});
             setAudioUri(response);
             console.log(AudioUri);
+            setPosition(0);
           }
       } catch (e) {
         console.log(e);
@@ -190,13 +196,18 @@ useEffect(() => {
         }
 
 //audio player
-    const [sound, setSound] = useState();
+const [sound, setSound] = useState();
 
-    const [isPlaying, setIsPlaying] = useState(false);
+const [isPlaying, setIsPlaying] = useState(false);
 
-    const [position, setPosition] = useState(0); //position in milliseconds
+const [position, setPosition] = useState(0); //position in milliseconds
 
-    const [slideLength, setSlideLength] = useState(0);
+const [slideLength, setSlideLength] = useState(0);
+
+const onClose = () => {
+    setStoryID(null);
+    setStory(null);
+}
 
 //like state
     const [isLiked, setIsLiked] = useState(false);
@@ -255,6 +266,7 @@ useEffect(() => {
         );
         
         setSound(sound);
+
 
         let time = await sound.getStatusAsync();
         setSlideLength(time.durationMillis);
@@ -317,17 +329,18 @@ useEffect(() => {
             >
             { isExpanded === false ? (
                 <Animated.View style={{ flexDirection: 'row', marginTop: 40, justifyContent: 'space-between', marginHorizontal: 20}}>
-                    <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
-                        <AntDesign 
-                            name='close'
-                            size={22}
-                            color='#fff'
-                            style={{
-                                
-                            }}
-                            //onPress={() => navigation.goBack() }
-                        />
-                    </Animated.View>
+                    <TouchableOpacity onPress={onClose}>
+                        <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
+                            <AntDesign 
+                                name='close'
+                                size={22}
+                                color='#fff'
+                                style={{
+                                    
+                                }}
+                            />
+                        </Animated.View>
+                    </TouchableOpacity>
                     
                     <View style={{ }}>
                         <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>

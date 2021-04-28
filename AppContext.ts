@@ -2,7 +2,7 @@ import React from 'react';
 
 const context = {
     storyID: null,
-    setStoryID: (id: string) => {}
+    setStoryID: (id: string | null) => {}
 
 }
 
