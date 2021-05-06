@@ -400,7 +400,7 @@ const onClose = () => {
             },
           ]}>
                 <LinearGradient 
-                    colors={[isExpanded ? '#1f4d4d' : '#3b4b80', isExpanded ? '#1f4d4d' : '#000', isExpanded ? '#1f4d4d' : '#000']}
+                    colors={[isExpanded ? '#171c2b' : '#3b4b80', isExpanded ? '#171c2b' : '#000', isExpanded ? '#171c2bD9' : '#000']}
                     style={{ borderTopRightRadius: 15, borderTopLeftRadius: 15, flex: 1}}
                     start={{ x: 0, y: 1 }}
                     end={{ x: 0, y: 0 }}

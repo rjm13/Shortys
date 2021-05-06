@@ -21,7 +21,7 @@ const AudioStoryHome = ({navigation}) => {
     return (
         <ScrollView style={{backgroundColor: '#3b4b80a5' }}> 
         <LinearGradient
-            colors={['#18c9c9a5','#3b4b80', 'transparent', 'transparent', 'transparent', 'transparent']}
+            colors={['#3b4b80', 'transparent', 'transparent', 'transparent', 'transparent']}
             style={styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}

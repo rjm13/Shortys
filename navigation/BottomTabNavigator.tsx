@@ -47,14 +47,14 @@ export default function BottomTabNavigator() {
         name="Home"
         component={HomeNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color}/>,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home-sharp" color={color}/>,
         }}
       />
       <BottomTab.Screen
         name="Stories"
         component={StoriesNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="library-outline" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="library-sharp" color={color} />,
         }}
       />
       <BottomTab.Screen

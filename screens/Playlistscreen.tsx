@@ -53,10 +53,10 @@ const AudioStoryHome = ({navigation}) => {
     return (
         <View >
         <LinearGradient
-        colors={['#18c9c9a5','#2f2179a5', '#000']}
+        colors={['#3b4b80a5','#3b4b80a5', '#000']}
         //style={styles.container}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 1, y: 0.5 }}
       >
           
           <View>

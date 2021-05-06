@@ -1,6 +1,7 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
+import React, {useState, useEffect, useContext, useRef} from 'react';
+import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image, Animated, PanResponder } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
+import {LinearGradient} from 'expo-linear-gradient';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -332,39 +333,12 @@ const onPlay = () => {
     );
   }
 
-const AudioStoryList = ({genre, search, all}) => {
+const AudioListByGenre = ({genre}) => {
+
+    const navigation = useNavigation();
 
     const fetchStorys = async () => {
-        if (all==='all') {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys, {
-                            
-                        } 
-                    )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);}
-        }
-        if (search) {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys, {
-                            filter: {
-                                title: {
-                                    contains: search
-                                }
-                            }
-                        } 
-                    )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);}
-        }
+        
         if (genre) {
             try {
                 const response = await API.graphql(
@@ -409,23 +383,6 @@ const AudioStoryList = ({genre, search, all}) => {
 
     useEffect( () => {
         const fetchStorys = async () => {
-            if (search) {
-                try {
-                    const response = await API.graphql(
-                        graphqlOperation(
-                            listStorys, {
-                                filter: {
-                                    title: {
-                                        contains: search
-                                    }
-                                }
-                            } 
-                        )
-                    )
-                    setStorys(response.data.listStorys.items);
-                } catch (e) {
-                    console.log(e);}
-            }
             if (genre) {
                 try {
                     const response = await API.graphql(
@@ -475,15 +432,90 @@ const AudioStoryList = ({genre, search, all}) => {
         />
       );
 
+      //const animation = useRef(new Animated.ValueXY({ x: 0, y: 300-20 })).current;
+
+    const [Color, setColor] = useState('#363636')
+
+    useEffect(() => {
+        if (genre === 'crime') setColor('#cac715')
+        if (genre === 'fantasy') setColor('#15ca54')
+        if (genre === 'suspense') setColor('#1579ca')
+        if (genre === 'comedy') setColor('#ff9ce6')
+        if (genre === 'science fiction') setColor('#c97f8b')
+        if (genre === 'life & adventure') setColor('#15b8ca')
+        if (genre === 'fan fiction') setColor('#a05ebf')
+        if (genre === 'after dark') setColor('#5b6ade')
+    })
+
+      const animation = useRef(new Animated.Value(0)).current;
+
+      const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+
+      const [scrollOffset, setScrollOffset] = useState(0);
+
+
+    // const animatedHeight = {
+    //     transform: animation.getTranslateTransform(),
+    // };
+
+    const animatedOpacity = animation.interpolate({
+        inputRange: [0, 100],
+        outputRange: [1, 0],
+        extrapolate: 'clamp',
+        });
+
+    const animatedAppearOpacity = animation.interpolate({
+        inputRange: [0, 300],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+        });
+
+    const animatedHeaderHeight = animation.interpolate({
+        inputRange: [0, 300],
+        outputRange: [300, 80],
+        extrapolate: 'clamp',
+        });
+
+    const animatedColor = animation.interpolate({
+        inputRange: [0, 300],
+        outputRange: ['#000000', Color],
+        extrapolate: 'clamp',
+        });
+
+    // const BackgroundColors = {
+    //     backgroundColor: 
+    //         genre === 'crime' ? '#cac715' : 
+    //         genre === 'fantasy' ? '#15ca54' :
+    //         genre === 'suspense' ? '#1579ca' :
+    //         genre === 'comedy' ? '#ff9ce6' :
+    //         genre === 'science fiction' ? '#c97f8b' :
+    //         genre === 'life & adventure' ? '#15b8ca' :
+    //         genre === 'fan fiction' ? '#a05ebf' :
+    //         genre === 'after dark' ? '#5b6ade' : 
+    //         'cyan'
+    // }
+
+    
+
+
+
     return (
 
-        <View style={styles.container}>
+        <View style={[styles.container]}>
 
-            <FlatList 
+            <Animated.FlatList 
                 data={Storys}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 extraData={true}
+                //stickyHeaderIndices={[0]}
+                //onScroll={event => {setScrollOffset(event.nativeEvent.contentOffset.y);}}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: animation } } }],
+                    { useNativeDriver: false }
+                  )}
+                scrollEventThrottle={1}
+                //style={{marginTop: 300}}
                 refreshControl={
                     <RefreshControl
                      refreshing={isFetching}
@@ -498,12 +530,54 @@ const AudioStoryList = ({genre, search, all}) => {
                             Load more
                         </Text>
                     </View>
-                );
-
+                    );}
                 }
+                ListHeaderComponent={ () => {
 
-                }
+                    
+
+                    return (
+                        <View style={{ height: 300}}>
+                        </View>
+                    )
+                }}
             />
+
+            <Animated.View 
+                style={[ {backgroundColor: animatedColor, height: animatedHeaderHeight, width: Dimensions.get('window').width, position: 'absolute'}]}
+            >
+                <LinearGradient
+                    colors={[Color, Color, 'transparent']}
+                    style={{height: '100%'}}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                >
+                    <View style={{ marginTop: 40, flexDirection: 'row', marginHorizontal: 20, justifyContent: 'space-between'}}>
+                        <View style={{ flexDirection: 'row'}}>
+                            <FontAwesome5 
+                                name='chevron-left'
+                                color='#000'
+                                size={22}
+                                onPress={() => navigation.goBack()}
+                            />
+                            <Animated.Text style={{ marginLeft: 20, textAlign: 'center', opacity: animatedAppearOpacity, fontSize: 18, textTransform: 'capitalize', fontWeight: 'bold'}}>
+                                {genre}
+                            </Animated.Text>
+                        </View>
+                        <FontAwesome5 
+                            name='sort-alpha-down'
+                            color='#000'
+                            size={22}
+                        />
+                    </View>
+                    <View style={{ top: 40, alignItems: 'center'}}>
+                        <Animated.Text style={{ fontSize: 32, color: '#000', textTransform: 'capitalize', fontWeight: 'bold', opacity: animatedOpacity}}>
+                            {genre}
+                        </Animated.Text>
+                    </View>
+                    
+                </LinearGradient>
+            </Animated.View>
 
         </View>
 
@@ -568,4 +642,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AudioStoryList;
+export default AudioListByGenre;
