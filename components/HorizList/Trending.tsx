@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl, ImageBackground, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import { View, Text, StyleSheet, FlatList, RefreshControl, ImageBackground, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -12,9 +12,17 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import { listStorys } from '../../src/graphql/queries';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
 
+import { AppContext } from '../../AppContext';
+
 import GenreColors from '../../constants/GenreColors';
 
 const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, time, id}) => {   
+
+    const { setStoryID } = useContext(AppContext);
+
+    const onPlay = () => {
+        setStoryID(id);
+    }
 
     function millisToMinutesAndSeconds () {
         let minutes = Math.floor(time / 60000);
@@ -83,6 +91,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
         }  
     };
 
+
     return (
         <View style={styles.containernew}>
             <View style={{ position: 'absolute', alignSelf: 'center', top: 60, backgroundColor: 'transparent'}}>
@@ -101,13 +110,14 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     size={30}
                 />
             </View>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
           <ImageBackground
             source={{uri: imageUri}}
             style={[BackgroundColors, styles.image]}
             imageStyle={{ borderRadius: 16}}
           >
                 <View style={{ alignItems: 'center'}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
+                    <TouchableOpacity onPress={onPlay}>
                         <View style={{flexDirection: 'row', backgroundColor: '#0000004D', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
                             <FontAwesome5 
                                 name='play'
@@ -126,6 +136,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     </Text> 
                 </View>  
           </ImageBackground>
+        </TouchableWithoutFeedback>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: 170}}>
                     <View>

@@ -1,9 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Text, View, StyleSheet, Dimensions, ImageBackground } from 'react-native';
+import React, {useState, useEffect, useRef, useContext} from 'react';
+import {Text, View, StyleSheet, Dimensions, ImageBackground, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+
+import Comments from '../components/Comments';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -14,28 +16,10 @@ import { useRoute } from '@react-navigation/native';
 import {graphqlOperation, API, Storage} from 'aws-amplify';
 import { getStory } from '../src/graphql/queries';
 
-
-function useInterval(callback, delay) {
-    const savedCallback = useRef();
-    
-    // Remember the latest callback.
-    useEffect(() => {
-        savedCallback.current = callback;
-    }, [callback]);
-    
-    // Set up the interval.
-    useEffect(() => {
-        let id = setInterval(() => {
-        savedCallback.current();
-        }, delay);
-        return () => clearInterval(id);
-    }, [delay]);
-    }
-
+import { AppContext } from '../AppContext';
 
 
 const AudioPlayer  = ({navigation}) => {
-
 
 
 //recieve story ID as props
@@ -46,6 +30,13 @@ const {storyID} = route.params;
 //use storyID to retrieve Story from AWS
 const [Story, setStory] = useState();
 const [AudioUri, setAudioUri] = useState('');
+
+//send context to audio player
+const { setStoryID } = useContext(AppContext);
+
+const onPlay = () => {
+    setStoryID(storyID);
+}
 
 useEffect(() => {
 
@@ -69,8 +60,19 @@ useEffect(() => {
 
   }, [storyID])
 
-  const BackgroundColors = {
-    backgroundColor: 
+  const Colors = {
+    borderColor: 
+            Story?.genre === 'crime' ? '#cac715' : 
+            Story?.genre === 'fantasy' ? '#15ca54' :
+            Story?.genre === 'suspense' ? '#1579ca' :
+            Story?.genre === 'comedy' ? '#ff9ce6' :
+            Story?.genre === 'science fiction' ? '#c97f8b' :
+            Story?.genre === 'life & adventure' ? '#15b8ca' :
+            Story?.genre === 'fan fiction' ? '#a05ebf' :
+            Story?.genre === 'after dark' ? '#5b6ade' : 
+            '#363636',
+    
+    color: 
             Story?.genre === 'crime' ? '#cac715' : 
             Story?.genre === 'fantasy' ? '#15ca54' :
             Story?.genre === 'suspense' ? '#1579ca' :
@@ -82,15 +84,6 @@ useEffect(() => {
             '#363636'
     }
 
-
-//audio player
-    const [sound, setSound] = useState();
-
-    const [isPlaying, setIsPlaying] = useState(false);
-
-    const [position, setPosition] = useState(0); //position in milliseconds
-
-    const [slideLength, setSlideLength] = useState(0);
 
 //like state
     const [isLiked, setIsLiked] = useState(false);
@@ -115,85 +108,39 @@ useEffect(() => {
         }  
     };
 
-    function SetPosition(value) {
-        setPosition(value)
-    }
+    const animation = useRef(new Animated.Value(0)).current;
 
-    async function StoryPosition (value) { 
-        await sound.setPositionAsync(value);
-        setPosition(value);
-    }
+    const animatedColor = animation.interpolate({
+        inputRange: [0, 500],
+        outputRange: ['transparent', '#363636'],
+        extrapolate: 'clamp',
+        });
 
-    function millisToMinutesAndSeconds () {
-        let minutes = Math.floor(position / 60000);
-        let seconds = ((position % 60000) / 1000);
-        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
-    } 
-    
-    function convertToTime () {
-        let minutes = Math.floor(slideLength / 60000);
-        let seconds = Math.floor((slideLength % 60000) / 1000);
-        return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
-    }  
+    const animatedOpacity = animation.interpolate({
+        inputRange: [0, 500],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+        });
 
-
-    async function PlayPause() {
-
-
-        console.log('Loading Sound');
-        console.log(Story);
-        const { sound } = await Audio.Sound.createAsync(
-            {uri: AudioUri},
-            {shouldPlay: true}
-        );
-        
-        setSound(sound);
-
-        let time = await sound.getStatusAsync();
-        setSlideLength(time.durationMillis);
-
-        if (isPlaying === false) {
-            console.log('Playing Sound');
-            await sound.playAsync(); 
-            setIsPlaying(true);
-            await sound.setPositionAsync(position);
+        function millisToMinutesAndSeconds () {
+            let minutes = Math.floor(Story?.time / 60000);
+            let seconds = Math.floor((Story?.time % 60000) / 1000);
+            return (seconds == 60 ? (minutes+1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
         } 
-        if (isPlaying === true) {
-            await sound.pauseAsync();
-            setIsPlaying (false);     
-        }    
-    }
-
-    // useEffect(() => {
-    //     PlayPause();
-    // }, []);
-
-    useInterval(() => {
-        if (isPlaying === true && position < slideLength) {
-        setPosition(position + 1000);
-        }
-      }, 1000);
-    
-
-    useEffect(() => {
-        return sound
-        ? () => {
-            console.log('Unloading Sound');
-            sound.unloadAsync(); }
-        : undefined;
-    }, [sound]);
-
-
 
 
     return (
         <View style={styles.container}>
             <ImageBackground 
                 source={{uri: Story?.imageUri}}
-                style={{ width: '100%', height: '110%', flex: 3,  }}
+                style={{ width: Dimensions.get('window').width, height: 320,  position: 'absolute'  }}
             >
-                <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'space-between', marginHorizontal: 20}}>
-                    <View style={ styles.button}>
+            </ImageBackground>
+
+            <Animated.View style={{ alignItems: 'center', backgroundColor: animatedColor, flexDirection: 'row', paddingTop: 25, width: Dimensions.get('window').width, justifyContent: 'space-between'}}>
+                
+                <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={ [styles.button, {backgroundColor: '#363636a5', flexDirection: 'row'}]}>
                         <AntDesign 
                             name='close'
                             size={22}
@@ -204,55 +151,44 @@ useEffect(() => {
                             onPress={() => navigation.goBack() }
                         />
                     </View>
-                    
-                    <View style={{ }}>
-                        <View style={ styles.button}>
-                            <FontAwesome 
-                                name={isLiked ? 'star' : 'star-o'}
-                                size={22}
-                                color={isLiked ? 'gold' : 'white'}
-                                onPress={onLikePress}
-                                style={{ }}
-                            />
-                        </View>
-                        <View style={ styles.button}>
-                            <AntDesign 
-                                name={isQ ? 'pushpin' : 'pushpino'}
-                                size={22}
-                                color={isQ ? 'cyan' : 'white'}
-                                onPress={onQPress}
-                                style={{ }}
-                            />
-                        </View>
-                        <View style={ styles.button}>
-                            <FontAwesome 
-                                name='commenting-o'
-                                size={22}
-                                color='white'
-                                //onPress={}
-                                style={{ }}
-                            />
-                        </View>
-                        <View style={ styles.button}>
-                            <FontAwesome 
-                                name='share'
-                                size={22}
-                                color='white'
-                                //onPress={}
-                                style={{ }}
-                            />
-                        </View>
-                    </View>
-                    
+                    <Animated.Text style={{ fontSize: 18, color: '#fff', fontWeight: 'bold', opacity: animatedOpacity}}>
+                        {Story?.title}
+                    </Animated.Text>
                 </View>
-            </ImageBackground>
+
+                <TouchableOpacity onPress={onPlay}>
+                    <Animated.View style={{marginHorizontal: 20, height: 30, width: 30, alignItems: 'center', justifyContent: 'center', backgroundColor: '#00ffff', borderRadius: 15, opacity: animatedOpacity}}>
+                        <FontAwesome5 
+                            name='play'
+                            size={16}
+                            color='#363636'
+                            style={{
+                                marginLeft: 2
+                            }}
+                        />
+                    </Animated.View>
+                </TouchableOpacity>
+                
+            </Animated.View>
+
             <Animatable.View 
                 animation='bounceInUp'
-                style={{flex: 5}}
+                style={{height: '104%'}}
                 >
+            <ScrollView 
+                style={{height: '100%'}}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: animation } } }],
+                    { useNativeDriver: false }
+                  )}
+                scrollEventThrottle={1}
+            >
+            <View style={{ height: 220, backgroundColor: 'transparent'}}>
+
+            </View>
             <LinearGradient 
-                colors={['#2f2179','black', '#000']}
-                style={{ borderRadius: 20, paddingVertical: 5, paddingHorizontal: 20, flex: 5}}
+                colors={['#202020', '#282828', '#000', '#000']}
+                style={{ borderTopLeftRadius: 20, borderTopRightRadius: 20,paddingVertical: 5, paddingHorizontal: 20, flex: 5}}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
@@ -289,58 +225,118 @@ useEffect(() => {
                         </View>
                     </View>
 
-                    <View>
-                        <View style={{marginTop: 5, marginBottom: 20,}}>
-                            <View style={[BackgroundColors, {borderRadius: 15,paddingVertical: 5, paddingHorizontal: 20}]}>
-                                <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>
-                                    {Story?.genre}
-                                </Text>
-                            </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name={isLiked ? 'star' : 'star-o'}
+                                size={25}
+                                color={isLiked ? 'gold' : 'white'}
+                                onPress={onLikePress}
+                                style={{ }}
+                            />
+                        </View>
+                        <View style={ styles.button}>
+                            <AntDesign 
+                                name={isQ ? 'pushpin' : 'pushpino'}
+                                size={25}
+                                color={isQ ? 'cyan' : 'white'}
+                                onPress={onQPress}
+                                style={{ }}
+                            />
+                        </View>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name='commenting-o'
+                                size={25}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
+                        </View>
+                        <View style={ styles.button}>
+                            <FontAwesome 
+                                name='share'
+                                size={25}
+                                color='white'
+                                //onPress={}
+                                style={{ }}
+                            />
                         </View>
                     </View>
+
+                    <View>
+                        <View style={{paddingVertical: 10, paddingHorizontal: 30, backgroundColor: '#00ffff', margin: 20, borderRadius: 30}}>
+                            <TouchableOpacity onPress={onPlay}>
+                                <Text style={{color: '#000000', fontSize: 18, fontWeight: 'bold', }}>
+                                    Play
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View>
+                        <Text style={{color: '#ffffffa5', fontSize: 18}}>
+                            {millisToMinutesAndSeconds()}
+                        </Text>
+                    </View>
+
+                    <View>
+                        <View style={{marginTop: 40, marginBottom: 10,  marginHorizontal: -10, flexDirection: 'row', justifyContent: 'space-between'}}>
+                            
+                                <Text style={[Colors, { fontSize: 16, textTransform: 'capitalize' }]}>
+                                    {Story?.genre}
+                                </Text>
+                            
+                                <Text style={{fontSize: 18, color: 'gold', fontWeight: 'bold' }}>
+                                    69 %
+                                </Text>
+                            
+                        </View>
+
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+                        <Text style={styles.highlight}>
+                            {Story?.description}
+                        </Text>
+
+                    </View>
                 
-                    <Text style={styles.highlight}>
-                        {Story?.description}
-                    </Text>
+                    
                 </View>
 
-                <View style={{ marginTop: 0, alignSelf: 'center' }}>
-                    <FontAwesome5 
-                        name={isPlaying === true ? 'pause' : 'play'}
-                        color='#ffffffCC'
-                        size={50}
-                        onPress={PlayPause}
-                    />
-                </View>
 
             <View style={styles.footer}>
-                <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-between',}}>
-                    <Text style={{ fontSize: 18, marginBottom: 5, textAlign: 'center', color: 'white'}}>
-                        {millisToMinutesAndSeconds()}
-                    </Text>
-                    <Text style={{ fontSize: 18, marginBottom: 5, textAlign: 'center', color: 'white'}}>
-                        {convertToTime()}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10,}}>
+                    <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>
+                        Discussion
                     </Text>
                 </View>
+                
+                
                 <View>
-                <Slider
-                    style={{width: 320, height: 10}}
-                    minimumTrackTintColor="cyan"
-                    maximumTrackTintColor="#ffffffa5"
-                    thumbTintColor='#fff'
-                    //tapToSeek={true}
-                    value={position}
-                    step={1000}
-
-                    minimumValue={0}
-                    maximumValue={slideLength} //function set to the length of the audio file
-                    onValueChange={SetPosition} //function: when slider changes, slider value = SetPosition
-                    onSlidingComplete={StoryPosition}
-                />
+                    <Comments />
                 </View>
+            
             </View>
             </View>
         </LinearGradient> 
+        </ScrollView>
         </Animatable.View>
         <StatusBar style='light' backgroundColor='#0000004D' />
         </View>
@@ -368,22 +364,24 @@ const styles = StyleSheet.create ({
         marginVertical: 0,
     },
     highlight: { 
-        marginHorizontal: -20,
+        marginHorizontal: -10,
         color: '#ffffffCC',
         fontSize: 14,
-        padding: 12,
-        borderRadius: 15,
-        backgroundColor: '#rgba(69,69,69,0.2)',
+        marginBottom: 20,
+        //paddingHorizontal: 12,
+        //borderRadius: 15,
+        //backgroundColor: '#rgba(69,69,69,0.2)',
     },
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#363636a5',
+        backgroundColor: 'transparent',
         borderRadius: 50,
         width: 36,
         height: 36,
         margin: 10,
     },
+   
 });
 
 export default AudioPlayer;

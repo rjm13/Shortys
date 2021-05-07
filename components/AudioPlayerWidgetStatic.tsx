@@ -330,7 +330,7 @@ const onClose = () => {
             { isExpanded === false ? (
                 <Animated.View style={{ flexDirection: 'row', marginTop: 40, justifyContent: 'space-between', marginHorizontal: 20}}>
                     <TouchableOpacity onPress={onClose}>
-                        <Animated.View style={ [styles.button, {left: animatedButtonLeft}]}>
+                        <Animated.View style={ [styles.button, {left: -20}]}>
                             <AntDesign 
                                 name='close'
                                 size={22}
@@ -343,7 +343,7 @@ const onClose = () => {
                     </TouchableOpacity>
                     
                     <View style={{ }}>
-                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                        <Animated.View style={ [styles.button, {right: -20}]}>
                             <FontAwesome 
                                 name={isLiked ? 'star' : 'star-o'}
                                 size={22}
@@ -352,7 +352,7 @@ const onClose = () => {
                                 style={{ }}
                             />
                         </Animated.View>
-                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                        <Animated.View style={ [styles.button, {right: -20}]}>
                             <AntDesign 
                                 name={isQ ? 'pushpin' : 'pushpino'}
                                 size={22}
@@ -361,7 +361,7 @@ const onClose = () => {
                                 style={{ }}
                             />
                         </Animated.View>
-                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                        <Animated.View style={ [styles.button, {right: -20}]}>
                             <FontAwesome 
                                 name='commenting-o'
                                 size={22}
@@ -370,7 +370,7 @@ const onClose = () => {
                                 style={{ }}
                             />
                         </Animated.View>
-                        <Animated.View style={ [styles.button, {right: animatedButtonRight}]}>
+                        <Animated.View style={ [styles.button, {right: -20}]}>
                             <FontAwesome 
                                 name='share'
                                 size={22}

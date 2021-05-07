@@ -133,6 +133,7 @@ const onPlay = () => {
                 />
             </View>
             {/* </LinearGradient> */}
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
             <ImageBackground
                 source={{uri: imageUri}}
                 style={[Colors, BackgroundColors, { width: '100%', height: 280, justifyContent: 'flex-end', borderRadius: 15}]}
@@ -174,19 +175,21 @@ const onPlay = () => {
                                             paddingHorizontal: 8,
                                             backgroundColor: '#ffffff33',
                                             borderColor: '#ffffffCC',
+                                            
                                             //borderWidth: 0.5,
                                             //height: 26 
                                             }}>
                                                 <FontAwesome5 
                                                     name='play'
-                                                    color='#ffffffCC'
+                                                    color='#ffffff'
                                                     size={10}
+                                                    style={{marginRight: 8}}
                                                 />
                                                 <Text style={{
                                                     fontSize: 14,
                                                     fontWeight: 'normal',
                                                     color: '#ffffffCC',
-                                                    marginLeft: 3,
+                                                   
                                                 }}>
                                                     {millisToMinutesAndSeconds()}
                                                 </Text> 
@@ -293,6 +296,7 @@ const onPlay = () => {
                 </View>
 
             </ImageBackground>
+            </TouchableWithoutFeedback>
         </View>
     );
 }
