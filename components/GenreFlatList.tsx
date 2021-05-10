@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground, Image} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TouchableWithoutFeedback, ImageBackground, Image} from 'react-native';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -12,7 +12,7 @@ const Item = ({genre, icon, iconcolor, boxcolor, source}) => {
     const navigation = useNavigation();
 
     return (
-        <TouchableOpacity onPress = {() => navigation.navigate('GenreHome', {genre: genre})}>
+        <TouchableWithoutFeedback onPress = {() => navigation.navigate('GenreHome', {genre: genre})}>
         <View style={[styles.genrebox, {flexDirection: 'row', }]}>
             
             <Image
@@ -54,7 +54,7 @@ const Item = ({genre, icon, iconcolor, boxcolor, source}) => {
                     </Text>
                 </LinearGradient>
         </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -89,7 +89,7 @@ const GenreFlatList = () => {
                             </Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20}}>
 
-                                <TouchableOpacity onPress={() => navigation.navigate('BrowseAuthor')}>
+                                <TouchableWithoutFeedback onPress={() => navigation.navigate('BrowseAuthor')}>
                                     <View style={[styles.box, { backgroundColor: '#15c7ca'}]}>
                                         <FontAwesome5 
                                         name='book-open'
@@ -100,9 +100,9 @@ const GenreFlatList = () => {
                                             Author
                                         </Text>
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableWithoutFeedback>
 
-                                <TouchableOpacity onPress={() => navigation.navigate('BrowseNarrator')}>
+                                <TouchableWithoutFeedback onPress={() => navigation.navigate('BrowseNarrator')}>
                                     <View style={[styles.box, { backgroundColor: 'pink'}]}>
                                         <FontAwesome5 
                                             name='book-reader'
@@ -113,7 +113,7 @@ const GenreFlatList = () => {
                                         Narrator
                                         </Text>
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableWithoutFeedback>
 
                             </View>
 

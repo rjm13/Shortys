@@ -172,6 +172,7 @@ const onPlay = () => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             
                 <View style={{ width: '78%'}}>
+                    
                     <Text style={styles.name}>
                         {title}
                     </Text> 
@@ -180,8 +181,7 @@ const onPlay = () => {
                         <Text style={[styles.category, Colors]}>
                             {genre}
                         </Text>
-                        
-                        
+                           
                     </View>
                     
                     
@@ -308,16 +308,18 @@ const onPlay = () => {
 
                         </View>
                             
-                        </View> 
-                        <Image 
-                            source={{uri: imageUri}}
-                            style={{
-                                height: 200,
-                                borderRadius: 15,
-                                marginVertical: 15,
-                                marginHorizontal: -10
-                            }}
-                        />
+                        </View>
+                            <TouchableWithoutFeedback onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
+                                <Image 
+                                    source={{uri: imageUri}}
+                                    style={{
+                                        height: 200,
+                                        borderRadius: 15,
+                                        marginVertical: 15,
+                                        marginHorizontal: -10
+                                    }}
+                                />
+                            </TouchableWithoutFeedback>
                         <Text style={styles.paragraph}>
                             {description}
                         </Text>

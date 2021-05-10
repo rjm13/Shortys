@@ -38,7 +38,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
             genre === 'comedy' ? '#ff9ce6' :
             genre === 'science fiction' ? '#c97f8b' :
             genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fan fiction' ? '#f034fa' :
             genre === 'after dark' ? '#5b6ade' : 
             'cyan',
         borderColor: 
@@ -118,7 +118,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
           >
                 <View style={{ alignItems: 'center'}}>
                     <TouchableOpacity onPress={onPlay}>
-                        <View style={{flexDirection: 'row', backgroundColor: '#0000004D', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
+                        <View style={{flexDirection: 'row', backgroundColor: '#00000099', alignItems: 'center', marginTop: 10, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 15}}>
                             <FontAwesome5 
                                 name='play'
                                 color='#fff'
@@ -130,7 +130,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                         </View>
                     </TouchableOpacity>
                 </View>
-                <View style={{ backgroundColor: '#000000a5', borderBottomLeftRadius: 15, borderBottomRightRadius: 15}}>   
+                <View style={{ backgroundColor: '#00000099', borderBottomLeftRadius: 15, borderBottomRightRadius: 15}}>   
                     <Text style={{ color: '#fff', paddingVertical: 5, paddingHorizontal: 10, fontSize: 14,}}>
                         {title}
                     </Text> 
@@ -142,19 +142,20 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
                     <View>
                         <Text style={[Colors, { 
                             fontWeight: 'normal', fontSize: 12, textTransform: 'capitalize',
-                            paddingHorizontal: 8, paddingVertical: 2, borderWidth: 0.3, borderRadius: 15
+                            paddingHorizontal: 8, paddingVertical: 2, borderWidth: 0.5, 
+                            borderRadius: 15, backgroundColor: '#0000004D'
                     }]}>
                             {genre}
                         </Text>
                     </View> 
                     <View style={{ flexDirection: 'row'}}>
-                        <FontAwesome
+                        {/* <FontAwesome
                             name={isLiked ? 'star' : 'star-o'}
                             size={18}
                             color={isLiked ? 'gold' : '#ffffffa5'}
                             onPress={onLikePress}
-                            style={{ marginRight: 10 }}
-                        />
+                            style={{ marginRight: 15 }}
+                        /> */}
                         <AntDesign 
                                     name={isQ ? 'pushpin' : 'pushpino'}
                                     size={18}

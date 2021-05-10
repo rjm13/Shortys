@@ -264,14 +264,15 @@ useEffect(() => {
                         </View>
                     </View>
 
+
                     <View>
-                        <View style={{paddingVertical: 10, paddingHorizontal: 30, backgroundColor: '#00ffff', margin: 20, borderRadius: 30}}>
-                            <TouchableOpacity onPress={onPlay}>
-                                <Text style={{color: '#000000', fontSize: 18, fontWeight: 'bold', }}>
-                                    Play
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={onPlay}>
+                            <View style={{paddingVertical: 10, paddingHorizontal: 30, backgroundColor: '#00ffff', margin: 20, borderRadius: 30}}>
+                                    <Text style={{color: '#000000', fontSize: 18, fontWeight: 'bold', }}>
+                                        Play
+                                    </Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
 
                     <View>

@@ -485,7 +485,7 @@ const handleUpdatePassword = async () => {
         
                 <TouchableOpacity onPress={showBioModal}>
                     <View style={styles.statuscontainer}> 
-                        <Text style={{fontSize: 14, color: '#00FFFFa5', padding: 10}}>{user?.bio || 'Say something about yourself'}</Text>
+                        <Text style={{fontSize: 14, color: '#ffffffa5', padding: 10}}>{user?.bio || 'Say something about yourself'}</Text>
                     </View>
                 </TouchableOpacity>
                 
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     },
     placeholdertext: {
         fontSize: 16,
-        color: '#00FFFFa5',
+        color: '#ffffffa5',
         textAlign: 'right',
     },
     words: {

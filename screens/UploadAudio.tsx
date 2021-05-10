@@ -213,12 +213,35 @@ export default function UploadAudio({navigation}) {
 //Modal
       const [visible, setVisible] = useState(false);
   
-      const showModal = () => setVisible(true);
+      const showModal = () => 
+      
+        termsAgree === true &&
+        audioName !== '' &&
+        localImageUri !== '' &&
+        data.writer !== '' &&
+        data.genre !== '' &&
+        data.description !== '' &&
+        data.title !== '' ?
+
+      setVisible(true) : null;
+
       const hideModal = () => setVisible(false);
       const containerStyle = {
           backgroundColor: 'transparent', 
           padding: 20,
-      };      
+      }; 
+      
+//terms state management
+      const [termsAgree, setTermsAgree] = useState(false);
+
+      const handleTerms = () => {
+          if (termsAgree === true) {
+            setTermsAgree(false)
+          }
+          if (termsAgree === false) {
+              setTermsAgree(true)
+          }
+      }
 
   return (
     <Provider>
@@ -530,22 +553,43 @@ export default function UploadAudio({navigation}) {
                 </TouchableOpacity>
             </View>
 
+            <View style={{ margin: 40, flexDirection: 'row'}}>
+                <Text style={{ color: '#ffffffa5'}}>
+                    I have read and agree to the community upload guidelines.
+                </Text>
+                <FontAwesome5 
+                    name='check-circle'
+                    color={termsAgree === true ? 'cyan' : '#363636'}
+                    size={20}
+                    onPress={handleTerms}
+                />
+            </View>
+
                 <TouchableOpacity onPress={showModal}>
-                    <LinearGradient 
-                        colors={['#ffffffa5', 'gray'] }
-                        style={styles.uploadbutton}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        
-                    >
-                        <View>
-                            <FontAwesome5 
-                                name='upload'
-                                color='#ffffff'
-                                size={30}
-                            />
-                        </View>
-                    </LinearGradient>
+                    <View style={[styles.uploadbutton, {
+                        backgroundColor: 
+                            termsAgree === true &&
+                            audioName !== '' &&
+                            localImageUri !== '' &&
+                            data.writer !== '' &&
+                            data.genre !== '' &&
+                            data.description !== '' &&
+                            data.title !== ''
+                            ? 'cyan' : 'transparent'
+                    }]}>
+                        <Text style={{ fontSize: 16, color: 
+                            termsAgree === true && 
+                            audioName !== '' &&
+                            localImageUri !== '' &&
+                            data.writer !== '' &&
+                            data.genre !== '' &&
+                            data.description !== '' &&
+                            data.title !== ''
+                            ? '#000' : '#00ffff'
+                        }}>
+                            Upload Story
+                        </Text>
+                    </View>   
                 </TouchableOpacity>
 
         </View>
@@ -592,14 +636,14 @@ userId: {
     marginLeft: 5,
 },
 uploadbutton: {
-    backgroundColor: '#363636a5', 
-    marginTop: 60,
+    paddingHorizontal: 20, 
+    paddingVertical: 10,
     marginBottom: 60, 
-    width: 100,
-    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 15,
+    borderRadius: 25,
+    borderColor: '#00ffff',
+    borderWidth: 0.5,
 },
 timer: {
     color: '#ffffff',

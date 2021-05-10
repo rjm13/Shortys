@@ -173,7 +173,7 @@ const onPlay = () => {
                                             borderRadius: 30,
                                             paddingVertical: 2,
                                             paddingHorizontal: 8,
-                                            backgroundColor: '#ffffff33',
+                                            backgroundColor: '#ffffff4D',
                                             borderColor: '#ffffffCC',
                                             
                                             //borderWidth: 0.5,
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
       },
       userId: {
         fontSize: 12,
-        color: '#ffffffa5',
+        color: '#ffffffE6',
         marginRight: 15,
         marginLeft: 5,
     },

@@ -130,121 +130,29 @@ export default function RecordAudio({
                 <Text style={[styles.title, {textTransform: 'capitalize'}]}>
                    Story Title 
                 </Text>   
-                <View style={{ flexDirection: 'row'}}>
-                    <FontAwesome5 
-                        name='pepper-hot'
-                        color={
-                            spice === 0 ? 'green' : 
-                            spice === 1 ? 'orange' : 'red'
-                        }
-                        size={20}
-                        style={{
-                            marginVertical: 10,
-                            marginHorizontal: 5,
-                        }}
-                    />
-                    { spice === 1 ? (
-                        <FontAwesome5 
-                            name='pepper-hot'
-                            color={spice === 1 ? 'orange' : 'red'}
-                            size={20}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
-                        />
-                    ) : null }
-                    { spice === 2 ? (
-                        <FontAwesome5 
-                            name='pepper-hot'
-                            color='red'
-                            size={20}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
-                        />
-                    ) : null }
-                    { spice === 2 ? (
-                        <FontAwesome5 
-                            name='pepper-hot'
-                            color='red'
-                            size={20}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
-                        />
-                    ) : null }
-                </View>
-            </View>
-            <View>
-                <Text style={{ color: '#ffffffa5', borderBottomWidth: 1, borderColor: 'gold', paddingBottom: 20,}}>
-                Desciption.Desciption.Desciption.Desciption.Desciption.Desciption.
-                Desciption.Desciption.Desciption.Desciption.Desciption.Desciption.
+                <Text style={styles.timer}>
+                    {millisToMinutesAndSeconds()}
                 </Text>
             </View>
-            
-            <Text style={{
-                    fontSize: 18,
-                    paddingVertical: 10,
-                    color: 'white',
-                    alignSelf: 'flex-start',
-                    marginHorizontal: 20,
-                    marginTop: 20,
-                    }}>Share
-                </Text>
-                <View style={[styles.inputfield, {height: 60, borderWidth: 1, borderColor: 'white'}]}>
-                    <TextInput
-                        placeholder='Select partner'
-                            placeholderTextColor='#ffffffa5'
-                        style={styles.textInputTitle}
-                        maxLength={50}
-                        multiline={true}
-                        numberOfLines={2}
-                        //onChangeText={displayStatus => setDisplayStatus(displayStatus)}
-                    />
-                </View>
-                
-                <View style={{ flexDirection: 'row'}}>
-                    {/* <ToggleSwitch
-                        isOn={isSwitchOn}
-                        onColor="#524d11"
-                        thumbOnStyle={{
-                            backgroundColor: 'gold'
-                        }}
-                        offColor="gray"
-                        size="medium"
-                        onToggle={onToggleSwitch}
-                    /> */}
-                    <Text style={{
-                        fontSize: 18,
-                        paddingVertical: 20,
-                        color: 'white',
-                        margin: 20,
-                        }}>Post annonymously
-                    </Text>  
-                </View>
-               
-                <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around'}}>
-
+              
+            <View style={{ }}>
                 <TouchableOpacity
+                    style={{ 
+                        marginBottom: 20,
+                    }}
+                    onPress={hideModal}>
+                    <View
                         style={{ 
-                            marginBottom: 20,
-                        }}
-                        onPress={hideModal}>
-                        <View
-                            style={{ 
-                                paddingHorizontal: 20,
-                                paddingVertical: 10,
-                                borderRadius: 20,
-                                width: 100,
-                                borderWidth: 1,
-                                borderColor: 'gold'
-                                }} >
-                            <Text style={{ color: 'gold', fontSize: 16, textAlign: 'center'}}>Edit</Text>
-                        </View>
-                    </TouchableOpacity>
+                            paddingHorizontal: 20,
+                            paddingVertical: 10,
+                            borderRadius: 20,
+                            width: 200,
+                            borderWidth: 1,
+                            borderColor: 'cyan'
+                            }} >
+                        <Text style={{ color: 'cyan', fontSize: 16, textAlign: 'center'}}>Continue Recording</Text>
+                    </View>
+                </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{ 
@@ -252,14 +160,14 @@ export default function RecordAudio({
                         }}
                         onPress={hideModal}>
                         <LinearGradient
-                            colors={['gold', 'gold']}
+                            colors={['cyan', 'cyan']}
                             style={{ 
                                 paddingHorizontal: 20,
                                 paddingVertical: 10,
                                 borderRadius: 20,
-                                width: 100,
+                                width: 200,
                                 }} >
-                            <Text style={{ color: 'black', fontSize: 16, textAlign: 'center'}}>Finish</Text>
+                            <Text style={{ color: 'black', fontSize: 16, textAlign: 'center'}}>Save File</Text>
                         </LinearGradient>
                     </TouchableOpacity>
 
@@ -276,10 +184,16 @@ export default function RecordAudio({
                 onPress={ () => navigation.goBack()}
             /> 
         </View>
-        <View style={{ alignItems: 'center'}}> 
+
+
+        <View style={{ alignItems: 'center'}}>
             <Text style={styles.title}>
                 Record a Short Story
             </Text>
+        </View>
+
+        <View style={{ alignItems: 'center', justifyContent: 'center', height: 500}}> 
+            
             <View style={[styles.inputfield, {height: 60}]}>
                 <TextInput
                     placeholder='Story Title'
@@ -291,142 +205,26 @@ export default function RecordAudio({
                     //onChangeText={displayStatus => setDisplayStatus(displayStatus)}
                 />
             </View>
-            <View style={styles.inputfield}>
-                <TextInput
-                    placeholder='Description'
-                        placeholderTextColor='#ffffffa5'
-                    style={[styles.textInput, { height: 80 }]}
-                    maxLength={300}
-                    multiline={true}
-                    numberOfLines={10}
-                    //onChangeText={displayStatus => setDisplayStatus(displayStatus)}
-                />
-            </View>
-
-            <View style={{ width: Dimensions.get('window').width, marginBottom: 20, }}>
-                <ModalDropdown 
-                  options={Genre}
-                  defaultValue='Select category...'
-                  defaultTextStyle={{ color: '#ffffffa5'}}
-                  style={{ 
-                    backgroundColor: '#363636a5',
-                    marginHorizontal: 20,
-                    paddingVertical: 20,
-                    paddingHorizontal: 20,
-                    borderRadius: 10,
-                  }}
-                  textStyle={{ color: 'cyan', fontSize: 14, textTransform: 'capitalize',}}
-                  dropdownStyle={{ 
-                    backgroundColor: '#363636', 
-                    width: '80%', 
-                    borderWidth: 0,
-                    borderRadius: 15,
-                    height: 280,
-                    marginTop: 10
-                  }}
-                  dropdownTextStyle={{ 
-                    backgroundColor: 'transparent',
-                    color: '#fff',
-                    fontSize: 14,
-                    paddingHorizontal: 20,
-                    paddingVertical: 15,
-                    textTransform: 'capitalize',
-                    
-                  }}
-                  dropdownTextHighlightStyle={{
-                    color: 'cyan'
-                  }}
-                />
-
-            </View>
-
-            <View style={{ alignItems: 'center'}}>
-
-                <View style={{ flexDirection: 'row'}}>
-                    <FontAwesome5 
-                        name='pepper-hot'
-                        color={
-                            spice === 0 ? 'green' : 
-                            spice === 1 ? 'orange' : 'red'
-                        }
-                        size={25}
-                        style={{
-                            marginVertical: 10,
-                            marginHorizontal: 5,
-                        }}
-                    />
-                    { spice === 1 ? (
+            
+            <TouchableOpacity onPress={recording ? stopRecording : startRecording}>
+                    <View style={[styles.recordbutton, {
+                        backgroundColor: !recording ? 'transparent' : '#00ffff',
+                        borderColor: !recording ? '#00ffff' : 'transparent',
+                        borderWidth: 1
+                        }]}>
                         <FontAwesome5 
-                            name='pepper-hot'
-                            color={spice === 1 ? 'orange' : 'red'}
-                            size={25}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
+                            name='microphone-alt'
+                            color={ !recording ? '#00ffff' : '#000'}
+                            size={30}
                         />
-                    ) : null }
-                    { spice === 2 ? (
-                        <FontAwesome5 
-                            name='pepper-hot'
-                            color='red'
-                            size={25}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
-                        />
-                    ) : null }
-                    { spice === 2 ? (
-                        <FontAwesome5 
-                            name='pepper-hot'
-                            color='red'
-                            size={25}
-                            style={{ 
-                                marginVertical: 10,
-                                marginHorizontal: 5,
-                            }}
-                        />
-                    ) : null }
-                </View>
-                
-                <Slider
-                    style={{width: 300, height: 40}}
-                    minimumTrackTintColor="gold"
-                    maximumTrackTintColor="#ffffffa5"
-                    thumbTintColor='#ffffff'
-                    //tapToSeek={true}
-                    value={0}
-                    step={1}
-                    minimumValue={0}
-                    maximumValue={2} //function set to the length of the audio file
-                    //onValueChange={SetPosition} //function: when slider changes, slider value = SetPosition
-                    onSlidingComplete={SpiceRating}
-                />
-            </View>
-                <TouchableOpacity onPress={recording ? stopRecording : startRecording}>
-                    <LinearGradient 
-                        colors={!recording ? ['#ffffffa5', 'gray',] : ['maroon', 'red',] }
-                        style={styles.recordbutton}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        
-                    >
-                        <View>
-                            <FontAwesome5 
-                                name='microphone-alt'
-                                color='#ffffff'
-                                size={30}
-                            />
-                        </View>
-                    </LinearGradient>
-                </TouchableOpacity>
+                    </View>
+            </TouchableOpacity>
 
-                <View style={{ marginVertical: 10,}}>
-                    <Text style={styles.timer}>
-                        {millisToMinutesAndSeconds()}
-                    </Text>
-                </View>
+            <View style={{ marginVertical: 10,}}>
+                <Text style={styles.timer}>
+                    {millisToMinutesAndSeconds()}
+                </Text>
+            </View>
         </View>
     </View>
     </Provider>
@@ -443,10 +241,11 @@ title: {
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 30,
+    
 },
 inputfield: {
     width: '90%',
-    backgroundColor: '#363636a5',
+    backgroundColor: '#363636',
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
@@ -470,7 +269,7 @@ recordbutton: {
 },
 timer: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 22,
 },
 });
 
