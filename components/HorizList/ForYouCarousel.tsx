@@ -36,16 +36,16 @@ const onPlay = () => {
     } 
 
     const Colors = {
-        // color: 
-        //     genre === 'crime' ? '#cac715' : 
-        //     genre === 'fantasy' ? '#15ca54' :
-        //     genre === 'suspense' ? '#1579ca' :
-        //     genre === 'comedy' ? '#ff9ce6' :
-        //     genre === 'science fiction' ? '#c97f8b' :
-        //     genre === 'life & adventure' ? '#15b8ca' :
-        //     genre === 'fan fiction' ? '#c92ad1' :
-        //     genre === 'after dark' ? '#5b6ade' : 
-        //     'cyan',
+        color: 
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'suspense' ? '#1579ca' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'life & adventure' ? '#15b8ca' :
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'after dark' ? '#5b6ade' : 
+            'cyan',
         borderColor: 
             genre === 'crime' ? '#cac715' : 
             genre === 'fantasy' ? '#15ca54' :
@@ -205,7 +205,7 @@ const onPlay = () => {
                                             size={12}
                                             color='#ffffffa5'
                                         />
-                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen', {userID: '7755e914-9ae4-4dd0-a421-b517980b6808'})}>
                                             <Text style={styles.userId}>
                                                 {writer}
                                             </Text>  
@@ -215,7 +215,7 @@ const onPlay = () => {
                                             size={12}
                                             color='#ffffffa5'
                                         />
-                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen')}>
+                                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen', {userID: '7755e914-9ae4-4dd0-a421-b517980b6808'})}>
                                             <Text style={styles.userId}>
                                                 {narrator}
                                             </Text> 

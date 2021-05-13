@@ -14,7 +14,7 @@ import {Auth} from 'aws-amplify';
 import people from '../data/dummypeople';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-const Item = ({ name, imageUri, id }) => {
+const Item = ({ name, imageUri, id, bio }) => {
 
     const navigation = useNavigation();
 
@@ -75,8 +75,11 @@ const Item = ({ name, imageUri, id }) => {
                         />
                     </View>
                 </View>
+                
             </View> 
+            
             </TouchableWithoutFeedback>
+           
         </View>
     );
 }
@@ -115,6 +118,7 @@ export default function FollowingList() {
             imageUri={item.imageUri}
             //narrations={item.narrations.length}
             //author={item.author.length}
+            bio={item.bio}
         />
       );
 

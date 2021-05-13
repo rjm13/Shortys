@@ -31,7 +31,7 @@ const BrowseAuthor = ({navigation}) => {
                 height: 35,
                 marginHorizontal: 20,
                 borderRadius: 8,
-                backgroundColor: '#e0e0e0a5',
+                backgroundColor: '#e0e0e0',
               }}
               inputStyle={{fontSize: 16,}}
             />
@@ -43,13 +43,13 @@ const BrowseAuthor = ({navigation}) => {
     return (
         <View >
         <LinearGradient
-        colors={['#a52bb0', 'black', 'black']}
+        colors={['#3b4b80', '#000', 'black']}
         //style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
           
-          <View style={{  alignItems: 'center', flexDirection: 'row', marginTop: 40, marginBottom: 20, marginHorizontal: 20}}>
+          <View style={{  alignItems: 'center', flexDirection: 'row', marginTop: 60, marginBottom: 20, marginHorizontal: 20}}>
                 <FontAwesome5
                     name='chevron-left'
                     size={22}

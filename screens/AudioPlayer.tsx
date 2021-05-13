@@ -200,18 +200,21 @@ useEffect(() => {
                     </Text>
 
                     <View style={{ width: '100%', flexDirection: 'row', marginVertical: 10, justifyContent: 'space-between'}}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                            <FontAwesome5 
-                                name='book-open'
-                                color='#ffffffCC'
-                                size={15}
-                                style={{ marginRight: 10}}
-                            />
-                            <Text style={styles.username}>
-                                {Story?.writer}
-                            </Text>
-                        </View>
+                        <TouchableOpacity onPress={() => navigation.navigate('UserScreen', {userID: '7755e914-9ae4-4dd0-a421-b517980b6808'})}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <FontAwesome5 
+                                    name='book-open'
+                                    color='#ffffffCC'
+                                    size={15}
+                                    style={{ marginRight: 10}}
+                                />
+                                <Text style={styles.username}>
+                                    {Story?.writer}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => navigation.navigate('UserScreen', {userID: '7755e914-9ae4-4dd0-a421-b517980b6808'})}>
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                             <FontAwesome5 
                                 name='book-reader'
@@ -223,7 +226,9 @@ useEffect(() => {
                                 {Story?.narrator}
                             </Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
+                 </View>
+
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
                         <View style={ styles.button}>

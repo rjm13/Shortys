@@ -1,11 +1,15 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native';
+import React, {useState, useEffect, useContext, useRef} from 'react';
+import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image, Animated, PanResponder } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
+import {LinearGradient} from 'expo-linear-gradient';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+
+
+import {useRoute} from '@react-navigation/native'
 
 import { AppContext } from '../AppContext';
 
@@ -21,6 +25,9 @@ import dummyaudio from '../data/dummyaudio';
 import { listStorys } from '../src/graphql/queries';
 import { deleteStory } from '../src/graphql/mutations';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
+import { getUser } from '../src/graphql/queries';
+import { updateUser } from '../src/graphql/mutations';
+import { createFollowingID, deleteFollowingID } from '../src/graphql/mutations';
 
 import { ItemParamList } from '../types';
 
@@ -172,7 +179,6 @@ const onPlay = () => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             
                 <View style={{ width: '78%'}}>
-                    
                     <Text style={styles.name}>
                         {title}
                     </Text> 
@@ -181,7 +187,8 @@ const onPlay = () => {
                         <Text style={[styles.category, Colors]}>
                             {genre}
                         </Text>
-                           
+                        
+                        
                     </View>
                     
                     
@@ -308,18 +315,18 @@ const onPlay = () => {
 
                         </View>
                             
-                        </View>
-                            <TouchableWithoutFeedback onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
-                                <Image 
-                                    source={{uri: imageUri}}
-                                    style={{
-                                        height: 200,
-                                        borderRadius: 15,
-                                        marginVertical: 15,
-                                        marginHorizontal: -10
-                                    }}
-                                />
-                            </TouchableWithoutFeedback>
+                        </View> 
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('AudioPlayer', {storyID: id})}>
+                            <Image 
+                                source={{uri: imageUri}}
+                                style={{
+                                    height: 200,
+                                    borderRadius: 15,
+                                    marginVertical: 15,
+                                    marginHorizontal: -10
+                                }}
+                            />
+                        </TouchableWithoutFeedback>
                         <Text style={styles.paragraph}>
                             {description}
                         </Text>
@@ -334,39 +341,12 @@ const onPlay = () => {
     );
   }
 
-const AudioStoryList = ({genre, search, all}) => {
+const AudioListByAuthor = ({genre}) => {
+
+    const navigation = useNavigation();
 
     const fetchStorys = async () => {
-        if (all === 'all') {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys, {
-                            
-                        } 
-                    )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);}
-        }
-        if (search) {
-            try {
-                const response = await API.graphql(
-                    graphqlOperation(
-                        listStorys, {
-                            filter: {
-                                title: {
-                                    contains: search
-                                }
-                            }
-                        } 
-                    )
-                )
-                setStorys(response.data.listStorys.items);
-            } catch (e) {
-                console.log(e);}
-        }
+        
         if (genre) {
             try {
                 const response = await API.graphql(
@@ -411,36 +391,6 @@ const AudioStoryList = ({genre, search, all}) => {
 
     useEffect( () => {
         const fetchStorys = async () => {
-            if (all === 'all') {
-                try {
-                    const response = await API.graphql(
-                        graphqlOperation(
-                            listStorys, {
-                                
-                            } 
-                        )
-                    )
-                    setStorys(response.data.listStorys.items);
-                } catch (e) {
-                    console.log(e);}
-            }
-            if (search) {
-                try {
-                    const response = await API.graphql(
-                        graphqlOperation(
-                            listStorys, {
-                                filter: {
-                                    title: {
-                                        contains: search
-                                    }
-                                }
-                            } 
-                        )
-                    )
-                    setStorys(response.data.listStorys.items);
-                } catch (e) {
-                    console.log(e);}
-            }
             if (genre) {
                 try {
                     const response = await API.graphql(
@@ -490,15 +440,142 @@ const AudioStoryList = ({genre, search, all}) => {
         />
       );
 
+      //const animation = useRef(new Animated.ValueXY({ x: 0, y: 300-20 })).current;
+
+    const [Color, setColor] = useState('#363636')
+
+    useEffect(() => {
+        if (genre === 'crime') setColor('#cac715')
+        if (genre === 'fantasy') setColor('#15ca54')
+        if (genre === 'suspense') setColor('#1579ca')
+        if (genre === 'comedy') setColor('#ff9ce6')
+        if (genre === 'science fiction') setColor('#c97f8b')
+        if (genre === 'life & adventure') setColor('#15b8ca')
+        if (genre === 'fan fiction') setColor('#a05ebf')
+        if (genre === 'after dark') setColor('#5b6ade')
+    })
+
+      const animation = useRef(new Animated.Value(0)).current;
+
+      const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+
+      const [scrollOffset, setScrollOffset] = useState(0);
+
+
+    // const animatedHeight = {
+    //     transform: animation.getTranslateTransform(),
+    // };
+
+    const animatedOpacity = animation.interpolate({
+        inputRange: [0, 50],
+        outputRange: [1, 0],
+        extrapolate: 'clamp',
+        });
+
+    const animatedOpacitySlow = animation.interpolate({
+        inputRange: [0, 200],
+        outputRange: [1, 0],
+        extrapolate: 'clamp',
+        });
+
+    const animatedAppearOpacity = animation.interpolate({
+        inputRange: [0, 450],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+        });
+
+    const animatedHeaderHeight = animation.interpolate({
+        inputRange: [0, 350],
+        outputRange: [450, 80],
+        extrapolate: 'clamp',
+        });
+
+    const animatedColor = animation.interpolate({
+        inputRange: [0, 800],
+        outputRange: ['#000000', '#363636'],
+        extrapolate: 'clamp',
+        });
+
+    // const BackgroundColors = {
+    //     backgroundColor: 
+    //         genre === 'crime' ? '#cac715' : 
+    //         genre === 'fantasy' ? '#15ca54' :
+    //         genre === 'suspense' ? '#1579ca' :
+    //         genre === 'comedy' ? '#ff9ce6' :
+    //         genre === 'science fiction' ? '#c97f8b' :
+    //         genre === 'life & adventure' ? '#15b8ca' :
+    //         genre === 'fan fiction' ? '#a05ebf' :
+    //         genre === 'after dark' ? '#5b6ade' : 
+    //         'cyan'
+    // }
+
+    const [User, setUser] = useState(null);
+
+    const route = useRoute();
+    const {userID} = route.params
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await API.graphql(graphqlOperation(
+                  getUser, {id: userID}))
+                  if (userData) {
+                    setUser(userData.data.getUser);
+                  }
+                  console.log(userData.data.getUser);
+            } catch (e) {
+                console.log(e);
+              }  
+        }
+        fetchUser();   
+      }, [])
+
+
+    const [SelectedId, setSelectedId] = useState(1);
+
+    const [Following, setFollowing] = useState(false);
+
+    const FollowUser = async () => {
+
+        const userInfo = await Auth.currentAuthenticatedUser();
+
+        const followingId = await API.graphql(graphqlOperation(createFollowingID, { 
+            input: {followingIDUserId: userInfo.attributes.sub, followingIDFollowerId: User?.id}}))
+
+        console.log(followingId)
+    }
+
+    function FollowButton () {
+        if (Following === true) {
+            setFollowing(false)
+        }
+        else {
+            setFollowing(true)
+            FollowUser();
+        }
+    }
+
+    
+
+
+
     return (
 
-        <View style={styles.container}>
+        <View style={[styles.container]}>
 
-            <FlatList 
+            <Animated.FlatList 
                 data={Storys}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 extraData={true}
+                //stickyHeaderIndices={[0]}
+                //onScroll={event => {setScrollOffset(event.nativeEvent.contentOffset.y);}}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: animation } } }],
+                    { useNativeDriver: false }
+                  )}
+                scrollEventThrottle={1}
+                //style={{marginTop: 300}}
                 refreshControl={
                     <RefreshControl
                      refreshing={isFetching}
@@ -510,20 +587,150 @@ const AudioStoryList = ({genre, search, all}) => {
                     return (
                     <View style={{ height:  70, alignItems: 'center'}}>
                         <Text style={{ color: 'white', margin: 20,}}>
-                            Load more
+                            
                         </Text>
                     </View>
-                );
-
+                    );}
                 }
+                ListHeaderComponent={ () => {
 
-                }
+                    return (
+
+                        <View style={{ height: 500}}>
+                        </View>                
+                        );
+                    }}
             />
 
-        </View>
+                        <Animated.View style={[ {backgroundColor: animatedColor, height: animatedHeaderHeight, width: Dimensions.get('window').width, position: 'absolute', flex: 1}]}
+                        >
+                       
+                                <View style={{ flexDirection: 'row', marginVertical: 20, justifyContent: 'space-between', marginHorizontal: 20, alignItems: 'center'}}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                        <AntDesign 
+                                            name='close'
+                                            size={25}
+                                            color='#fff'
+                                            style={{
+                                                marginVertical: 20,
+                                                marginRight: 10,
+                                            }}
+                                            onPress={() => navigation.goBack() }
+                                        />
+                                        <Animated.Text style={[styles.name, { opacity: animatedAppearOpacity}]}>
+                                            {User?.name}
+                                        </Animated.Text>
+                                    </View>
+                                    <TouchableOpacity onPress={FollowButton}>
+                                        <View>
+                                            <Text style={{
+                                                color: Following === true ? '#000' : 'cyan',
+                                                backgroundColor: Following === true ? 'cyan' : 'transparent',
+                                                borderRadius: 20,
+                                                paddingHorizontal: 20,
+                                                paddingVertical: 5,
+                                                borderWidth: Following === true ? 0 : 0.5,
+                                                borderColor: 'cyan',
+                                            }}>
+                                                {Following === true ? 'Following' : 'Follow'}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
 
-    );
-}
+                                <Animated.View style={{opacity: animatedOpacitySlow}}>
+
+                                <View style={{ alignItems: 'center'}}>
+                                    <Image 
+                                        source={{ uri: User?.imageUri}}
+                                        style={{
+                                            width: 120,
+                                            height: 120,
+                                            backgroundColor: '#363636',
+                                            borderRadius: 60,
+                                            marginTop: 20,
+                                            
+                                        }}
+                                    />
+                                </View>
+
+                                <View style={{ alignItems: 'center', marginTop: 20, marginBottom: 10 }}>
+                                    <Text style={{fontSize: 22, color: '#fff', fontWeight: 'bold'}}>
+                                        {User?.name}
+                                    </Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row', marginBottom: 10, alignSelf: 'center'}}>
+                                                <FontAwesome5 
+                                                    name='book-open'
+                                                    size={12}
+                                                    color='#ffffffa5'
+                                                    style={{ marginRight: 5}}
+                                                />
+                                            <Text style={styles.userId}>
+                                                    0
+                                                </Text>  
+                                                <FontAwesome5 
+                                                    name='book-reader'
+                                                    size={12}
+                                                    color='#ffffffa5'
+                                                    style={{ marginRight: 5}}
+                                                />
+                                            <Text style={styles.userId}>
+                                                    0
+                                                </Text> 
+                                            </View> 
+                                </Animated.View>
+
+                                <Animated.View style={{opacity: animatedOpacity}}>
+                                <View style={{ alignItems: 'center', marginHorizontal: 20, marginVertical: 10}}>
+                                    <Text style={{ color: '#ffffffa5', fontSize: 14, textAlign: 'center'}}>
+                                        {User?.bio}
+                                    </Text>
+                                </View>
+
+                                <View style={{ 
+                                    flexDirection: 'row', 
+                                    justifyContent: 'space-evenly', 
+                                    width: '100%', 
+                                    alignItems: 'flex-end',
+                                    //marginHorizontal: 20,
+                                    height: 50,
+                                    marginBottom: 20
+                                }}>
+                        
+                                    <TouchableWithoutFeedback onPress={() => setSelectedId(1)}>
+                                        <Text style={{ 
+                                            color: SelectedId ===  1 ? '#fff' : '#ffffffa5',
+                                            marginHorizontal: 15, 
+                                            fontSize: SelectedId ===  1 ? 22 : 17,
+                                            fontWeight: SelectedId === 1 ? 'bold' : 'normal',
+                                            borderBottomColor: '#fff',
+                                            //borderBottomWidth: SelectedId ===  1 ? 1 : 0,
+                                        }}>
+                                            Authored
+                                        </Text>
+                                    </TouchableWithoutFeedback>
+
+                                    <TouchableWithoutFeedback onPress={() => setSelectedId(2)}>
+                                        <Text style={{ 
+                                            color: SelectedId ===  2 ? '#fff' : '#ffffffa5',
+                                            marginHorizontal: 15, 
+                                            fontSize: SelectedId ===  2 ? 22 : 17,
+                                            fontWeight: SelectedId === 2 ? 'bold' : 'normal'
+                                        }}>
+                                            Narrations
+                                        </Text>
+                                    </TouchableWithoutFeedback>
+                                </View> 
+                                </Animated.View>
+                                 
+                           
+                            
+                        </Animated.View>
+
+</View>
+    );}
 
 const styles = StyleSheet.create({
     container: {
@@ -583,4 +790,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AudioStoryList;
+export default AudioListByAuthor;
