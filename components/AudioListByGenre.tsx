@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext, useRef} from 'react';
 import { View, Modal, StyleSheet, Text, FlatList, Dimensions, RefreshControl, TouchableWithoutFeedback, TouchableOpacity, Image, Animated, PanResponder } from 'react-native';
 import {useNavigation} from '@react-navigation/native'
 import {LinearGradient} from 'expo-linear-gradient';
+import { RadioButton } from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -24,6 +25,7 @@ import { deleteStory } from '../src/graphql/mutations';
 import {graphqlOperation, API, Auth} from 'aws-amplify';
 
 import { ItemParamList } from '../types';
+import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 
 
 
@@ -497,15 +499,16 @@ const AudioListByGenre = ({genre}) => {
     //         'cyan'
     // }
 
-    
+    const [sortModalVisible, setSortModalVisible] = useState(false);
 
-    
+    const [checked, setChecked] = useState('first');
 
 
 
     return (
 
         <View style={[styles.container]}>
+
 
             <Animated.FlatList 
                 data={Storys}
@@ -531,7 +534,7 @@ const AudioListByGenre = ({genre}) => {
                     return (
                     <View style={{ height:  70, alignItems: 'center'}}>
                         <Text style={{ color: 'white', margin: 20,}}>
-                            Load more
+                            
                         </Text>
                     </View>
                     );}
@@ -550,6 +553,109 @@ const AudioListByGenre = ({genre}) => {
             <Animated.View 
                 style={[ {backgroundColor: animatedColor, height: animatedHeaderHeight, width: Dimensions.get('window').width, position: 'absolute'}]}
             >
+                <Modal
+                animationType="slide"
+                transparent={true}
+                //presentationStyle='overFullScreen'
+                visible={sortModalVisible}
+                onRequestClose={() => {
+                setSortModalVisible(!sortModalVisible);
+                }}
+            >
+                    <View 
+                        style={{    
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 20}}>
+                                <View 
+                                    style={{
+                                        margin: 40,
+                                        backgroundColor: "#363636",
+                                        borderRadius: 20,
+                                        padding: 35,
+                                        alignItems: "center",
+                                        shadowColor: "#fff",
+                                        shadowOffset: {
+                                            width: 0,
+                                            height: 2
+                                            },
+                                        shadowOpacity: 0.25,
+                                        shadowRadius: 4,
+                                        elevation: 5,
+                                        width: Dimensions.get('window').width/1.5
+                                        }}>
+                        <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold', width: '100%'}}>Sort by</Text>
+                        <View style={{ marginTop: 20}}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <RadioButton
+                                    value="first"
+                                    status={ checked === 'first' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked('first')}
+                                /> 
+                                <Text style={{marginHorizontal: 20, color: '#fff'}}>
+                                    A - Z
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <RadioButton
+                                    value="second"
+                                    status={ checked === 'second' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked('second')}
+                                /> 
+                                <Text style={{marginHorizontal: 20, color: '#fff'}}>
+                                    Z - A
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <RadioButton
+                                    value="third"
+                                    status={ checked === 'third' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked('third')}
+                                /> 
+                                <Text style={{marginHorizontal: 20, color: '#fff'}}>
+                                    Newest
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <RadioButton
+                                    value="fourth"
+                                    status={ checked === 'fourth' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked('fourth')}
+                                /> 
+                                <Text style={{marginHorizontal: 20, color: '#fff'}}>
+                                    Oldest
+                                </Text>
+                            </View>
+                            
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <RadioButton
+                                    value="fifth"
+                                    status={ checked === 'fifth' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked('fifth')}
+                                /> 
+                                <Text style={{marginHorizontal: 20, color: '#fff'}}>
+                                    Highest Rating
+                                </Text>
+                            </View>
+                            
+                        </View>
+
+                        <View style={{marginTop: 50}}>
+                            <TouchableOpacity onPress={() => {setSortModalVisible(!sortModalVisible);}}>
+                                <Text style={{color: '#ffffffa5'}}>
+                                    Close
+                                </Text>
+                            </TouchableOpacity>
+                            
+                        </View>
+                    </View>
+                    
+                    </View>
+                </Modal>
                 <LinearGradient
                     colors={[Color, Color, 'transparent']}
                     style={{height: '100%'}}
@@ -572,6 +678,7 @@ const AudioListByGenre = ({genre}) => {
                             name='sort-alpha-down'
                             color='#000'
                             size={22}
+                            onPress={() => setSortModalVisible(!sortModalVisible)}
                         />
                     </View>
                     <View style={{ top: 40, alignItems: 'center'}}>
