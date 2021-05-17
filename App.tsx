@@ -28,6 +28,8 @@ export default function App() {
 
   const [storyID, setStoryID] = useState<string|null>(null);
 
+  const [userID, setUserID] = useState<string|null>(null);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -50,6 +52,7 @@ export default function App() {
             }
           )
         )
+        setUserID(userInfo.attributes.sub);
 
 
         if (userData.data.getUser) {
@@ -87,6 +90,9 @@ export default function App() {
         <AppContext.Provider value={{
           storyID,
           setStoryID: (id: string) => setStoryID(id),
+          userID,
+          setUserID: (id: string) => setUserID(id),
+
         }}>
           <Navigation 
             //colorScheme={colorScheme}

@@ -1,5 +1,9 @@
-import React from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Dimensions, Animated} from 'react-native';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, Text, StyleSheet, FlatList, Image, Dimensions, Animated, TouchableOpacity, TextInput} from 'react-native';
+import { getUser } from '../src/graphql/queries';
+
+import { AppContext } from '../AppContext';
 
 const comments =[
     {
@@ -34,7 +38,7 @@ const Item = ({id, comment, avatar, name, title, datePosted}) => {
                 </View>
                 <View style={{marginHorizontal: 20, alignSelf: 'center'}}>
                     <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold'}}>
-                        {title}
+                        {name}
                     </Text>
                     <Text style={{color: '#ffffffa5', fontSize: 12}}>
                         {datePosted}
@@ -53,6 +57,30 @@ const Item = ({id, comment, avatar, name, title, datePosted}) => {
 
 const CommentsList = () => {
 
+    const { userID } = useContext(AppContext);
+    const { setUserID } = useContext(AppContext);
+
+    const [user, setUser] = useState();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+
+            // const userInfo = await Auth.currentAuthenticatedUser(
+            //     { bypassCache: true }
+            //   );
+
+            const userData = await API.graphql(
+                graphqlOperation(
+                getUser, 
+                { id: userID,
+                }
+                )
+            )
+            setUser(userData.data.getUser);
+        }
+    fetchUser();
+    }, [])
+    
     const renderItem = ({ item }) => (
 
         <Item 
@@ -65,8 +93,41 @@ const CommentsList = () => {
         />
       );
     
+    const [comment, setComment] = useState('');
+
     return(
         <View>
+            <View>
+            <View style={{ padding: 20, flexDirection: 'row', marginVertical: 10, borderRadius: 15, backgroundColor: '#363636'}}>
+                            <Image 
+                                    source={{uri: user?.imageUri}}
+                                    style={{ width: 40, height: 40, borderRadius: 25, backgroundColor: 'yellow'}}
+                                />
+                            <TextInput 
+                                placeholder='Say something'
+                                placeholderTextColor='#ffFFFFa5'
+                                style={{
+                                    color: '#ffffff',
+                                    fontSize: 14,
+                                    marginLeft: 20,
+                                    marginRight: 30,    
+                                }}
+                                maxLength={250}
+                                multiline={true}
+                                numberOfLines={2}
+                                onChangeText={comment => setComment(comment)}
+                                value={comment}
+                            />
+            </View>
+            {comment.length > 0 ? (
+            <View style={{ marginBottom: 20, alignItems: 'center'}}>
+                <Text style={{width: 100, padding: 5, borderRadius: 20, color: '#00ffff', borderWidth: 0.5, borderColor: '#00ffff', textAlign: 'center'}}>
+                    Post
+                </Text>
+            </View>
+            ) : null}
+            </View>
+
             <FlatList 
                 data={comments}
                 renderItem={renderItem}
@@ -82,10 +143,7 @@ const CommentsList = () => {
                 }}
                 ListHeaderComponent={ () => {
                     return (
-                    <View style={{ marginVertical: 10, borderRadius: 15, height:  50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#363636a5'}}>
-                        <Text style={{ color: '#ffffffa5', fontSize: 13}}>
-                            Say something
-                        </Text>
+                    <View>
                     </View>
                     );
                 }}

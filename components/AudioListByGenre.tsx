@@ -339,6 +339,10 @@ const onPlay = () => {
 
 const AudioListByGenre = ({genre}) => {
 
+    const [sortModalVisible, setSortModalVisible] = useState(false);
+
+    const [checked, setChecked] = useState('first');
+
     const navigation = useNavigation();
 
     const fetchStorys = async () => {
@@ -499,9 +503,6 @@ const AudioListByGenre = ({genre}) => {
     //         'cyan'
     // }
 
-    const [sortModalVisible, setSortModalVisible] = useState(false);
-
-    const [checked, setChecked] = useState('first');
 
 
 
