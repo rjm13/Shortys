@@ -336,7 +336,7 @@ useEffect(() => {
                 
                 
                 <View>
-                    <Comments />
+                    <Comments storyId={Story?.id} />
                 </View>
             
             </View>

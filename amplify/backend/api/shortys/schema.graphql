@@ -34,10 +34,11 @@ type Story @model
   }
 
 type Comment @model 
-  @key(name: "byStory", fields: ["storyID", "content"]) {
+  @key(name: "byStory", fields: ["storyID"]) {
     id: ID!
     storyID: ID!
     story: Story @connection(fields: ["storyID"])
     content: String!
 }
+
 

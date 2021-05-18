@@ -1,7 +1,8 @@
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, FlatList, Image, Dimensions, Animated, TouchableOpacity, TextInput} from 'react-native';
-import { getUser } from '../src/graphql/queries';
+import { getUser, listComments } from '../src/graphql/queries';
+import { createComment } from '../src/graphql/mutations';
 
 import { AppContext } from '../AppContext';
 
@@ -24,7 +25,10 @@ const comments =[
     }, 
 ]
 
-const Item = ({id, comment, avatar, name, title, datePosted}) => {
+
+
+
+const Item = ({id, content}) => {
 
     return (
         <View style={{ marginVertical: 10, backgroundColor: '#00ffff0D', borderRadius: 15}}>
@@ -32,30 +36,65 @@ const Item = ({id, comment, avatar, name, title, datePosted}) => {
             <View style={{ margin: 10, flexDirection: 'row'}}>
                 <View>
                    <Image 
-                        source={{uri: avatar}}
-                        style={{ width: 50, height: 50, borderRadius: 25}}
+                        source={{uri: 'https://m.media-amazon.com/images/M/MV5BMTcxOTk4NzkwOV5BMl5BanBnXkFtZTcwMDE3MTUzNA@@._V1_.jpg' }}
+                        style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: 'lightgray'}}
                     /> 
                 </View>
                 <View style={{marginHorizontal: 20, alignSelf: 'center'}}>
                     <Text style={{fontSize: 16, color: '#fff', fontWeight: 'bold'}}>
-                        {name}
+                        Test Name
                     </Text>
                     <Text style={{color: '#ffffffa5', fontSize: 12}}>
-                        {datePosted}
+                        Test Date posted
                     </Text>
                 </View>
             </View>
 
             <View>
                 <Text style={{ color: '#ffffff', marginVertical: 10, marginHorizontal: 20}}>
-                    {comment}
+                    {content}
                 </Text>
             </View>
         </View>
     );
 }
 
-const CommentsList = () => {
+const CommentsList = ({storyId}) => {
+
+    useEffect(() => {
+
+        setStory(storyId);
+
+        console.log(storyId)
+
+        const fetchComments = async () => {
+           
+                try {
+                    const response = await API.graphql(
+                        graphqlOperation(
+                            listComments, {
+                                filter: {
+                                    storyID: {
+                                        eq: storyId
+                                    },
+                                  
+
+                                }
+                            } 
+                        )
+                    )
+                    setCommentList(response.data.listComments.items);
+                 
+                    
+                } catch (e) {
+                    console.log(e);}  
+        }
+        fetchComments();
+    },[storyId])
+
+    const [commentList, setCommentList ] = useState();
+
+    const [story, setStory] = useState(storyId);
 
     const { userID } = useContext(AppContext);
     const { setUserID } = useContext(AppContext);
@@ -85,15 +124,34 @@ const CommentsList = () => {
 
         <Item 
             id={item.id}
-            comment={item.comment}
-            avatar={item.avatar}
-            name={item.name}
-            title={item.title}
-            datePosted={item.datePosted}
+            content={item.content}
+            // comment={item.comment}
+            // avatar={item.avatar}
+            // name={item.name}
+            // title={item.title}
+            // datePosted={item.datePosted}
         />
       );
     
     const [comment, setComment] = useState('');
+
+    const handlePostComment = async () => {
+        if (comment.length > 0) {
+            try {
+                let result = await API.graphql(
+                        graphqlOperation(createComment, { input: 
+                            {
+                                storyID: story,
+                                content: comment,
+                            }
+                        }))
+                            console.log(result);
+                    } catch (e) {
+                            console.error(e);
+            }
+            setComment('');
+        }
+    }
 
     return(
         <View>
@@ -120,20 +178,23 @@ const CommentsList = () => {
                             />
             </View>
             {comment.length > 0 ? (
-            <View style={{ marginBottom: 20, alignItems: 'center'}}>
-                <Text style={{width: 100, padding: 5, borderRadius: 20, color: '#00ffff', borderWidth: 0.5, borderColor: '#00ffff', textAlign: 'center'}}>
-                    Post
-                </Text>
-            </View>
+            <TouchableOpacity onPress={handlePostComment}>
+                <View style={{ marginBottom: 20, alignItems: 'center'}}>
+                    <Text style={{width: 100, padding: 5, borderRadius: 20, color: '#00ffff', borderWidth: 0.5, borderColor: '#00ffff', textAlign: 'center'}}>
+                        Post
+                    </Text>
+                </View>
+            </TouchableOpacity>
             ) : null}
             </View>
 
             <FlatList 
-                data={comments}
+                data={commentList}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
+                extraData={true}
                 ListFooterComponent={ () => {
                     return (
                     <View style={{ height:  Dimensions.get('window').height-100, alignItems: 'center'}}>
@@ -153,3 +214,5 @@ const CommentsList = () => {
 }
 
 export default CommentsList;
+
+
