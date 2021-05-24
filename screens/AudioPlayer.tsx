@@ -62,26 +62,32 @@ useEffect(() => {
 
   const Colors = {
     borderColor: 
-            Story?.genre === 'crime' ? '#cac715' : 
-            Story?.genre === 'fantasy' ? '#15ca54' :
-            Story?.genre === 'suspense' ? '#1579ca' :
-            Story?.genre === 'comedy' ? '#ff9ce6' :
-            Story?.genre === 'science fiction' ? '#c97f8b' :
-            Story?.genre === 'life & adventure' ? '#15b8ca' :
-            Story?.genre === 'fan fiction' ? '#a05ebf' :
-            Story?.genre === 'after dark' ? '#5b6ade' : 
-            '#363636',
+        Story?.genre === 'adventure' ? '#27d995' :
+        Story?.genre === 'comedy' ? '#ff9ce6' :
+        Story?.genre === 'crime' ? '#cac715' : 
+        Story?.genre === 'fan fiction' ? '#c92ad1' :
+        Story?.genre === 'fantasy' ? '#15ca54' :
+        Story?.genre === 'horror' ? '#1579ca' :
+        Story?.genre === 'life' ? '#15b8ca' :
+        Story?.genre === 'love' ? '#f05161' :
+        Story?.genre === 'mystery' ? '#ff6f00' :
+        Story?.genre === 'science fiction' ? '#c97f8b' :
+        Story?.genre === 'after dark' ? '#7081ff' : 
+        '#ffffffa5',
     
     color: 
-            Story?.genre === 'crime' ? '#cac715' : 
-            Story?.genre === 'fantasy' ? '#15ca54' :
-            Story?.genre === 'suspense' ? '#1579ca' :
-            Story?.genre === 'comedy' ? '#ff9ce6' :
-            Story?.genre === 'science fiction' ? '#c97f8b' :
-            Story?.genre === 'life & adventure' ? '#15b8ca' :
-            Story?.genre === 'fan fiction' ? '#a05ebf' :
-            Story?.genre === 'after dark' ? '#5b6ade' : 
-            '#363636'
+        Story?.genre === 'adventure' ? '#27d995' :
+        Story?.genre === 'comedy' ? '#ff9ce6' :
+        Story?.genre === 'crime' ? '#cac715' : 
+        Story?.genre === 'fan fiction' ? '#c92ad1' :
+        Story?.genre === 'fantasy' ? '#15ca54' :
+        Story?.genre === 'horror' ? '#1579ca' :
+        Story?.genre === 'life' ? '#15b8ca' :
+        Story?.genre === 'love' ? '#f05161' :
+        Story?.genre === 'mystery' ? '#ff6f00' :
+        Story?.genre === 'science fiction' ? '#c97f8b' :
+        Story?.genre === 'after dark' ? '#7081ff' : 
+        '#ffffffa5',
     }
 
 

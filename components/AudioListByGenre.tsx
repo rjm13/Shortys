@@ -35,25 +35,31 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
     const Colors = {
         color: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
+            genre === 'adventure' ? '#27d995' :
             genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
             genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
         borderColor: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
+            genre === 'adventure' ? '#27d995' :
             genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
             genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
       }
     const navigation = useNavigation();
 
@@ -445,14 +451,17 @@ const AudioListByGenre = ({genre}) => {
     const [Color, setColor] = useState('#363636')
 
     useEffect(() => {
-        if (genre === 'crime') setColor('#cac715')
-        if (genre === 'fantasy') setColor('#15ca54')
-        if (genre === 'suspense') setColor('#1579ca')
+        if (genre === 'adventure') setColor('#27d995')
         if (genre === 'comedy') setColor('#ff9ce6')
-        if (genre === 'science fiction') setColor('#c97f8b')
-        if (genre === 'life & adventure') setColor('#15b8ca')
+        if (genre === 'crime') setColor('#cac715')
         if (genre === 'fan fiction') setColor('#a05ebf')
-        if (genre === 'after dark') setColor('#5b6ade')
+        if (genre === 'fantasy') setColor('#15ca54')
+        if (genre === 'horror') setColor('#1579ca')
+        if (genre === 'life') setColor('#15b8ca')
+        if (genre === 'love') setColor('#f05161')
+        if (genre === 'mystery') setColor('#ff6f00')
+        if (genre === 'science fiction') setColor('#c97f8b')
+        if (genre === 'after dark') setColor('#7081ff')
     })
 
       const animation = useRef(new Animated.Value(0)).current;

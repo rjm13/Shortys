@@ -182,17 +182,20 @@ useEffect(() => {
   }, [storyID])
 
 //background colors for the genre indicator
-    const BackgroundColors = {
-        backgroundColor: 
-                Story?.genre === 'crime' ? '#cac715' : 
-                Story?.genre === 'fantasy' ? '#15ca54' :
-                Story?.genre === 'suspense' ? '#1579ca' :
-                Story?.genre === 'comedy' ? '#ff9ce6' :
-                Story?.genre === 'science fiction' ? '#c97f8b' :
-                Story?.genre === 'life & adventure' ? '#15b8ca' :
-                Story?.genre === 'fan fiction' ? '#a05ebf' :
-                Story?.genre === 'after dark' ? '#5b6ade' : 
-                '#363636'
+    const Colors = {
+        color: 
+            Story?.genre === 'adventure' ? '#27d995' :
+            Story?.genre === 'comedy' ? '#ff9ce6' :
+            Story?.genre === 'crime' ? '#cac715' : 
+            Story?.genre === 'fan fiction' ? '#c92ad1' :
+            Story?.genre === 'fantasy' ? '#15ca54' :
+            Story?.genre === 'horror' ? '#1579ca' :
+            Story?.genre === 'life' ? '#15b8ca' :
+            Story?.genre === 'love' ? '#f05161' :
+            Story?.genre === 'mystery' ? '#ff6f00' :
+            Story?.genre === 'science fiction' ? '#c97f8b' :
+            Story?.genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
         }
 
 //audio player
@@ -324,6 +327,7 @@ const onClose = () => {
                     flex: 1,
                     width: null,
                     height: null,
+                    backgroundColor: '#363636'
                 }}
                 source={{uri: Story?.imageUri}}
             >
@@ -481,10 +485,13 @@ const onClose = () => {
                             </TouchableWithoutFeedback>
 
                             <View style={{ alignItems: 'center', marginHorizontal: 20}}>
-                                <View style={{marginBottom: 20,}}>
-                                    <View style={[BackgroundColors, {borderRadius: 15, paddingVertical: 5, paddingHorizontal: 20}]}>
-                                        <Text style={{ fontSize: 16, textTransform: 'capitalize' }}>
+                                <View style={{marginTop: 10,}}>
+                                    <View style={[{flexDirection: 'row', justifyContent: 'space-between', width: 300}]}>
+                                        <Text style={[Colors, { fontSize: 16, textTransform: 'capitalize' }]}>
                                             {Story?.genre}
+                                        </Text>
+                                        <Text style={{fontSize: 18, color: 'gold', fontWeight: 'bold' }}>
+                                            69 %
                                         </Text>
                                     </View>
                                 </View>

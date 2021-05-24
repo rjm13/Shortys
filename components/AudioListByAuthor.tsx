@@ -39,25 +39,31 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
     const Colors = {
         color: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
+            genre === 'adventure' ? '#27d995' :
             genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
             genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
         borderColor: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
+            genre === 'adventure' ? '#27d995' :
             genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
             genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#a05ebf' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
       }
     const navigation = useNavigation();
 

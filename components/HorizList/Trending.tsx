@@ -32,38 +32,47 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
 
     const Colors = {
         color: 
-            genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
+            genre === 'adventure' ? '#27d995' :
             genre === 'comedy' ? '#ff9ce6' :
-            genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
-            genre === 'fan fiction' ? '#f034fa' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
-        borderColor: 
             genre === 'crime' ? '#cac715' : 
-            genre === 'fantasy' ? '#15ca54' :
-            genre === 'suspense' ? '#1579ca' :
-            genre === 'comedy' ? '#ff9ce6' :
-            genre === 'science fiction' ? '#c97f8b' :
-            genre === 'life & adventure' ? '#15b8ca' :
             genre === 'fan fiction' ? '#c92ad1' :
-            genre === 'after dark' ? '#5b6ade' : 
-            'cyan',
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
+        borderColor: 
+            genre === 'adventure' ? '#27d995' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
       }
 
       const BackgroundColors = {
         backgroundColor: 
-              genre === 'crime' ? '#cac71566' : 
-              genre === 'fantasy' ? '#15ca5466' :
-              genre === 'suspense' ? '#1579ca66' :
-              genre === 'comedy' ? '#ff9ce666' :
-              genre === 'science fiction' ? '#c97f8b66' :
-              genre === 'life & adventure' ? '#15b8ca66' :
-              genre === 'fan fiction' ? '#a05ebf66' :
-              genre === 'after dark' ? '#5b6ade66' : 
-              '#36363666'
+            genre === 'adventure' ? '#27d995' :
+            genre === 'comedy' ? '#ff9ce6' :
+            genre === 'crime' ? '#cac715' : 
+            genre === 'fan fiction' ? '#c92ad1' :
+            genre === 'fantasy' ? '#15ca54' :
+            genre === 'horror' ? '#1579ca' :
+            genre === 'life' ? '#15b8ca' :
+            genre === 'love' ? '#f05161' :
+            genre === 'mystery' ? '#ff6f00' :
+            genre === 'science fiction' ? '#c97f8b' :
+            genre === 'after dark' ? '#7081ff' : 
+            '#ffffffa5',
         }
 
     const navigation = useNavigation();
@@ -114,7 +123,7 @@ const Item = ({title, genre, description, imageUri, audioUri, writer, narrator, 
           <ImageBackground
             source={{uri: imageUri}}
             style={[BackgroundColors, styles.image]}
-            imageStyle={{ borderRadius: 16}}
+            imageStyle={{ borderRadius: 15}}
           >
                 <View style={{ alignItems: 'center'}}>
                     <TouchableOpacity onPress={onPlay}>
